@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dj1{
+    color: red;
+}
+
+
+.tss-10rusft-MUIDataTableToolbar-icon{
+    background-color: #366FA1 !important;
+    color: white !important;
+    margin-left: 6px !important;
+}
+/* src/styles.css */
+body {
+    background-image: url("/src/assets/bg-10.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0; /* Remove default margin */
+    height: 100vh; /* Ensure the body takes the full height of the viewport */
+  }
+  
+
