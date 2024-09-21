@@ -19,6 +19,7 @@ import {
   ChevronUpIcon,
 } from "@heroicons/react/24/outline";
 import { CubeTransparentIcon } from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
 
 const nestedMenuItemsAccounts = [
   {
@@ -52,9 +53,9 @@ function NavListMenu({ title, menuItems }) {
   const [openNestedMenu, setopenNestedMenu] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const renderItems = menuItems.map(({ title }, key) => (
-    <a href="#" key={key}>
+    <Link href="#" key={key}>
       <MenuItem>{title}</MenuItem>
-    </a>
+    </Link>
   ));
 
   return (

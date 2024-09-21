@@ -2,24 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-.dj1{
+.dj1 {
     color: red;
 }
 
 
-.tss-10rusft-MUIDataTableToolbar-icon{
+.tss-10rusft-MUIDataTableToolbar-icon {
     background-color: #366FA1 !important;
     color: white !important;
     margin-left: 6px !important;
 }
-/* src/styles.css */
+
 body {
     background-image: url("/src/assets/bg-10.png");
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
-    margin: 0; /* Remove default margin */
-    height: 100vh; /* Ensure the body takes the full height of the viewport */
-  }
-  
+    /* background-repeat: no-repeat; */
+    margin: 0;
+    height: 100%;
+}
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

@@ -8,6 +8,7 @@ import { Input, Typography } from "@material-tailwind/react";
 // import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { DialogFooter, Button } from "@material-tailwind/react";
+import { Link } from "react-router-dom";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -388,7 +389,7 @@ export default function Card() {
           aria-haspopup="true"
           onClick={handleClick}
         >
-          <MoreVertIcon />
+          <MoreVertIcon fontSize="small" />
         </IconButton>
         <Menu
           id="long-menu"
@@ -407,7 +408,9 @@ export default function Card() {
             },
           }}
         >
-          <MenuItem onClick={handleViewOpen}>View</MenuItem>
+          <Link to="/clientDetails">
+          <MenuItem >View</MenuItem>
+          </Link>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleClose}>Delete</MenuItem>
         </Menu>

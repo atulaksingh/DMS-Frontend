@@ -30,13 +30,13 @@ function Login() {
           >
             <CardHeader shadow={false} floated={false} className="text-start ">
               <div>
-                <a href="#">
+             
                   <img
                     src={logo}
                     alt="Logo"
                     className=" w-36 mx-auto cursor-pointer py-0.5"
                   />
-                </a>
+           
               </div>
 
               <Typography

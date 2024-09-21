@@ -12,19 +12,23 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import HomePage from "./pages/HomePage";
+import ClientCreation from "./Components/MainCards/Clients/ClientCreation";
+import 'react-toastify/dist/ReactToastify.css';
+import ClientDetails from "./Components/MainCards/Clients/ClientDetails";
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <>
-
       <Router>
         <Header />
-        <MenuBar />
+        {/* <MenuBar /> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/client" element={<ClientCreation />} />
+          <Route path="/clientDetails" element={<ClientDetails />} />
         </Routes>
       </Router>
     </>

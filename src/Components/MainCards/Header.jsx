@@ -11,6 +11,7 @@ import {
   Avatar,
   Card,
   IconButton,
+  Collapse
 } from "@material-tailwind/react";
 import {
   CubeTransparentIcon,
@@ -136,7 +137,7 @@ function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const renderItems = navListMenuItems.map(({ title, description }) => (
-    <a href="#" key={title}>
+    <div  key={title}>
       <MenuItem>
         <Typography variant="h6" color="blue-gray" className="mb-1">
           {title}
@@ -145,7 +146,7 @@ function NavListMenu() {
           {description}
         </Typography>
       </MenuItem>
-    </a>
+    </div>
   ));
 
   return (
@@ -220,7 +221,7 @@ function NavList() {
           className="font-medium text-white"
         >
           <MenuItem className="flex items-center gap-2 lg:rounded-full">
-            {React.createElement(icon, { className: "h-[18px] w-[18px]" })}{" "}
+            {React.createElement(icon, { className: "h-[18px] w-[18px]" })}
             <span className="text-white"> {label}</span>
           </MenuItem>
         </Typography>
@@ -245,17 +246,17 @@ function Header() {
     <>
       <Navbar className="mx-auto max-w-full p-2  lg:pl-6 bg-[#366FA1] rounded-none bg-opacity-100 border-none py-0">
         <div className="relative mx-auto flex items-center justify-between  text-white ">
-          <Typography as="a"  className="">
+          {/* <Typography as="a"  className=""> */}
             <Link to="/">
-              <a href="#">
+        
                 <img
                   src={logo}
                   alt="Logo"
                   className="mr-4 ml-2 h-16 w-28 cursor-pointer py-0.5"
                 />
-              </a>
+          
             </Link>
-          </Typography>
+          {/* </Typography> */}
           <div className="hidden lg:block">
             <NavList />
           </div>
@@ -280,9 +281,9 @@ function Header() {
             </Button>
           </Link>
         </div>
-        <MobileNav open={isNavOpen} className="overflow-scroll">
+        <Collapse open={isNavOpen} className="overflow-scroll">
           <NavList />
-        </MobileNav>
+        </Collapse>
       </Navbar>
     </>
   );
