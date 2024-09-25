@@ -36,7 +36,8 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function Card() {
+export default function Card({ rowId }) {
+  // console.log("rowId", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
@@ -408,10 +409,12 @@ export default function Card() {
             },
           }}
         >
-          <Link to="/clientDetails">
-          <MenuItem >View</MenuItem>
+          <Link to={`/clientDetails/${rowId}`}>
+            <MenuItem>View</MenuItem>
           </Link>
-          <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
+          <Link to={`/clientUpdate/${rowId}`}>
+            <MenuItem>Update</MenuItem>
+          </Link>
           <MenuItem onClick={handleClose}>Delete</MenuItem>
         </Menu>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Input,
@@ -12,13 +12,16 @@ import {
   Switch,
   Option,
 } from "@material-tailwind/react";
+import { useParams } from "react-router-dom";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import axios from "axios";
-function ClientCreation() {
+function ClientUpdate() {
+  const { id } = useParams();
+
   const [filesList, setFilesList] = useState([]);
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -39,6 +42,48 @@ function ClientCreation() {
     status: "active",
     fileinfos: [],
   });
+  console.log("form",filesList)
+   // Fetch client data when the component mounts
+   useEffect(() => {
+    const fetchClientData = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/edit-client/${id}`);
+        const data = response.data;
+console.log("ressss",response.data)
+        // Set formData with the fetched client data
+        setFormData({
+          client_name: data.client_name,
+          entity_type: data.entity_type,
+          date_of_incorporation: data.date_of_incorporation,
+          contact_person: data.contact_person,
+          designation: data.designation,
+          email: data.email,
+          contact_no_1: data.contact_no_1,
+          contact_no_2: data.contact_no_2,
+          business_detail: data.business_detail,
+          status: data.status,
+          fileinfos: data.fileinfos, // Assuming fileinfos is an array in your API response
+        });
+
+        // Prepopulate filesList based on fileinfos
+        const prepopulatedFiles = data.fileinfos.map(fileinfo => ({
+            id:fileinfo.id,
+          document_type: fileinfo.document_type,
+          login: fileinfo.login,
+          password: fileinfo.password,
+          remark: fileinfo.remark,
+          files: fileinfo.files, // Assuming files is an array of file objects
+        }));
+
+        setFilesList(prepopulatedFiles);
+
+      } catch (error) {
+        console.error("Error fetching client data:", error);
+      }
+    };
+
+    fetchClientData();
+  }, [id]); // Add id as a dependency
 
   const handleOpen = () => setOpen(!open);
 
@@ -77,7 +122,10 @@ function ClientCreation() {
       setRemark("");
       handleOpen();
     } else {
-      notify("Please provide all details and select at least one file!", "error");
+      notify(
+        "Please provide all details and select at least one file!",
+        "error"
+      );
     }
   };
 
@@ -96,37 +144,39 @@ function ClientCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const data = new FormData();
-  
-      // Append all other form fields
+
+
       Object.entries(formData).forEach(([key, value]) => {
         data.append(key, value || "");
       });
-  
-      // Append structured fileinfos
-      filesList.forEach(({ document_type, login, password, remark, files }, index) => {
-        // Append fileinfo details
-        const fileinfoData = {
-          document_type,
-          login,
-          password,
-          remark,
-        };
-  
-        // Append fileinfo details as JSON
-        data.append(`fileinfos[${index}]`, JSON.stringify(fileinfoData));
-  
-        // Append each file under the respective fileinfo
-        files.forEach((file) => {
-          data.append(`fileinfos[${index}].files[]`, file);
-        });
-      });
-  
+
+
+      filesList.forEach(
+        ({ document_type, login, password, remark, files }, index) => {
+        
+          const fileinfoData = {
+            document_type,
+            login,
+            password,
+            remark,
+          };
+
+ 
+          data.append(`fileinfos[${index}]`, JSON.stringify(fileinfoData));
+
+   
+          files.forEach((file) => {
+            data.append(`fileinfos[${index}].files[]`, file);
+          });
+        }
+      );
+
       console.log("data to send:", data);
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/create-client",
+        `http://127.0.0.1:8000/api/edit-client/${id}`,
         data,
         {
           headers: {
@@ -134,28 +184,14 @@ function ClientCreation() {
           },
         }
       );
-  
+
       console.log("response", response);
       toast.success("Client created successfully!", {
         position: "top-right",
         autoClose: 2000,
       });
-  
-      // Reset form and file list
-      setFormData({
-        client_name: "",
-        entity_type: "",
-        date_of_incorporation: "",
-        contact_person: "",
-        designation: "",
-        contact_no_1: "",
-        contact_no_2: "",
-        email: "",
-        business_detail: "",
-        status: "active",
-        fileinfos: [],
-      });
-      setFilesList([]);
+
+   
     } catch (error) {
       console.error("Error creating client:", error);
       toast.error("Failed to create client. Please try again.", {
@@ -164,9 +200,7 @@ function ClientCreation() {
       });
     }
   };
-  
-  
-  
+
   return (
     <>
       <Dialog open={open} size="sm" handler={handleOpen}>
@@ -347,9 +381,9 @@ function ClientCreation() {
       </Dialog>
       <form onSubmit={handleSubmit}>
         <div className="p-8 bg-[#fefeff] max-w-6xl mx-auto my-10">
-          <div className="text-[1.5rem] font-semibold">Client Creation</div>
+          <div className="text-[1.5rem] font-semibold">Client Update</div>
           <div className="text-gray-600 text-sm my-0.5">
-            Create Client details here
+            Update Client details here
           </div>
 
           <div className="grid grid-cols-3 gap-x-6">
@@ -688,22 +722,23 @@ function ClientCreation() {
                 ) : null}
               </div>
               <div className="mt-4">
+           
                 {filesList.length > 0 && (
                   <div className="flex align-middle">
                     <ul className="list-disc mr-5 w-full">
                       {filesList.map((file, index) => (
                         <li
-                          key={index} // Use index since file.id is not defined
+                          key={index} 
                           className="flex items-center justify-between mb-2 bg-[#366FA1] p-2 rounded-md text-white"
                         >
                           <span>
-                            {file.files_name} ({file.files.length})
+                            {file.document_type} {file.id} ({file.files.length})
                           </span>
                           <div className="flex items-center space-x-2">
                             <DeleteIcon
                               color="white"
                               className="cursor-pointer"
-                              onClick={() => handleFileDelete(index)} // Use index for delete
+                              onClick={() => handleFileDelete(index)} 
                             />
                           </div>
                         </li>
@@ -728,7 +763,7 @@ function ClientCreation() {
               type="submit"
               className="bg-[#366FA1] hover:bg-[#2d5e85]"
             >
-              Create
+              Update
             </Button>
           </div>
         </div>
@@ -737,4 +772,4 @@ function ClientCreation() {
   );
 }
 
-export default ClientCreation;
+export default ClientUpdate;

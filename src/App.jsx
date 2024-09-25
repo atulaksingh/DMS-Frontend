@@ -5,7 +5,7 @@ import "./App.css";
 import New from "./Components/MainCards/New";
 import Table from "./Components/MainCards/Table";
 import MuiTable from "./Components/MainCards/MuiTable";
-import Card from "./Components/MainCards/card";
+// import Card from "./Components/MainCards/card";
 import Header from "./Components/MainCards/Header";
 import MenuBar from "./Components/MainCards/MenuBar";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import ClientCreation from "./Components/MainCards/Clients/ClientCreation";
 import 'react-toastify/dist/ReactToastify.css';
 import ClientDetails from "./Components/MainCards/Clients/ClientDetails";
+import ClientUpdate from "./Components/MainCards/Clients/ClientUpdate";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -28,7 +29,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/client" element={<ClientCreation />} />
-          <Route path="/clientDetails" element={<ClientDetails />} />
+          <Route path="/clientUpdate/:id" element={<ClientUpdate />} />
+          <Route path="/clientDetails/:id" element={<ClientDetails />} />
         </Routes>
       </Router>
     </>
