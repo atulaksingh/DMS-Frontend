@@ -12,6 +12,7 @@ function ClientDetails() {
   const { id } = useParams();
   const [value, setValue] = React.useState("1");
   const [clientData, setClientData] = useState(null); 
+  const [ownerData, setOwnerData] = useState(null)
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
   const handleChange = (event, newValue) => {
@@ -25,8 +26,9 @@ function ClientDetails() {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/detail-client/${id}`
         );
-        // console.log("cleee0", response.data);
+        console.log("cleee0", response.data);
         setClientData(response.data.Client); 
+        setOwnerData(response.data.Owner); 
         setLoading(false); 
       } catch (error) {
         setError(error); 
@@ -211,7 +213,7 @@ function ClientDetails() {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <Owner />
+                <Owner ownerData={ownerData}/>
               </TabPanel>
               <TabPanel value="2">Bank Details</TabPanel>
               <TabPanel value="3">Branch Details</TabPanel>

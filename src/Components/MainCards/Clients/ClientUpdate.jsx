@@ -29,6 +29,8 @@ function ClientUpdate() {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [remark, setRemark] = useState("");
+  const [notify, setNotify] = useState("");
+  const [currentFileIndex, setCurrentFileIndex] = useState(null); // To track which file is being edited
   const [formData, setFormData] = useState({
     client_name: "",
     entity_type: "",
@@ -42,14 +44,16 @@ function ClientUpdate() {
     status: "active",
     fileinfos: [],
   });
-  console.log("form",filesList)
-   // Fetch client data when the component mounts
-   useEffect(() => {
+  console.log("form", filesList);
+  // Fetch client data when the component mounts
+  useEffect(() => {
     const fetchClientData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/edit-client/${id}`);
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/edit-client/${id}`
+        );
         const data = response.data;
-console.log("ressss",response.data)
+        console.log("ressss", response.data);
         // Set formData with the fetched client data
         setFormData({
           client_name: data.client_name,
@@ -66,8 +70,8 @@ console.log("ressss",response.data)
         });
 
         // Prepopulate filesList based on fileinfos
-        const prepopulatedFiles = data.fileinfos.map(fileinfo => ({
-            id:fileinfo.id,
+        const prepopulatedFiles = data.fileinfos.map((fileinfo) => ({
+          id: fileinfo.id,
           document_type: fileinfo.document_type,
           login: fileinfo.login,
           password: fileinfo.password,
@@ -76,7 +80,6 @@ console.log("ressss",response.data)
         }));
 
         setFilesList(prepopulatedFiles);
-
       } catch (error) {
         console.error("Error fetching client data:", error);
       }
@@ -85,11 +88,11 @@ console.log("ressss",response.data)
     fetchClientData();
   }, [id]); // Add id as a dependency
 
-  const handleOpen = () => setOpen(!open);
+  // const handleOpen = () => setOpen(!open);
 
-  const notify = (message, type = "success") => {
-    toast[type](message, { position: "top-right", autoClose: 1000 });
-  };
+  // const notify = (message, type = "success") => {
+  //   toast[type](message, { position: "top-right", autoClose: 1000 });
+  // };
 
   const handleFileNameChange = (value) => setFileName(value);
   const handleLoginChange = (event) => setLogin(event.target.value);
@@ -111,8 +114,19 @@ console.log("ressss",response.data)
         files: selectedFiles,
       };
 
-      setFilesList((prevFiles) => [...prevFiles, newFiles]);
-      notify("Files uploaded successfully!");
+      if (currentFileIndex !== null) {
+        // Update existing file
+        setFilesList((prevFiles) =>
+          prevFiles.map((file, index) =>
+            index === currentFileIndex ? newFiles : file
+          )
+        );
+        setNotify("File updated successfully!");
+      } else {
+        // Add new file
+        setFilesList((prevFiles) => [...prevFiles, newFiles]);
+        setNotify("Files uploaded successfully!");
+      }
 
       // Reset fields
       setFileName("");
@@ -120,9 +134,9 @@ console.log("ressss",response.data)
       setLogin("");
       setPassword("");
       setRemark("");
-      handleOpen();
+      handleClose();
     } else {
-      notify(
+      setNotify(
         "Please provide all details and select at least one file!",
         "error"
       );
@@ -142,37 +156,57 @@ console.log("ressss",response.data)
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  const handleOpen = (index = null) => {
+    console.log("index", index);
+    if (index !== null) {
+      setCurrentFileIndex(index); // Set the index of the file being edited
+      const fileInfo = filesList[index];
+      setFileName(fileInfo.document_type);
+      setLogin(fileInfo.login);
+      setPassword(fileInfo.password);
+      setRemark(fileInfo.remark);
+      setSelectedFiles(fileInfo.files);
+    } else {
+      // Reset fields for new file
+      setFileName("");
+      setSelectedFiles([]);
+      setLogin("");
+      setPassword("");
+      setRemark("");
+    }
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const data = new FormData();
 
-
       Object.entries(formData).forEach(([key, value]) => {
         data.append(key, value || "");
       });
 
+      // filesList.forEach(
+      //   ({ document_type, login, password, remark, files }, index) => {
+      //     const fileinfoData = {
+      //       document_type,
+      //       login,
+      //       password,
+      //       remark,
+      //     };
 
-      filesList.forEach(
-        ({ document_type, login, password, remark, files }, index) => {
-        
-          const fileinfoData = {
-            document_type,
-            login,
-            password,
-            remark,
-          };
+      //     data.append(`fileinfos[${index}]`, JSON.stringify(fileinfoData));
 
- 
-          data.append(`fileinfos[${index}]`, JSON.stringify(fileinfoData));
-
-   
-          files.forEach((file) => {
-            data.append(`fileinfos[${index}].files[]`, file);
-          });
-        }
-      );
+      //     files.forEach((file) => {
+      //       data.append(`fileinfos[${index}].files[]`, file);
+      //     });
+      //   }
+      // );
 
       console.log("data to send:", data);
       const response = await axios.post(
@@ -190,8 +224,6 @@ console.log("ressss",response.data)
         position: "top-right",
         autoClose: 2000,
       });
-
-   
     } catch (error) {
       console.error("Error creating client:", error);
       toast.error("Failed to create client. Please try again.", {
@@ -215,7 +247,7 @@ console.log("ressss",response.data)
             viewBox="0 0 24 24"
             fill="currentColor"
             className="mr-3 h-5 w-5"
-            onClick={handleOpen}
+            onClick={handleClose}
           >
             <path
               fillRule="evenodd"
@@ -371,7 +403,7 @@ console.log("ressss",response.data)
           </div>
         </DialogBody>
         <DialogFooter className="space-x-2">
-          <Button variant="text" color="gray" onClick={handleOpen}>
+          <Button variant="text" color="gray" onClick={handleClose}>
             cancel
           </Button>
           <Button className="bg-[#366FA1]" onClick={handleFileSave}>
@@ -385,7 +417,6 @@ console.log("ressss",response.data)
           <div className="text-gray-600 text-sm my-0.5">
             Update Client details here
           </div>
-
           <div className="grid grid-cols-3 gap-x-6">
             <div className="col-span-2 my-3">
               <label htmlFor="client name">
@@ -649,7 +680,6 @@ console.log("ressss",response.data)
               </div>
             </div>
           </div>
-
           <ToastContainer />
           <div className="grid grid-cols-2 gap-x-28">
             <div>
@@ -722,33 +752,35 @@ console.log("ressss",response.data)
                 ) : null}
               </div>
               <div className="mt-4">
-           
                 {filesList.length > 0 && (
                   <div className="flex align-middle">
                     <ul className="list-disc mr-5 w-full">
                       {filesList.map((file, index) => (
-                        <li
-                          key={index} 
-                          className="flex items-center justify-between mb-2 bg-[#366FA1] p-2 rounded-md text-white"
-                        >
-                          <span>
-                            {file.document_type} {file.id} ({file.files.length})
-                          </span>
-                          <div className="flex items-center space-x-2">
-                            <DeleteIcon
-                              color="white"
-                              className="cursor-pointer"
-                              onClick={() => handleFileDelete(index)} 
-                            />
-                          </div>
-                        </li>
+                        <div onClick={() => handleOpen(index)}>
+                          <li
+                            key={index}
+                            className="flex items-center justify-between mb-2 bg-[#366FA1] p-2 rounded-md text-white"
+                          >
+                            <span>
+                              {file.document_type} {file.id} (
+                              {file.files.length})
+                            </span>
+                            <div className="flex items-center space-x-2">
+                              <DeleteIcon
+                                color="white"
+                                className="cursor-pointer"
+                                onClick={() => handleFileDelete(index)}
+                              />
+                            </div>
+                          </li>
+                        </div>
                       ))}
                     </ul>
                     {filesList.length > 0 && (
                       <div className="flex items-end mb-4">
                         <ControlPointIcon
                           className="cursor-pointer text-[#366FA1]"
-                          onClick={handleOpen}
+                          onClick={() => handleOpen(null)}
                         />
                       </div>
                     )}
