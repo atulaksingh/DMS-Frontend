@@ -5,33 +5,19 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import Owner from "./OwnerDetails/Owner";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Bank from "./BankDetails/Bank";
-import Branch from "./BranchDetails/Branch";
-import ClientUser from "./ClientUser/ClientUser";
+import BranchDoc from "./BranchDoc/BranchDoc";
+import OfficeLoc from "./OfficeLoc/OfficeLoc";
 
-import CompanyDocuments from "./CompanyDocuments/CompanyDocuments";
-import CV from "./CorV/CV";
-import Pf from "../PF/Pf";
-import Documents from "../Documents/Documents";
-function ClientDetails() {
-  const { id } = useParams();
+function BranchDetails() {
+  const { clientID, branchID } = useParams();
+  //   console.log("useee",useParams())
   const [value, setValue] = React.useState("1");
-  const [clientData, setClientData] = useState(null);
-  const [ownerData, setOwnerData] = useState(null);
-  const [bankData, setBankData] = useState(null);
   const [branchData, setBranchData] = useState(null);
-  const [clientUserData, setClientUserData] = useState(null);
-  const [companyDocData, setCompanyDocData] = useState(null);
-  const [CVData, setCVData] = useState(null);
-  const [PfData, setPfData] = useState(null);
-  const [taxAuditData, setTaxAuditData] = useState(null);
-  const [airData, setAirData] = useState(null);
-  const [sftData, setSftData] = useState(null);
-  const [tdsReturnData, setTdsReturnData] = useState(null);
-  const [tdsPaymentData, setTdsPaymentData] = useState(null);
+  const [officeLocationData, setOfficeLocationData] = useState(null);
+  const [branchDocumentsData, setBranchDocumentsData] = useState(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const handleChange = (event, newValue) => {
@@ -39,25 +25,16 @@ function ClientDetails() {
   };
 
   useEffect(() => {
-    const fetchClientDetails = async () => {
+    const fetchBranchDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/detail-client/${id}`
+          `http://127.0.0.1:8000/api/detail-branch/${clientID}/${branchID}`
         );
-        console.log("cleee0", response.data);
-        setClientData(response.data.Client);
-        setOwnerData(response.data.Owner);
-        setBankData(response.data.Bank);
+        console.log("branch------------->", response.data);
         setBranchData(response.data.Branch);
-        setClientUserData(response.data.ClientUser);
-        setCompanyDocData(response.data.Company_Document);
-        setCVData(response.data.Customer_or_Vendor);
-        setPfData(response.data.PF);
-        setTaxAuditData(response.data.Tax_Audit);
-        setAirData(response.data.AIR);
-        setSftData(response.data.SFT);
-        setTdsReturnData(response.data.TDS_Return);
-        setTdsPaymentData(response.data.TDS_Payment);
+        setOfficeLocationData(response.data.Office_Location);
+        setBranchDocumentsData(response.data.Branch_Document);
+
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -65,8 +42,8 @@ function ClientDetails() {
       }
     };
 
-    fetchClientDetails();
-  }, [id]);
+    fetchBranchDetails();
+  }, [clientID, branchID]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -81,62 +58,62 @@ function ClientDetails() {
         <div className="bg-secondary  px-6 py-5 rounded-md shadow-lg">
           <div className="text-xl font-bold ">ClientDetails</div>
           <div className="py-3 mx-2">
-            {clientData && (
+            {branchData && (
               <>
                 <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" text-gray-700 font-[550] ">
-                      <div>Client Name :</div>
+                      <div>Branch Name:</div>
                     </div>
                     <div className="text-gray-600  ">
-                      {clientData?.client_name}
+                      {branchData?.branch_name}
                     </div>
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Entity Type :</div>
+                      <div>Gst NO:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData?.entity_type}
+                      {branchData?.gst_no}
                     </div>
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Date of Incorporation :</div>
+                      <div>Contact:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.date_of_incorporation}
+                      {branchData.contact}
                     </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" text-gray-700 font-[550] ">
-                      <div>Contact Person :</div>
+                      <div>State:</div>
                     </div>
                     <div className="text-gray-600 subpixel-antialiased ">
-                      {clientData.contact_person}
+                      {branchData.state}
                     </div>
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Designation :</div>
+                      <div>City:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.designation}
+                      {branchData.city}
                     </div>
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Contact No :</div>
+                      <div>Address:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.contact_no_1}
+                      {branchData.address}
                     </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-5  py-3 ">
+                {/* <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" text-gray-700 font-[550] ">
                       <div>Another No :</div>
@@ -161,7 +138,7 @@ function ClientDetails() {
                       {clientData.status}
                     </div>
                   </div>
-                </div>
+                </div> */}
 
                 {/* <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1  ">
@@ -275,7 +252,7 @@ function ClientDetails() {
                   }}
                 >
                   <Tab
-                    label="Owner Details"
+                    label="Branch Documents"
                     value="1"
                     sx={{
                       "&.Mui-selected": {
@@ -289,83 +266,8 @@ function ClientDetails() {
                     }}
                   />
                   <Tab
-                    label="Bank Details"
+                    label="Office Location"
                     value="2"
-                    sx={{
-                      "&.Mui-selected": {
-                        color: "primary",
-                        fontWeight: "bold",
-                        border: 2,
-                      },
-                      "&:hover": {
-                        color: "primary",
-                      },
-                    }}
-                  />
-                  <Tab
-                    label="Branch Details"
-                    value="3"
-                    fontWeight="bold"
-                    sx={{
-                      "&.Mui-selected": {
-                        color: "primary",
-                        fontWeight: "bold",
-                        border: 2,
-                      },
-                      "&:hover": {
-                        color: "primary",
-                      },
-                    }}
-                  />
-                  <Tab
-                    label="Client Users"
-                    value="4"
-                    fontWeight="bold"
-                    sx={{
-                      "&.Mui-selected": {
-                        color: "primary",
-                        fontWeight: "bold",
-                        border: 2,
-                      },
-                      "&:hover": {
-                        color: "primary",
-                      },
-                    }}
-                  />
-                  <Tab
-                    label="Company Documents"
-                    value="5"
-                    fontWeight="bold"
-                    sx={{
-                      "&.Mui-selected": {
-                        color: "primary",
-                        fontWeight: "bold",
-                        border: 2,
-                      },
-                      "&:hover": {
-                        color: "primary",
-                      },
-                    }}
-                  />
-                  <Tab
-                    label="Customer Vendor"
-                    value="6"
-                    fontWeight="bold"
-                    sx={{
-                      "&.Mui-selected": {
-                        color: "primary",
-                        fontWeight: "bold",
-                        border: 2,
-                      },
-                      "&:hover": {
-                        color: "primary",
-                      },
-                    }}
-                  />
-                  <Tab
-                    label="Documents"
-                    value="7"
-                    fontWeight="bold"
                     sx={{
                       "&.Mui-selected": {
                         color: "primary",
@@ -380,27 +282,14 @@ function ClientDetails() {
                 </TabList>
               </Box>
               <TabPanel value="1">
-                <Owner ownerData={ownerData} />
+         
+                <BranchDoc branchDocumentsData={branchDocumentsData}/>
               </TabPanel>
               <TabPanel value="2">
-                <Bank bankData={bankData} />
+                {/* <Bank bankData={bankData} /> */}
+                <OfficeLoc officeLocationData={officeLocationData}/>
               </TabPanel>
-              <TabPanel value="3">
-                <Branch branchData={branchData} />
-              </TabPanel>
-              <TabPanel value="4">
-                <ClientUser clientUserData={clientUserData} />
-              </TabPanel>
-              <TabPanel value="5">
-                <CompanyDocuments companyDocData={companyDocData} />
-              </TabPanel>
-              <TabPanel value="6">
-                <CV cvData={CVData} />
-              </TabPanel>
-              <TabPanel value="7">
-                {/* <Pf /> */}
-                <Documents PfData={PfData} taxAuditData={taxAuditData} airData={airData} sftData={sftData} tdsReturnData={tdsReturnData} tdsPaymentData={tdsPaymentData}/>
-              </TabPanel>
+           
             </TabContext>
           </Box>
         </div>
@@ -409,4 +298,4 @@ function ClientDetails() {
   );
 }
 
-export default ClientDetails;
+export default BranchDetails;

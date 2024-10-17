@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -12,10 +11,6 @@ import { DialogFooter, Button } from "@material-tailwind/react";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-import { format } from "date-fns";
-
-import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -49,22 +44,22 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function TaxAuditCard({ rowId }) {
-  const { id } = useParams();
-  // console.log("rowIdbank", rowId);
+export default function OfficeLocCard({ rowId }) {
+  const { clientID, branchID } = useParams();
+  // console.log("rowIdOffice Location", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+  const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(null);
-  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [formData, setFormData] = useState({
-    financial_year: "",
-    month: "",
-    files: [],
+    location: "",
+    contact: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
   });
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,46 +69,48 @@ export default function TaxAuditCard({ rowId }) {
     }));
   };
   // Handle file input change
-  const handleFileChange = (e) => {
-    setAttachment(e.target.files[0]);
-  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
 
     try {
+      // Create a FormData object
       const formDataToSend = new FormData();
-      formDataToSend.append("financial_year", formData.financial_year);
-      formDataToSend.append("month", formData.month);
 
-      formData.files.forEach((file) => formDataToSend.append("files", file));
+      // Append text fields to FormData
+      formDataToSend.append("location", formData.location);
+      formDataToSend.append("contact", formData.contact);
+      formDataToSend.append("address", formData.address);
+      formDataToSend.append("city", formData.city);
+      formDataToSend.append("state", formData.state);
+      formDataToSend.append("country", formData.country);
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-taxaudit/${id}`,
-        formDataToSend,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`,
+        formDataToSend
       );
 
-      if (response.status === 200) {
-        toast.success("TaxAudit details created successfully!", {
-          position: "top-right",
-          autoClose: 2000,
-        });
-        handleCreateClose();
-        setFormData({
-          financial_year: "",
-          month: "",
-          files: [],
-        });
-        setSelectedYear(null);
-        setSelectedMonth(null);
-      }
+      console.log(response.data); // Handle success response
+      toast.success("Office Location details update successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+
+      // Optionally close the modal and reset form
+      handleCreateClose();
+      setFormData({
+        location: "",
+        contact: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+      });
+
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create TaxAudit details. Please try again.", {
+      toast.error("Failed to create Office Location details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -135,24 +132,24 @@ export default function TaxAuditCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-taxaudit/${id}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-officelocation/${clientID}/${branchID}/${deleteId}`
       );
-      // console.log("res-----bank---->", response);
+      // console.log("res-----Office Location---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("TaxAudit deleted successfully!", {
+        toast.success("Office Location deleted successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
       } else {
-        toast.error("Failed to delete TaxAudit. Please try again.", {
+        toast.error("Failed to delete Office Location. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
-      console.error("Error deleting TaxAudit data:", error);
-      toast.error("Failed to delete TaxAudit. Please try again.", {
+      console.error("Error deleting Office Location data:", error);
+      toast.error("Failed to delete Office Location. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -172,13 +169,13 @@ export default function TaxAuditCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
+        `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`
       );
       console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
-      console.error("Error fetching bank data:", error);
-      toast.error("Failed to load bank data. Please try again.", {
+      console.error("Error fetching Office Location data:", error);
+      toast.error("Failed to load Office Location data. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -186,25 +183,26 @@ export default function TaxAuditCard({ rowId }) {
   };
 
   const handleCreateClose = () => setOpenCreateModal(false);
-  const [bankData, setBankData] = useState(null);
+  const [locationData, setLocationData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBankDetails = async () => {
+    const fetchLocationDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+          `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`
         );
-        setBankData(response.data);
+        // console.log("ddd",response.data)
+        setLocationData(response.data);
         setLoading(false);
       } catch (error) {
         setError(error);
         setLoading(false);
       }
     };
-    fetchBankDetails();
-  }, [id, rowId]);
+    fetchLocationDetails();
+  }, [branchID, rowId]);
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -238,7 +236,7 @@ export default function TaxAuditCard({ rowId }) {
                 Details View
               </Typography>
 
-              {bankData && (
+              {locationData && (
                 <>
                   <div>
                     <form className=" my-5 w-full ">
@@ -251,10 +249,10 @@ export default function TaxAuditCard({ rowId }) {
                               className=" "
                               size="sm"
                             >
-                              Account Number :
+                              Location :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.account_no}
+                              {locationData.location}
                             </div>
                           </div>
                           <div className="w-full flex gap-3">
@@ -263,10 +261,10 @@ export default function TaxAuditCard({ rowId }) {
                               color="blue-gray"
                               className=""
                             >
-                              Account Type :
+                              Contact :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.account_type}
+                              {locationData.contact}
                             </div>
                           </div>
                         </div>
@@ -279,10 +277,10 @@ export default function TaxAuditCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Bank Name :
+                              Address :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.bank_name}
+                              {locationData.address}
                             </div>
                           </div>
                           <div className="w-full flex gap-3">
@@ -292,10 +290,10 @@ export default function TaxAuditCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Branch Name :
+                              City :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.branch}
+                              {locationData.city}
                             </div>
                           </div>
                         </div>
@@ -308,10 +306,10 @@ export default function TaxAuditCard({ rowId }) {
                               className="mb-1"
                               size="sm"
                             >
-                              IFSC Code :
+                              State :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.ifsc}
+                              {locationData.state}
                             </div>
                           </div>
                           <div className="w-full flex gap-3 align-middle items-center">
@@ -321,10 +319,10 @@ export default function TaxAuditCard({ rowId }) {
                               className="mb-1"
                               size="sm"
                             >
-                              Attachment :
+                              Country :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.attachment}
+                              {locationData.country}
                             </div>
                           </div>
                         </div>
@@ -372,80 +370,199 @@ export default function TaxAuditCard({ rowId }) {
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Update bank Details
+              Update Office Location Details
             </Typography>
-            <form className="my-5 w-full" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-2">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-1"
-                >
-                  Log In Year
-                </Typography>
-                <DatePicker
-                  selected={selectedYear}
-                  onChange={(date) => {
-                    setSelectedYear(date);
-                    handleInputChange("financial_year", date.getFullYear());
-                  }}
-                  showYearPicker
-                  dateFormat="yyyy"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
-                  placeholderText="Select Year"
-                />
-              </div>
+            <form className=" my-5 w-full " onSubmit={handleSubmit}>
+                <div>
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="col-span-4">
+                      <label htmlFor="location">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Location
+                        </Typography>
+                      </label>
 
-              <div className="col-span-2">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-1"
-                >
-                  Month
-                </Typography>
-                <DatePicker
-                  selected={selectedMonth}
-                  onChange={(date) => {
-                    setSelectedMonth(date);
-                    handleInputChange("month", format(date, "MMMM"));
-                  }}
-                  showMonthYearPicker
-                  dateFormat="MMMM"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
-                  placeholderText="Select Month"
-                />
-              </div>
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="location"
+                          placeholder="Location"
+                          value={formData.location}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
 
-              <div className="col-span-4">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-2"
-                >
-                  Attachments
-                </Typography>
-                <input
-                  type="file"
-                  name="files"
-                  onChange={handleFileChange}
-                  multiple
-                  className="file-input file-input-bordered file-input-success w-full max-w-sm"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={handleCreateClose}
-                variant="text"
-                color="red"
-                className="mr-1"
-              >
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-primary">
-                Confirm
-              </Button>
-            </DialogFooter>
-          </form>
+                    <div className="col-span-2">
+                      <label htmlFor="contact">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Contact
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="contact"
+                          placeholder="Contact"
+                          value={formData.contact}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-2">
+                      <label htmlFor="city">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          City
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="city"
+                          placeholder="City"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-span-2">
+                      <label htmlFor="state">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          State
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="state"
+                          placeholder="State"
+                          value={formData.state}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-2">
+                      <label htmlFor="country">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Country 
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="country"
+                          placeholder="Country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-4">
+                      <label htmlFor="address">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Address 
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="address"
+                          placeholder="Address"
+                          value={formData.address}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+                 
+            
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={handleCreateClose}
+                    conained="text"
+                    color="red"
+                    className="mr-1 "
+                  >
+                    <span>Cancel</span>
+                  </Button>
+                  <Button
+                    conained="contained"
+                    type="submit"
+                    //   color="green"
+                    // onClick={handleCreateClose}
+                    className="bg-primary"
+                  >
+                    <span>Confirm</span>
+                  </Button>
+                </DialogFooter>
+            </form>
           </Box>
         </Modal>
       </div>

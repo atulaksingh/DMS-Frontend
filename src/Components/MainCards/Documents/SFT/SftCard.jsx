@@ -1,4 +1,5 @@
 
+
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -18,7 +19,7 @@ import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -49,9 +50,9 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function TaxAuditCard({ rowId }) {
+export default function SftCard({ rowId }) {
   const { id } = useParams();
-  // console.log("rowIdbank", rowId);
+  // console.log("rowIdSft", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
@@ -59,23 +60,26 @@ export default function TaxAuditCard({ rowId }) {
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [fileDetails, setFileDetails] = useState([]); // State for file details
   const [formData, setFormData] = useState({
     financial_year: "",
     month: "",
     files: [],
   });
 
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({
+//       ...prev,
+//       [name]: value,
+//     }));
+//   };
   // Handle file input change
   const handleFileChange = (e) => {
-    setAttachment(e.target.files[0]);
+    setFormData((prev) => ({
+      ...prev,
+      files: Array.from(e.target.files), // Converts file list to an array
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -90,7 +94,7 @@ export default function TaxAuditCard({ rowId }) {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-taxaudit/${id}`,
+        `http://127.0.0.1:8000/api/edit-sft/${id}/${rowId}`,
         formDataToSend,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -98,7 +102,7 @@ export default function TaxAuditCard({ rowId }) {
       );
 
       if (response.status === 200) {
-        toast.success("TaxAudit details created successfully!", {
+        toast.success("sft details Update successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
@@ -113,7 +117,7 @@ export default function TaxAuditCard({ rowId }) {
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create TaxAudit details. Please try again.", {
+      toast.error("Failed to create sft details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -135,24 +139,24 @@ export default function TaxAuditCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-taxaudit/${id}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-sft/${id}/${deleteId}`
       );
-      // console.log("res-----bank---->", response);
+      // console.log("res-----sft---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("TaxAudit deleted successfully!", {
+        toast.success("sft deleted successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
       } else {
-        toast.error("Failed to delete TaxAudit. Please try again.", {
+        toast.error("Failed to delete sft. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
-      console.error("Error deleting TaxAudit data:", error);
-      toast.error("Failed to delete TaxAudit. Please try again.", {
+      console.error("Error deleting sft data:", error);
+      toast.error("Failed to delete sft. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -172,50 +176,56 @@ export default function TaxAuditCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
+        `http://127.0.0.1:8000/api/edit-sft/${id}/${rowId}`
       );
-      console.log("dd", response.data);
-      setFormData(response.data);
-    } catch (error) {
-      console.error("Error fetching bank data:", error);
-      toast.error("Failed to load bank data. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
+      const data = response.data;
+
+      // Populate form data with the fetched values
+      setFormData({
+        financial_year: data.financial_year || "",
+        month: data.month || "",
+        files: data.files || [], // If any files are being returned, you might need to adjust the handling.
       });
+      const filesFromAPI = data.files || [];
+      const fileDetailsFromAPI = filesFromAPI.map((file) => ({
+        name: file.files.substring(file.files.lastIndexOf("/") + 1), // Extract the filename
+        path: file.files, // Full path for linking
+      }));
+
+      console.log("File Details from API:", fileDetailsFromAPI); // Debug to verify filenames and paths
+      setFileDetails(fileDetailsFromAPI); // Set the file details in state
+
+      setSelectedYear(new Date(data.financial_year, 0)); // Assuming financial year is in "YYYY" format
+      setSelectedMonth(new Date(`${data.month} 01, ${data.financial_year}`)); // Parse month
+    } catch (error) {
+      console.error("Failed to fetch data for update:", error);
     }
   };
+  console.log("dd", formData, fileDetails);
 
   const handleCreateClose = () => setOpenCreateModal(false);
-  const [bankData, setBankData] = useState(null);
+  const [sftData, setSftData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchBankDetails = async () => {
+    const fetchSftDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+          `http://127.0.0.1:8000/api/single-sft/${id}/${rowId}`
         );
-        setBankData(response.data);
+        setSftData(response.data);
         setLoading(false);
       } catch (error) {
         setError(error);
         setLoading(false);
       }
     };
-    fetchBankDetails();
+    fetchSftDetails();
   }, [id, rowId]);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error loading client details: {error.message}</div>;
-  // }
   return (
     <>
-      <ToastContainer />
       <div>
         <div>
           <Modal
@@ -238,7 +248,7 @@ export default function TaxAuditCard({ rowId }) {
                 Details View
               </Typography>
 
-              {bankData && (
+              {sftData && (
                 <>
                   <div>
                     <form className=" my-5 w-full ">
@@ -251,10 +261,10 @@ export default function TaxAuditCard({ rowId }) {
                               className=" "
                               size="sm"
                             >
-                              Account Number :
+                              Financial year :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.account_no}
+                              {sftData.financial_year}
                             </div>
                           </div>
                           <div className="w-full flex gap-3">
@@ -263,69 +273,52 @@ export default function TaxAuditCard({ rowId }) {
                               color="blue-gray"
                               className=""
                             >
-                              Account Type :
+                              Month :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.account_type}
+                              {sftData.month}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex gap-6   p-2">
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              Bank Name :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.bank_name}
-                            </div>
-                          </div>
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              Branch Name :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.branch}
-                            </div>
-                          </div>
-                        </div>
+                  
 
                         <div className="flex gap-6  p-2">
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className="mb-1"
-                              size="sm"
-                            >
-                              IFSC Code :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.ifsc}
-                            </div>
-                          </div>
+                   
                           <div className="w-full flex gap-3 align-middle items-center">
                             <Typography
                               variant="h6"
                               color="blue-gray"
-                              className="mb-1"
+                              className=""
                               size="sm"
                             >
                               Attachment :
                             </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.attachment}
-                            </div>
+                              <div className="text-gray-700 text-[15px] ">
+                                <div className="mb-1">
+                                  {sftData.files &&
+                                    sftData.files.length > 0 && (
+                                      <div className="flex gap-5">
+                                        {sftData.files.map((file, index) => (
+                                          <p
+                                            className="text-sm text-gray-500 mt-2 "
+                                            key={index}
+                                          >
+                                        
+                                            <a
+                                              href={`http://127.0.0.1:8000${file.files}`}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="text-blue-500 underline ml-3"
+                                            >
+                                              {file.files.split("/").pop()}
+                                            </a>
+                                          </p>
+                                        ))}
+                                      </div>
+                                    )}
+                                </div>
+                              </div>
                           </div>
                         </div>
                       </div>
@@ -372,80 +365,113 @@ export default function TaxAuditCard({ rowId }) {
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Update bank Details
+              Update Sft Details
             </Typography>
             <form className="my-5 w-full" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-2">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-1"
-                >
-                  Log In Year
-                </Typography>
-                <DatePicker
-                  selected={selectedYear}
-                  onChange={(date) => {
-                    setSelectedYear(date);
-                    handleInputChange("financial_year", date.getFullYear());
-                  }}
-                  showYearPicker
-                  dateFormat="yyyy"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
-                  placeholderText="Select Year"
-                />
-              </div>
+              <div className="grid grid-cols-4 gap-4">
+                <div className="col-span-2">
+                  <Typography
+                    variant="small"
+                    className="block font-semibold mb-1"
+                  >
+                    Log In Year
+                  </Typography>
+                  <DatePicker
+                    selected={selectedYear}
+                    onChange={(date) => {
+                      setSelectedYear(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        financial_year: date.getFullYear().toString(),
+                      }));
+                    }}
+                    showYearPicker
+                    dateFormat="yyyy"
+                    className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
+                    placeholderText="Select Year"
+                  />
+                </div>
 
-              <div className="col-span-2">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-1"
-                >
-                  Month
-                </Typography>
-                <DatePicker
-                  selected={selectedMonth}
-                  onChange={(date) => {
-                    setSelectedMonth(date);
-                    handleInputChange("month", format(date, "MMMM"));
-                  }}
-                  showMonthYearPicker
-                  dateFormat="MMMM"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
-                  placeholderText="Select Month"
-                />
-              </div>
+                <div className="col-span-2">
+                  <Typography
+                    variant="small"
+                    className="block font-semibold mb-1"
+                  >
+                    Month
+                  </Typography>
+                  <DatePicker
+                    selected={selectedMonth}
+                    onChange={(date) => {
+                      setSelectedMonth(date);
+                      setFormData((prev) => ({
+                        ...prev,
+                        month: format(date, "MMMM"),
+                      }));
+                    }}
+                    showMonthYearPicker
+                    dateFormat="MMMM"
+                    className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
+                    placeholderText="Select Month"
+                  />
+                </div>
 
-              <div className="col-span-4">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-2"
-                >
-                  Attachments
-                </Typography>
-                <input
-                  type="file"
-                  name="files"
-                  onChange={handleFileChange}
-                  multiple
-                  className="file-input file-input-bordered file-input-success w-full max-w-sm"
-                />
+                <div className="col-span-4">
+                  <Typography
+                    variant="small"
+                    className="block font-semibold mb-2"
+                  >
+                    Attachments
+                  </Typography>
+                  <input
+                    type="file"
+                    name="files"
+                    onChange={handleFileChange}
+                    multiple
+                    className="file-input file-input-bordered file-input-success w-full max-w-sm"
+                  />
+                  <div className="mb-3">
+                    <Typography
+                      variant="small"
+                      color="gray"
+                      className="font-normal"
+                    >
+                      Previous Selected Files:
+                    </Typography>
+                    <ul>
+                      {fileDetails.length > 0 ? (
+                        fileDetails.map((file, index) => (
+                          <li key={index} className="text-gray-700">
+                            <a
+                              href={file.path} // Link to the file
+                              target="_blank" // Open in a new tab
+                              rel="noopener noreferrer" // Security best practice
+                              className="text-blue-500 hover:underline"
+                            >
+                              {file.name} {/* Display filename */}
+                            </a>
+                          </li>
+                        ))
+                      ) : (
+                        <li className="text-gray-500">No files uploaded.</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={handleCreateClose}
-                variant="text"
-                color="red"
-                className="mr-1"
-              >
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-primary">
-                Confirm
-              </Button>
-            </DialogFooter>
-          </form>
+              <DialogFooter>
+                <Button
+                  onClick={handleCreateClose}
+                  variant="text"
+                  color="red"
+                  className="mr-1"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="bg-primary">
+                  Confirm
+                </Button>
+              </DialogFooter>
+            </form>
           </Box>
         </Modal>
       </div>

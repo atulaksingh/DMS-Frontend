@@ -181,34 +181,36 @@ function ClientUpdate() {
     setOpen(false);
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const data = new FormData();
 
+      // Append basic form data
       Object.entries(formData).forEach(([key, value]) => {
         data.append(key, value || "");
       });
 
-      // filesList.forEach(
-      //   ({ document_type, login, password, remark, files }, index) => {
-      //     const fileinfoData = {
-      //       document_type,
-      //       login,
-      //       password,
-      //       remark,
-      //     };
+      // Append fileinfos with their files
+      filesList.forEach((fileinfo, index) => {
+        // Append each field of the fileinfo object separately
+        data.append(`fileinfos[${index}].id`, fileinfo.id || '');
+        data.append(`fileinfos[${index}].document_type`, fileinfo.document_type || '');
+        data.append(`fileinfos[${index}].login`, fileinfo.login || '');
+        data.append(`fileinfos[${index}].password`, fileinfo.password || '');
+        data.append(`fileinfos[${index}].remark`, fileinfo.remark || '');
+        
+        // Append the files for this fileinfo
+        fileinfo.files.forEach((file) => {
+          data.append(`fileinfos[${index}].files`, file); // No need to use [] here, just append files
+        });
+      });
 
-      //     data.append(`fileinfos[${index}]`, JSON.stringify(fileinfoData));
+      console.log("Data to send:", data);
 
-      //     files.forEach((file) => {
-      //       data.append(`fileinfos[${index}].files[]`, file);
-      //     });
-      //   }
-      // );
-
-      console.log("data to send:", data);
+      // Submit the form data
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-client/${id}`,
         data,
@@ -220,13 +222,14 @@ function ClientUpdate() {
       );
 
       console.log("response", response);
-      toast.success("Client created successfully!", {
+      toast.success("Client updated successfully!", {
         position: "top-right",
         autoClose: 2000,
       });
+
     } catch (error) {
-      console.error("Error creating client:", error);
-      toast.error("Failed to create client. Please try again.", {
+      console.error("Error updating client:", error);
+      toast.error("Failed to update client. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });

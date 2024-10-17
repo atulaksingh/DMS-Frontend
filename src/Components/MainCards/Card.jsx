@@ -5,10 +5,13 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Box from "@mui/material/Box";
 import { Input, Typography } from "@material-tailwind/react";
-// import Typography from "@mui/material/Typography";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Modal from "@mui/material/Modal";
 import { DialogFooter, Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -39,8 +42,8 @@ const ITEM_HEIGHT = 48;
 export default function Card({ rowId }) {
   // console.log("rowId", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
+  const [deleteId, setDeleteId] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -48,150 +51,45 @@ export default function Card({ rowId }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleViewOpen = () => {
-    setOpenViewModal(true);
-    setAnchorEl(null); // Close the menu when modal opens
-  };
 
-  const handleViewClose = () => setOpenViewModal(false);
   const handleCreateOpen = () => {
+    // console.log("ore--->",rowId);
+    setDeleteId(rowId);
     setOpenCreateModal(true);
-    setAnchorEl(null); // Close the menu when modal opens
+    setAnchorEl(null);
   };
 
   const handleCreateClose = () => setOpenCreateModal(false);
-
+  const handleDeleteID = async () => {
+    try {
+      const response = await axios.delete(
+        `http://127.0.0.1:8000/api/delete-client/${deleteId}`
+      );
+      console.log("res-----owner---->", response);
+      setOpenCreateModal(false);
+      if (response.status === 200) {
+        toast.success("Owner deleted successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        toast.error("Failed to delete owner. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting owner data:", error);
+      toast.error("Failed to delete owner. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
   return (
     <>
-      <div>
-        <Modal
-          open={openViewModal}
-          onClose={handleViewClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography
-              id="modal-modal-title"
-              variant="h5"
-              component="h2"
-              className="text-center border-b-2 border-[#366FA1] pb-3"
-            >
-              Details View
-            </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              {/* <div className="grid grid-cols-2">
-                <div className="flex justify-around align-middle items-center mb-2">
-                  <div className="text-lg font-semi-bold">Name:</div>
-                  <div className="text-base text-gray-500">Atul Singh</div>
-                </div>
-                <div className="flex justify-around align-middle items-center mb-2">
-                  <div className="text-xl font-semi-bold">Name:</div>
-                  <div className="text-lg text-gray-500">Atul Singh</div>
-                </div>
-                <div className="flex justify-around align-middle items-center mb-2">
-                  <div className="text-xl font-semi-bold">Name:</div>
-                  <div className="text-lg text-gray-500">Atul Singh</div>
-                </div>
-              </div> */}
-              <div>
-                <form className=" my-5 w-full ">
-                  <div className="block px-4">
-                    <div className="flex gap-6  border border-[#366FA1] p-3">
-                      <div className="w-full flex gap-6">
-                        <Typography
-                          variant="h6"
-                          color="blue-gray"
-                          className=" "
-                          size="sm"
-                        >
-                          Tan Number :
-                        </Typography>
-                        <div>viewData?.tan_number</div>
-                      </div>
-                      <div className="w-full flex gap-6">
-                        <Typography variant="h6" color="blue-gray" className="">
-                          Filling Frequency :
-                        </Typography>
-                        <div>viewData?.filling_freq</div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-6   border-b border-l border-r border-[#366FA1] p-3">
-                      <div className="w-full flex gap-6">
-                        <Typography
-                          variant="h6"
-                          color="blue-gray"
-                          className=""
-                          size="sm"
-                        >
-                          Login Email :
-                        </Typography>
-                        <div>viewData?.tan_login</div>
-                      </div>
-                      <div className="w-full flex gap-6">
-                        <Typography
-                          variant="h6"
-                          color="blue-gray"
-                          className=""
-                          size="sm"
-                        >
-                          Login Password :
-                        </Typography>
-                        <div className="">viewDatatan_password</div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-6  border-b border-l border-r border-[#366FA1] p-3">
-                      <div className="w-full flex gap-6">
-                        <Typography
-                          variant="h6"
-                          color="blue-gray"
-                          className="mb-1"
-                          size="sm"
-                        >
-                          Remarks :
-                        </Typography>
-                        <div>viewData?.remarks</div>
-                      </div>
-                      <div className="w-full flex gap-6 align-middle items-center">
-                        <Typography
-                          variant="h6"
-                          color="blue-gray"
-                          className="mb-1"
-                          size="sm"
-                        >
-                          Attactments :
-                        </Typography>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="text"
-                  color="red"
-                  onClick={handleViewClose}
-                  className="mr-1"
-                >
-                  <span>Cancel</span>
-                </Button>
-                <Button
-                  variant="gradient"
-                  color="green"
-                  onClick={handleViewClose}
-                >
-                  <span>Confirm</span>
-                </Button>
-              </DialogFooter>
-            </Typography>
-          </Box>
-        </Modal>
-      </div>
-
       {/* //////////////////////////Create Data Modal open//////// */}
-
+      <ToastContainer />
       <div>
         <Modal
           open={openCreateModal}
@@ -208,175 +106,50 @@ export default function Card({ rowId }) {
             >
               Create Details
             </Typography>
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-              <div>
-                <form className=" my-5 w-full ">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Your Email
-                        </Typography>
-                      </label>
+            <div>
+              <div className="w-full max-w-md mx-auto pb-7">
+                <div className="my-8 text-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-14 fill-red-500 inline"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  <h4 className="text-gray-800 text-lg font-semibold mt-4">
+                    Are you sure you want to delete it?
+                  </h4>
+                  <p className="text-sm text-gray-600 mt-4">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    auctor auctor arcu, at fermentum dui. Maecenas
+                  </p>
+                </div>
 
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          placeholder="Email Address"
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 shadow-lg  ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-[100px]" }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Your Email
-                        </Typography>
-                      </label>
-
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          placeholder="Email Address"
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 shadow-lg  ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-[100px]" }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Your Email
-                        </Typography>
-                      </label>
-
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          placeholder="Email Address"
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 shadow-lg  ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-[100px]" }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Your Email
-                        </Typography>
-                      </label>
-
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          placeholder="Email Address"
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 shadow-lg  ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-[100px]" }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Your Email
-                        </Typography>
-                      </label>
-
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          placeholder="Email Address"
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 shadow-lg  ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-[100px]" }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Your Email
-                        </Typography>
-                      </label>
-
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          placeholder="Email Address"
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 shadow-lg  ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-[100px]" }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </form>
+                <div className="flex flex-col space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleDeleteID}
+                    className="px-4 py-2 rounded-lg text-white text-sm tracking-wide bg-red-500 hover:bg-red-600 active:bg-red-500"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCreateClose}
+                    className="px-4 py-2 rounded-lg text-gray-800 text-sm tracking-wide bg-gray-200 hover:bg-gray-300 active:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-              <DialogFooter>
-                <Button
-                  variant="text"
-                  color="red"
-                  onClick={handleCreateClose}
-                  className="mr-1"
-                >
-                  <span>Cancel</span>
-                </Button>
-                <Button
-                  variant="gradient"
-                  color="green"
-                  onClick={handleCreateClose}
-                >
-                  <span>Confirm</span>
-                </Button>
-              </DialogFooter>
-            </Typography>
+            </div>
           </Box>
         </Modal>
       </div>
@@ -415,7 +188,8 @@ export default function Card({ rowId }) {
           <Link to={`/clientUpdate/${rowId}`}>
             <MenuItem>Update</MenuItem>
           </Link>
-          <MenuItem onClick={handleClose}>Delete</MenuItem>
+          {/* <MenuItem onClick={openCreateModal}>Delete</MenuItem> */}
+          <MenuItem onClick={handleCreateOpen}>Delete</MenuItem>
         </Menu>
       </div>
     </>

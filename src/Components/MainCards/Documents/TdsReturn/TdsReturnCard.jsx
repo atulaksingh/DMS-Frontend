@@ -13,14 +13,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 750,
+  width: 800,
   bgcolor: "background.paper",
   //   border: "1px solid #000",
   boxShadow: 24,
@@ -44,22 +44,23 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function OwnerCard({ rowId }) {
+export default function TdsReturnCard({ rowId }) {
   const { id } = useParams();
-  // console.log("rowIdowner", rowId);
+  // console.log("rowIdTds Return", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [formData, setFormData] = useState({
-    owner_name: "",
-    share: "",
-    pan: "",
-    aadhar: "",
-    email: "",
-    it_password: "",
-    mobile: "",
+    challan_date: "",
+    challan_no: "",
+    challan_type: "",
+    tds_section: "",
+    amount: "",
+    last_filed_return_ack_date: "",
+    last_filed_return_ack_no: "",
+    files: [],
   });
 
   const handleInputChange = (e) => {
@@ -69,30 +70,73 @@ export default function OwnerCard({ rowId }) {
       [name]: value,
     }));
   };
-  // console.log("formmmowner", formData);
+  // Handle file input change
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: e.target.files, // Handles multiple files
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
+
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-owner/${id}/${rowId}`,
-        formData
+      // Create a FormData object
+      const formDataToSend = new FormData();
+
+      // Append text fields to FormData
+      formDataToSend.append("challan_date", formData.challan_date);
+      formDataToSend.append("challan_no", formData.challan_no);
+      formDataToSend.append("challan_type", formData.challan_type);
+      formDataToSend.append("tds_section", formData.tds_section);
+      formDataToSend.append("amount", formData.amount);
+      formDataToSend.append(
+        "last_filed_return_ack_date",
+        formData.last_filed_return_ack_date
       );
-      toast.success("Owner updated successfully!", {
+      formDataToSend.append(
+        "last_filed_return_ack_no",
+        formData.last_filed_return_ack_no
+      );
+
+      // Append file field to FormData
+      for (let i = 0; i < formData.files.length; i++) {
+        formDataToSend.append("files", formData.files[i]);
+      }
+
+      // Make a POST request to your API
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data); // Handle success response
+      toast.success("Tds Return details update successfully!", {
         position: "top-right",
         autoClose: 2000,
       });
+
+      // Optionally close the modal and reset form
       handleCreateClose();
       setFormData({
-        owner_name: "",
-        share: "",
-        pan: "",
-        aadhar: "",
-        email: "",
-        it_password: "",
-        mobile: "",
+        challan_date: "",
+        challan_no: "",
+        challan_type: "",
+        tds_section: "",
+        amount: "",
+        last_filed_return_ack_date: "",
+        last_filed_return_ack_no: "",
+        files: [],
       });
     } catch (error) {
-      toast.error("Failed to update Owner. Please try again.", {
+      console.error("Error submitting data:", error);
+      toast.error("Failed to create Tds Return details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -114,33 +158,43 @@ export default function OwnerCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-owner/${id}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-tds/${id}/${deleteId}`
       );
-      // console.log("res-----owner---->", response);
-      setOpenDeleteModal(false)
+      // console.log("res-----Tds Return---->", response);
+      setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("Owner deleted successfully!", {
+        toast.success("Tds Return deleted successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
       } else {
-        toast.error("Failed to delete owner. Please try again.", {
+        toast.error("Failed to delete Tds Return. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
-      console.error("Error deleting owner data:", error);
-      toast.error("Failed to delete owner. Please try again.", {
+      console.error("Error deleting Tds Return data:", error);
+      toast.error("Failed to delete Tds Return. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
 
-  const handleViewOpen = () => {
+  const handleViewOpen = async () => {
     setOpenViewModal(true);
     setAnchorEl(null);
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/single-tds/${id}/${rowId}`
+      );
+      setTdsReturnData(response.data);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
   };
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
@@ -151,12 +205,13 @@ export default function OwnerCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-owner/${id}/${rowId}`
+        `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`
       );
+      console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
-      console.error("Error fetching owner data:", error);
-      toast.error("Failed to load owner data. Please try again.", {
+      console.error("Error fetching Tds Return data:", error);
+      toast.error("Failed to load Tds Return data. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -164,27 +219,10 @@ export default function OwnerCard({ rowId }) {
   };
 
   const handleCreateClose = () => setOpenCreateModal(false);
-  const [ownertData, setOwnerData] = useState(null);
+  const [tdsReturnData, setTdsReturnData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchClientDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-owner/${id}/${rowId}`
-        );
-        // console.log("ss", response.data);
-        setOwnerData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    fetchClientDetails();
-  }, [id]);
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -195,159 +233,202 @@ export default function OwnerCard({ rowId }) {
   // }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
-        <Modal
-          open={openViewModal}
-          onClose={handleViewClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          animate={{
-            mount: { scale: 1, y: 0 },
-            unmount: { scale: 0.9, y: -100 },
-          }}
-        >
-          <Box sx={style}>
-            <Typography
-              id="modal-modal-title"
-              variant="h5"
-              component="h2"
-              className="text-center border-b-2 border-[#366FA1] pb-3"
-            >
-              Details View
-            </Typography>
+        <div>
+          <Modal
+            open={openViewModal}
+            onClose={handleViewClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            animate={{
+              mount: { scale: 1, y: 0 },
+              unmount: { scale: 0.9, y: -100 },
+            }}
+          >
+            <Box sx={style}>
+              <Typography
+                id="modal-modal-title"
+                variant="h5"
+                component="h2"
+                className="text-center border-b-2 border-[#366FA1] pb-3"
+              >
+                Details View
+              </Typography>
 
-            {ownertData && (
-              <>
-                <div>
-                  <form className=" my-5 w-full ">
-                    <div className="block px-4">
-                      <div className="flex gap-6  p-2">
-                        <div className="w-full flex gap-3">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className=" "
-                            size="sm"
-                          >
-                            Name :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.owner_name}
+              {tdsReturnData && (
+                <>
+                  <div>
+                    <form className=" my-5 w-full ">
+                      <div className="block px-4">
+                        <div className="flex gap-6  p-2">
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=" "
+                              size="sm"
+                            >
+                              Challan Date :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.challan_date}
+                            </div>
+                          </div>
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                            >
+                              Challan No :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.challan_no}
+                            </div>
                           </div>
                         </div>
-                        <div className="w-full flex gap-3">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className=""
-                          >
-                            Share :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.share}%
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="flex gap-6   p-2">
-                        <div className="w-full flex gap-3">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className=""
-                            size="sm"
-                          >
-                            Pan Number :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.pan}
+                        <div className="flex gap-6   p-2">
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                              size="sm"
+                            >
+                              Challan Type :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.challan_type}
+                            </div>
+                          </div>
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                              size="sm"
+                            >
+                              Amount :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.amount}
+                            </div>
                           </div>
                         </div>
-                        <div className="w-full flex gap-3">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className=""
-                            size="sm"
-                          >
-                            Aadhar Number :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.aadhar}
+                        <div className="flex gap-6   p-2">
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                              size="sm"
+                            >
+                              Last filed return Ack Date :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.last_filed_return_ack_date}
+                            </div>
+                          </div>
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                              size="sm"
+                            >
+                              Last filed return Ack No:
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.last_filed_return_ack_no}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="flex gap-6  p-2">
-                        <div className="w-full flex gap-3">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className="mb-1"
-                            size="sm"
-                          >
-                            Number :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.mobile}
+                        <div className="flex gap-6  p-2">
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className="mb-1"
+                              size="sm"
+                            >
+                              TDS Section :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {tdsReturnData.tds_section}
+                            </div>
                           </div>
+                       
                         </div>
-                        <div className="w-full flex gap-3 align-middle items-center">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className="mb-1"
-                            size="sm"
-                          >
-                            Email :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.email}
+                        <div className="flex gap-6  px-2">
+                   
+                          <div className="w-full flex gap-3 align-middle items-center">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className="mb-1"
+                              size="sm"
+                            >
+                              Attachment :
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              <div className="">
+                            
+                                {tdsReturnData.files &&
+                                  tdsReturnData.files.length > 0 && (
+                                    <div className="flex gap-5">
+                                      {tdsReturnData.files.map((file, index) => (
+                                        <p
+                                          className="text-sm text-gray-500  "
+                                          key={index}
+                                        >
+                                          
+                                          <a
+                                            href={`http://127.0.0.1:8000${file.files}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-blue-500 underline ml-3"
+                                          >
+                                            {file.files.split("/").pop()}
+                                          </a>
+                                        </p>
+                                      ))}
+                                    </div>
+                                  )}
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-6  p-2">
-                        <div className="w-full flex gap-3">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className="mb-1"
-                            size="sm"
-                          >
-                            Password :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] my-auto">
-                            {ownertData.it_password}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                <DialogFooter>
-                  <Button
-                    conained="gradient"
-                    color="red"
-                    onClick={handleViewClose}
-                    className="mr-1 "
-                  >
-                    <span>Cancel</span>
-                  </Button>
-                  <Button
-                    conained="gradient"
-                    color="green"
-                    className="bg-primary"
-                    onClick={handleViewClose}
-                  >
-                    <span>Confirm</span>
-                  </Button>
-                </DialogFooter>
-              </>
-            )}
-          </Box>
-        </Modal>
+                    </form>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      conained="gradient"
+                      color="red"
+                      onClick={handleViewClose}
+                      className="mr-1 "
+                    >
+                      <span>Cancel</span>
+                    </Button>
+                    <Button
+                      conained="gradient"
+                      color="green"
+                      className="bg-primary"
+                      onClick={handleViewClose}
+                    >
+                      <span>Confirm</span>
+                    </Button>
+                  </DialogFooter>
+                </>
+              )}
+            </Box>
+          </Modal>
+        </div>
       </div>
+
       {/* //////////////////////////Update Data Modal open//////// */}
 
       <div>
@@ -364,19 +445,74 @@ export default function OwnerCard({ rowId }) {
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Update Owner Details
+              Update tdsReturn Details
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
               <div>
                 <div className="grid grid-cols-4 gap-4">
-                  <div className="col-span-3">
-                    <label htmlFor="owner_name">
+                  <div className="col-span-4">
+                    <label htmlFor="challan_date">
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Owner Name
+                        Challan date
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="date"
+                        size="lg"
+                        name="challan_date"
+                        placeholder="Account Number"
+                        value={formData.challan_date}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label htmlFor="challan_no">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Challan No
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="challan_no"
+                        placeholder="Challan No"
+                        value={formData.challan_no}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="tds_section">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        TDS Section
                       </Typography>
                     </label>
 
@@ -384,9 +520,9 @@ export default function OwnerCard({ rowId }) {
                       <Input
                         type="text"
                         size="lg"
-                        name="owner_name"
-                        placeholder="Owner Name"
-                        value={formData.owner_name}
+                        name="tds_section"
+                        placeholder="TDS Section"
+                        value={formData.tds_section}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -396,14 +532,15 @@ export default function OwnerCard({ rowId }) {
                       />
                     </div>
                   </div>
-                  <div className="col-span-1">
-                    <label htmlFor="share">
+
+                  <div className="col-span-2">
+                    <label htmlFor="amount">
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Share
+                        Amount
                       </Typography>
                     </label>
 
@@ -411,9 +548,9 @@ export default function OwnerCard({ rowId }) {
                       <Input
                         type="number"
                         size="lg"
-                        name="share"
-                        placeholder="Share"
-                        value={formData.share}
+                        name="amount"
+                        placeholder="Amount"
+                        value={formData.amount}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -424,13 +561,13 @@ export default function OwnerCard({ rowId }) {
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label htmlFor="pan">
+                    <label htmlFor="challan_type">
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Pan Number
+                        Challan Type
                       </Typography>
                     </label>
 
@@ -438,9 +575,9 @@ export default function OwnerCard({ rowId }) {
                       <Input
                         type="text"
                         size="lg"
-                        name="pan"
-                        placeholder="Pan Number"
-                        value={formData.pan}
+                        name="challan_type"
+                        placeholder="Challan Type"
+                        value={formData.challan_type}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -451,13 +588,13 @@ export default function OwnerCard({ rowId }) {
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label htmlFor="aadhar">
+                    <label htmlFor="last_filed_return_ack_no">
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Aadhar Number
+                        Last filed return Ack No
                       </Typography>
                     </label>
 
@@ -465,37 +602,9 @@ export default function OwnerCard({ rowId }) {
                       <Input
                         type="number"
                         size="lg"
-                        name="aadhar"
-                        placeholder="Aadhar Number"
-                        value={formData.aadhar}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <label htmlFor="email">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Email
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="email"
-                        size="lg"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
+                        name="last_filed_return_ack_no"
+                        placeholder="Last filed return Ack No"
+                        value={formData.last_filed_return_ack_no}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -506,23 +615,23 @@ export default function OwnerCard({ rowId }) {
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label htmlFor="it_password">
+                    <label htmlFor="last_filed_return_ack_date">
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Password
+                        Last filed return Ack Date
                       </Typography>
                     </label>
 
                     <div className="">
                       <Input
-                        type="password"
+                        type="date"
                         size="lg"
-                        name="it_password"
-                        placeholder="Password"
-                        value={formData.it_password}
+                        name="last_filed_return_ack_date"
+                        placeholder="Last filed return Ack Date"
+                        value={formData.last_filed_return_ack_date}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -533,29 +642,23 @@ export default function OwnerCard({ rowId }) {
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label htmlFor="aadhar">
+                    <label htmlFor="attachment">
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Mobile Number
+                        Attachments
                       </Typography>
                     </label>
 
                     <div className="">
-                      <Input
-                        type="number"
-                        size="lg"
-                        name="mobile"
-                        placeholder="Mobile Number"
-                        value={formData.mobile}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
+                      <input
+                        type="file"
+                        name="attachment"
+                        multiple
+                        onChange={handleFileChange}
+                        className="file-input file-input-bordered file-input-success w-full max-w-sm"
                       />
                     </div>
                   </div>
@@ -571,7 +674,7 @@ export default function OwnerCard({ rowId }) {
                   <span>Cancel</span>
                 </Button>
                 <Button
-                  conained="filled"
+                  conained="contained"
                   type="submit"
                   //   color="green"
                   // onClick={handleCreateClose}

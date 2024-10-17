@@ -1,28 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Menu, MenuItem, IconButton } from "@mui/material";
-import { Input, Typography } from "@material-tailwind/react";
-import MUIDataTable from "mui-datatables";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Card from "../../Card";
+
+
 import { Button, DialogFooter } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import OwnerCard from "./OwnerCard";
+import React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
+import { useState } from "react";
+import { Input, Typography } from "@material-tailwind/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
-// import { DialogFooter, Button } from "@material-tailwind/react";
-const muiCache = createCache({
-  key: "mui-datatables",
-  prepend: true,
-});
-
-
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -35,87 +22,8 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Owner({ownerData}) {
-  const { id } = useParams();
-
-  const [formData, setFormData] = useState({
-    owner_name: "",
-    share: "",
-    pan: "",
-    aadhar: "",
-    email: "",
-    it_password: "",
-    mobile: "",
-  });
-  const notify = (message, type = "success") => {
-    toast[type](message, { position: "top-right", autoClose: 1000 });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  // console.log("formmmowner", formData);
-  const handleSubmit = async (e) => {
-    console.log("enter");
-    e.preventDefault(); // Prevent default form submission
-
-    try {
-      // Make a POST request to your API
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-owner/${id}`,
-        formData
-      );
-      console.log(response.data); // Handle success response
-      toast.success("Owner created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      // setErrorMessage("");
-      setFormData({
-        owner_name: "",
-        share: "",
-        pan: "",
-        aadhar: "",
-        email: "",
-        it_password: "",
-        mobile: "",
-      });
-    } catch (error) {
-      setErrorMessage("Error submitting data. Please try again.");
-      console.error("Error submitting data:", error);
-      toast.error("Failed to create Owner. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      // Handle error here, show a notification if necessary
-    }
-  };
-
-  const calculateTableBodyHeight = () => {
-    const rowHeight = 80  ; // Approximate height for one row
-    const maxHeight = 525; // Maximum table body height
-    const calculatedHeight = ownerData.length * rowHeight;
-    return calculatedHeight > maxHeight
-      ? `${maxHeight}px`
-      : `${calculatedHeight}px`;
-  };
-  const [errorMessage, setErrorMessage] = useState("");
-  const [responsive, setResponsive] = useState("vertical");
-  const [tableBodyHeight, setTableBodyHeight] = useState(
-    calculateTableBodyHeight
-  );
-  const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
-  const [searchBtn, setSearchBtn] = useState(true);
-  const [downloadBtn, setDownloadBtn] = useState(true);
-  const [printBtn, setPrintBtn] = useState(true);
-  const [viewColumnBtn, setViewColumnBtn] = useState(true);
-  const [filterBtn, setFilterBtn] = useState(true);
+function TdsReturnCreation() {
+    const { id } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -125,171 +33,94 @@ function Owner({ownerData}) {
   };
 
   const handleCreateClose = () => setOpenCreateModal(false);
-  useEffect(() => {
-    setTableBodyHeight(calculateTableBodyHeight());
-  }, [ownerData]);
+  const [formData, setFormData] = useState({
+    challan_date: "",
+    challan_no: "",
+    challan_type: "",
+    tds_section: "",
+    amount: "",
+    last_filed_return_ack_date:"",
+    last_filed_return_ack_no:"",
+    files: [],
+  });
 
-  const columns = [
-    {
-      name: "owner_name",
-      label: "Name",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "share",
-      label: "Share",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "pan",
-      label: "PAN",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "aadhar",
-      label: "Aadhar",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "mobile",
-      label: "Mobile",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "email",
-      label: "Email",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "it_password",
-      label: "Password",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "Actions",
-      options: {
-        customBodyRenderLite: (dataIndex) => {
-          const rowData = ownerData[dataIndex];
-          return (
-            <div>
-              <OwnerCard rowId={rowData.id}/>
-            </div>
-          );
-        },
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-  ];
-
-  const options = {
-    search: searchBtn,
-    download: downloadBtn,
-    print: printBtn,
-    viewColumns: viewColumnBtn,
-    filter: filterBtn,
-    filterType: "dropdown",
-    responsive,
-    tableBodyHeight,
-    tableBodyMaxHeight,
-    onTableChange: (action, state) => {
-      // console.log(action);
-      // console.dir(state);
-    },
-    selectableRows: "none",
-    selectableRowsHeader: false,
-    rowsPerPage: 13,
-    rowsPerPageOptions: [13, 25, 50, 100],
-    page: 0,
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  // Handle file input change
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: e.target.files, // Handles multiple files
+    }));
   };
 
-  const theme = createTheme({
-    components: {
-      MuiTableCell: {
-        styleOverrides: {
-          head: {
-            backgroundColor: "#366FA1",
-            paddingBlock: "2px",
-            color: "#ffffff !important",
-            "&.MuiTableSortLabel-root": {
-              color: "#ffffff !important",
-              "&:hover": {
-                color: "#ffffff !important",
-              },
-              "&.Mui-active": {
-                color: "#ffffff !important",
-                "& .MuiTableSortLabel-icon": {
-                  color: "#ffffff !important",
-                },
-              },
-            },
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    try {
+      // Create a FormData object
+      const formDataToSend = new FormData();
+
+      // Append text fields to FormData
+      formDataToSend.append("challan_date", formData.challan_date);
+      formDataToSend.append("challan_no", formData.challan_no);
+      formDataToSend.append("challan_type", formData.challan_type);
+      formDataToSend.append("tds_section", formData.tds_section);
+      formDataToSend.append("amount", formData.amount);
+      formDataToSend.append("last_filed_return_ack_date", formData.last_filed_return_ack_date);
+      formDataToSend.append("last_filed_return_ack_no", formData.last_filed_return_ack_no);
+
+      // Append file field to FormData
+      for (let i = 0; i < formData.files.length; i++) {
+        formDataToSend.append("files", formData.files[i]);
+      }
+
+      // Make a POST request to your API
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/create-tds/${id}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
           },
-          body: {
-            paddingBlock: "0px",
-          },
-        },
-      },
-    },
-  });
+        }
+      );
+
+      console.log(response); // Handle success response
+      toast.success("Tds Return details created successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+
+      // Optionally close the modal and reset form
+      handleCreateClose();
+      setFormData({
+        challan_date: "",
+        challan_no: "",
+        challan_type: "",
+        tds_section: "",
+        amount: "",
+        last_filed_return_ack_no:"",
+        last_filed_return_ack_date:""
+      });
+ 
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toast.error("Failed to create Tds Return details. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
 
   return (
     <>
-      <ToastContainer />
-      {/* //////////////////////////Create Data Modal open//////// */}
-
+    <ToastContainer />
       <div>
         <Modal
           open={openCreateModal}
@@ -304,19 +135,74 @@ function Owner({ownerData}) {
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Create Owner Details
+              Create Tds Return Details
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
                 <div>
                   <div className="grid grid-cols-4 gap-4">
-                    <div className="col-span-3">
-                      <label htmlFor="owner_name">
+                    <div className="col-span-4">
+                      <label htmlFor="challan_date">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Owner Name
+                          Challan date
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="date"
+                          size="lg"
+                          name="challan_date"
+                          placeholder="Account Number"
+                          value={formData.challan_date}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="col-span-2">
+                      <label htmlFor="challan_no">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Challan No
+                        </Typography>
+                      </label>
+
+                      <div className="">
+                        <Input
+                          type="number"
+                          size="lg"
+                          name="challan_no"
+                          placeholder="Challan No"
+                          value={formData.challan_no}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-2">
+                      <label htmlFor="tds_section">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          TDS Section
                         </Typography>
                       </label>
 
@@ -324,9 +210,9 @@ function Owner({ownerData}) {
                         <Input
                           type="text"
                           size="lg"
-                          name="owner_name"
-                          placeholder="Owner Name"
-                          value={formData.owner_name}
+                          name="tds_section"
+                          placeholder="TDS Section"
+                          value={formData.tds_section}
                           onChange={handleInputChange}
                           className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                           labelProps={{
@@ -336,14 +222,15 @@ function Owner({ownerData}) {
                         />
                       </div>
                     </div>
-                    <div className="col-span-1">
-                      <label htmlFor="share">
+
+                    <div className="col-span-2">
+                      <label htmlFor="amount">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Share
+                          Amount
                         </Typography>
                       </label>
 
@@ -351,9 +238,9 @@ function Owner({ownerData}) {
                         <Input
                           type="number"
                           size="lg"
-                          name="share"
-                          placeholder="Share"
-                          value={formData.share}
+                          name="amount"
+                          placeholder="Amount"
+                          value={formData.amount}
                           onChange={handleInputChange}
                           className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                           labelProps={{
@@ -364,13 +251,13 @@ function Owner({ownerData}) {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label htmlFor="pan">
+                      <label htmlFor="challan_type">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Pan Number
+                          Challan Type
                         </Typography>
                       </label>
 
@@ -378,9 +265,9 @@ function Owner({ownerData}) {
                         <Input
                           type="text"
                           size="lg"
-                          name="pan"
-                          placeholder="Pan Number"
-                          value={formData.pan}
+                          name="challan_type"
+                          placeholder="Challan Type"
+                          value={formData.challan_type}
                           onChange={handleInputChange}
                           className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                           labelProps={{
@@ -391,13 +278,13 @@ function Owner({ownerData}) {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label htmlFor="aadhar">
+                      <label htmlFor="last_filed_return_ack_no">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Aadhar Number
+                          Last filed return Ack No
                         </Typography>
                       </label>
 
@@ -405,37 +292,9 @@ function Owner({ownerData}) {
                         <Input
                           type="number"
                           size="lg"
-                          name="aadhar"
-                          placeholder="Aadhar Number"
-                          value={formData.aadhar}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="col-span-2">
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Email
-                        </Typography>
-                      </label>
-
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          name="email"
-                          placeholder="Email"
-                          value={formData.email}
+                          name="last_filed_return_ack_no"
+                          placeholder="Last filed return Ack No"
+                          value={formData.last_filed_return_ack_no}
                           onChange={handleInputChange}
                           className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                           labelProps={{
@@ -446,23 +305,23 @@ function Owner({ownerData}) {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label htmlFor="it_password">
+                      <label htmlFor="last_filed_return_ack_date">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Password
+                          Last filed return Ack Date
                         </Typography>
                       </label>
 
                       <div className="">
                         <Input
-                          type="password"
+                          type="date"
                           size="lg"
-                          name="it_password"
-                          placeholder="Password"
-                          value={formData.it_password}
+                          name="last_filed_return_ack_date"
+                          placeholder="Last filed return Ack Date"
+                          value={formData.last_filed_return_ack_date}
                           onChange={handleInputChange}
                           className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                           labelProps={{
@@ -473,29 +332,23 @@ function Owner({ownerData}) {
                       </div>
                     </div>
                     <div className="col-span-2">
-                      <label htmlFor="aadhar">
+                      <label htmlFor="attachment">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Mobile Number
+                          Attachments
                         </Typography>
                       </label>
 
                       <div className="">
-                        <Input
-                          type="number"
-                          size="lg"
-                          name="mobile"
-                          placeholder="Mobile Number"
-                          value={formData.mobile}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
+                        <input
+                          type="file"
+                          name="attachment"
+                          multiple
+                          onChange={handleFileChange}
+                          className="file-input file-input-bordered file-input-success w-full max-w-sm"
                         />
                       </div>
                     </div>
@@ -511,7 +364,7 @@ function Owner({ownerData}) {
                     <span>Cancel</span>
                   </Button>
                   <Button
-                    conained="filled"
+                    conained="contained"
                     type="submit"
                     //   color="green"
                     // onClick={handleCreateClose}
@@ -524,35 +377,16 @@ function Owner({ownerData}) {
           </Box>
         </Modal>
       </div>
-
-      <div>
-        <div className="flex justify-between align-middle items-center mb-5">
-          <div className="text-2xl text-gray-800 font-semibold">
-            Owner Details
-          </div>
-          <div>
-            <Button
-              variant="filled"
-              size="md"
-              className="bg-primary hover:bg-[#2d5e85]"
-              onClick={handleCreateOpen}
-            >
-              Create
-            </Button>
-          </div>
-        </div>
-        <CacheProvider value={muiCache}>
-          <ThemeProvider theme={theme}>
-            <MUIDataTable
-              data={ownerData}
-              columns={columns}
-              options={options}
-            />
-          </ThemeProvider>
-        </CacheProvider>
-      </div>
+      <Button
+        conained="conained"
+        size="md"
+        className="bg-primary hover:bg-[#2d5e85]"
+        onClick={handleCreateOpen}
+      >
+        Create
+      </Button>
     </>
   );
 }
 
-export default Owner;
+export default TdsReturnCreation;

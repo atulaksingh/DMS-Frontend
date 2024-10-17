@@ -1,4 +1,3 @@
-
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -12,10 +11,6 @@ import { DialogFooter, Button } from "@material-tailwind/react";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-import { format } from "date-fns";
-
-import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -49,23 +44,22 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function TaxAuditCard({ rowId }) {
+export default function CompanyDocumentCard({ rowId }) {
   const { id } = useParams();
   // console.log("rowIdbank", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+  const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(null);
-  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [formData, setFormData] = useState({
-    financial_year: "",
-    month: "",
-    files: [],
+    account_no: "",
+    bank_name: "",
+    ifsc: "",
+    account_type: "",
+    branch: "",
   });
-
-
+  const [attachment, setAttachment] = useState(null); // State for file input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -79,41 +73,54 @@ export default function TaxAuditCard({ rowId }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
 
     try {
+      // Create a FormData object
       const formDataToSend = new FormData();
-      formDataToSend.append("financial_year", formData.financial_year);
-      formDataToSend.append("month", formData.month);
 
-      formData.files.forEach((file) => formDataToSend.append("files", file));
+      // Append text fields to FormData
+      formDataToSend.append("account_no", formData.account_no);
+      formDataToSend.append("bank_name", formData.bank_name);
+      formDataToSend.append("ifsc", formData.ifsc);
+      formDataToSend.append("account_type", formData.account_type);
+      formDataToSend.append("branch", formData.branch);
+
+      // Append file field to FormData
+      if (attachment) {
+        formDataToSend.append("attachment", attachment);
+      }
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-taxaudit/${id}`,
+        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
         formDataToSend,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
-      if (response.status === 200) {
-        toast.success("TaxAudit details created successfully!", {
-          position: "top-right",
-          autoClose: 2000,
-        });
-        handleCreateClose();
-        setFormData({
-          financial_year: "",
-          month: "",
-          files: [],
-        });
-        setSelectedYear(null);
-        setSelectedMonth(null);
-      }
+      console.log(response.data); // Handle success response
+      toast.success("Bank details update successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+
+      // Optionally close the modal and reset form
+      handleCreateClose();
+      setFormData({
+        account_no: "",
+        bank_name: "",
+        ifsc: "",
+        account_type: "",
+        branch: "",
+      });
+      setAttachment(null); // Clear the file input
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create TaxAudit details. Please try again.", {
+      toast.error("Failed to create bank details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -135,24 +142,24 @@ export default function TaxAuditCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-taxaudit/${id}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-bank/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("TaxAudit deleted successfully!", {
+        toast.success("bank deleted successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
       } else {
-        toast.error("Failed to delete TaxAudit. Please try again.", {
+        toast.error("Failed to delete bank. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
-      console.error("Error deleting TaxAudit data:", error);
-      toast.error("Failed to delete TaxAudit. Please try again.", {
+      console.error("Error deleting bank data:", error);
+      toast.error("Failed to delete bank. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -194,8 +201,9 @@ export default function TaxAuditCard({ rowId }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+          `http://127.0.0.1:8000/api/single-fileinfo/${id}/${rowId}`
         );
+        // console.log("jjj", response);
         setBankData(response.data);
         setLoading(false);
       } catch (error) {
@@ -251,10 +259,10 @@ export default function TaxAuditCard({ rowId }) {
                               className=" "
                               size="sm"
                             >
-                              Account Number :
+                              Document Type :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.account_no}
+                              {bankData.document_type}
                             </div>
                           </div>
                           <div className="w-full flex gap-3">
@@ -263,10 +271,10 @@ export default function TaxAuditCard({ rowId }) {
                               color="blue-gray"
                               className=""
                             >
-                              Account Type :
+                              Login :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.account_type}
+                              {bankData.login}
                             </div>
                           </div>
                         </div>
@@ -279,10 +287,10 @@ export default function TaxAuditCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Bank Name :
+                              Oassword :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.bank_name}
+                              {bankData.password}
                             </div>
                           </div>
                           <div className="w-full flex gap-3">
@@ -292,39 +300,45 @@ export default function TaxAuditCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Branch Name :
+                              Remarks :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.branch}
+                              {bankData.remark}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex gap-6  p-2">
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className="mb-1"
-                              size="sm"
-                            >
-                              IFSC Code :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.ifsc}
-                            </div>
-                          </div>
-                          <div className="w-full flex gap-3 align-middle items-center">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className="mb-1"
-                              size="sm"
-                            >
-                              Attachment :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.attachment}
+                        <div className="w-full flex gap-3 align-middle items-center">
+                          <Typography
+                            variant="h6"
+                            color="blue-gray"
+                            className=""
+                            size="sm"
+                          >
+                            Attachment :
+                          </Typography>
+                          <div className="text-gray-700 text-[15px] mb-2">
+                            <div className="">
+                              {bankData.files && bankData.files.length > 0 && (
+                                <div className="flex gap-5">
+                                  {bankData.files.map((file, index) => (
+                                    <p
+                                      className="text-sm text-gray-500 mt-2 "
+                                      key={index}
+                                    >
+                                      Selected file:
+                                      <a
+                                        href={`http://127.0.0.1:8000${file.files}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-500 underline ml-3"
+                                      >
+                                        {file.files.split("/").pop()}
+                                      </a>
+                                    </p>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -374,78 +388,217 @@ export default function TaxAuditCard({ rowId }) {
             >
               Update bank Details
             </Typography>
-            <form className="my-5 w-full" onSubmit={handleSubmit}>
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-2">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-1"
-                >
-                  Log In Year
-                </Typography>
-                <DatePicker
-                  selected={selectedYear}
-                  onChange={(date) => {
-                    setSelectedYear(date);
-                    handleInputChange("financial_year", date.getFullYear());
-                  }}
-                  showYearPicker
-                  dateFormat="yyyy"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
-                  placeholderText="Select Year"
-                />
-              </div>
+            <form className=" my-5 w-full " onSubmit={handleSubmit}>
+              <div>
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="col-span-4">
+                    <label htmlFor="account_no">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Account Number
+                      </Typography>
+                    </label>
 
-              <div className="col-span-2">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-1"
-                >
-                  Month
-                </Typography>
-                <DatePicker
-                  selected={selectedMonth}
-                  onChange={(date) => {
-                    setSelectedMonth(date);
-                    handleInputChange("month", format(date, "MMMM"));
-                  }}
-                  showMonthYearPicker
-                  dateFormat="MMMM"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
-                  placeholderText="Select Month"
-                />
-              </div>
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="account_no"
+                        placeholder="Account Number"
+                        value={formData.account_no}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
 
-              <div className="col-span-4">
-                <Typography
-                  variant="small"
-                  className="block font-semibold mb-2"
-                >
-                  Attachments
-                </Typography>
-                <input
-                  type="file"
-                  name="files"
-                  onChange={handleFileChange}
-                  multiple
-                  className="file-input file-input-bordered file-input-success w-full max-w-sm"
-                />
+                  <div className="col-span-2">
+                    <label htmlFor="bank_name">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Bank Name
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="bank_name"
+                        placeholder="Bank Name"
+                        value={formData.bank_name}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="account_type">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Account Type
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="account_type"
+                        placeholder="Account Type"
+                        value={formData.account_type}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label htmlFor="branch">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Branch
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="branch"
+                        placeholder="Branch"
+                        value={formData.branch}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="ifsc">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        IFSC Code
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="ifsc"
+                        placeholder="IFSC Code"
+                        value={formData.ifsc}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="attachment">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Attachments
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <input
+                        type="file"
+                        name="attachment"
+                        onChange={handleFileChange}
+                        className="file-input file-input-bordered file-input-success w-full max-w-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label htmlFor="attachment">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Attachments
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      {formData.attachment && (
+                        <p className="text-sm text-gray-500 mt-2">
+                          Selected file:
+                          <a
+                            href={`http://127.0.0.1:8000/${formData.attachment}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 underline"
+                          >
+                            {formData.attachment.name ||
+                              formData.attachment.replace("/media/", "")}
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button
-                onClick={handleCreateClose}
-                variant="text"
-                color="red"
-                className="mr-1"
-              >
-                Cancel
-              </Button>
-              <Button type="submit" className="bg-primary">
-                Confirm
-              </Button>
-            </DialogFooter>
-          </form>
+              <DialogFooter>
+                <Button
+                  onClick={handleCreateClose}
+                  conained="text"
+                  color="red"
+                  className="mr-1 "
+                >
+                  <span>Cancel</span>
+                </Button>
+                <Button
+                  conained="contained"
+                  type="submit"
+                  //   color="green"
+                  // onClick={handleCreateClose}
+                  className="bg-primary"
+                >
+                  <span>Confirm</span>
+                </Button>
+              </DialogFooter>
+            </form>
           </Box>
         </Modal>
       </div>
