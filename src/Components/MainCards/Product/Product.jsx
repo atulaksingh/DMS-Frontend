@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -10,9 +11,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
-import PfCreation from "./PfCreation";
-import PfCard from "./PfCard";
-import PfFileCreation from "./PfFileCreation";
+import ProductCard from "./ProductCard";
+import ProductCreation from "./ProductCreation";
+
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -31,11 +32,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Pf({ PfData }) {
+function Product({ productData }) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; // Approximate height for one row
     const maxHeight = 525; // Maximum table body height
-    const calculatedHeight = PfData.length * rowHeight;
+    const calculatedHeight = productData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -54,12 +55,12 @@ function Pf({ PfData }) {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [PfData]);
+  }, [productData]);
 
   const columns = [
     {
-      name: "employee_code",
-      label: "Employee Code",
+      name: "product_name",
+      label: "Product Name",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -70,8 +71,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "employee_name",
-      label: "Employee Name",
+      name: "unit_of_measure",
+      label: "Unit of Measure",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -82,8 +83,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "uan",
-      label: "UAN",
+      name: "hsn_code",
+      label: "HSN",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -94,8 +95,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "pf_number",
-      label: "PF Number",
+      name: "",
+      label: "",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -106,8 +107,20 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "status",
-      label: "Status",
+      name: "",
+      label: "",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    {
+      name: "",
+      label: "",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -122,11 +135,11 @@ function Pf({ PfData }) {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = PfData[dataIndex];
+          const rowData = productData[dataIndex];
           return (
             <div>
-              {/* <BankCard rowId={rowData.id} /> */}
-              <PfCard rowId={rowData.id} />
+              {/* <HsnCard rowId={rowData.id} /> */}
+              <ProductCard rowId={rowData.id}/>
             </div>
           );
         },
@@ -197,25 +210,16 @@ function Pf({ PfData }) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            PF Details
+            HSN Details
           </div>
-          <div className="flex align-middle items-center gap-2">
-            {/* <Button
-              variant="filled"
-              size="md"
-              className="bg-primary hover:bg-[#2d5e85]"
-              onClick={handleCreateOpen}
-            >
-              Create
-            </Button> */}
-            {/* <BankCreation /> */}
-            <PfFileCreation />
-            <PfCreation />
+          <div >
+      
+            <ProductCreation />
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={PfData} columns={columns} options={options} />
+            <MUIDataTable data={productData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -223,4 +227,4 @@ function Pf({ PfData }) {
   );
 }
 
-export default Pf;
+export default Product;

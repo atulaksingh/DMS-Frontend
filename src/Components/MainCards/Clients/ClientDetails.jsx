@@ -16,6 +16,7 @@ import CompanyDocuments from "./CompanyDocuments/CompanyDocuments";
 import CV from "./CorV/CV";
 import Pf from "../PF/Pf";
 import Documents from "../Documents/Documents";
+import Sales from "./Sales/Sales";
 function ClientDetails() {
   const { id } = useParams();
   const [value, setValue] = React.useState("1");
@@ -377,6 +378,36 @@ function ClientDetails() {
                       },
                     }}
                   />
+                  <Tab
+                    label="Purchase"
+                    value="8"
+                    fontWeight="bold"
+                    sx={{
+                      "&.Mui-selected": {
+                        color: "primary",
+                        fontWeight: "bold",
+                        border: 2,
+                      },
+                      "&:hover": {
+                        color: "primary",
+                      },
+                    }}
+                  />
+                  <Tab
+                    label="Sales"
+                    value="9"
+                    fontWeight="bold"
+                    sx={{
+                      "&.Mui-selected": {
+                        color: "primary",
+                        fontWeight: "bold",
+                        border: 2,
+                      },
+                      "&:hover": {
+                        color: "primary",
+                      },
+                    }}
+                  />
                 </TabList>
               </Box>
               <TabPanel value="1">
@@ -399,7 +430,21 @@ function ClientDetails() {
               </TabPanel>
               <TabPanel value="7">
                 {/* <Pf /> */}
-                <Documents PfData={PfData} taxAuditData={taxAuditData} airData={airData} sftData={sftData} tdsReturnData={tdsReturnData} tdsPaymentData={tdsPaymentData}/>
+                <Documents
+                  PfData={PfData}
+                  taxAuditData={taxAuditData}
+                  airData={airData}
+                  sftData={sftData}
+                  tdsReturnData={tdsReturnData}
+                  tdsPaymentData={tdsPaymentData}
+                />
+
+              </TabPanel>
+              <TabPanel value="8">
+                
+              </TabPanel>
+              <TabPanel value="9">
+                <Sales bankData={bankData}/>
               </TabPanel>
             </TabContext>
           </Box>

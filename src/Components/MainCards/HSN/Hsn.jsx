@@ -10,9 +10,9 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
-import PfCreation from "./PfCreation";
-import PfCard from "./PfCard";
-import PfFileCreation from "./PfFileCreation";
+import HsnCard from "./HsnCard";
+import HsnCreation from "./HsnCreation";
+import HsnFileCreation from "./HsnFileCreation";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -31,11 +31,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Pf({ PfData }) {
+function Hsn({ hsnData }) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; // Approximate height for one row
     const maxHeight = 525; // Maximum table body height
-    const calculatedHeight = PfData.length * rowHeight;
+    const calculatedHeight = hsnData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -54,12 +54,12 @@ function Pf({ PfData }) {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [PfData]);
+  }, [hsnData]);
 
   const columns = [
     {
-      name: "employee_code",
-      label: "Employee Code",
+      name: "hsn_code",
+      label: "HSN Code",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -70,8 +70,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "employee_name",
-      label: "Employee Name",
+      name: "gst_rate",
+      label: "Gst Rate",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -82,8 +82,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "uan",
-      label: "UAN",
+      name: "",
+      label: "",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -94,8 +94,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "pf_number",
-      label: "PF Number",
+      name: "",
+      label: "",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -106,8 +106,20 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "status",
-      label: "Status",
+      name: "",
+      label: "",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    {
+      name: "",
+      label: "",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -122,11 +134,10 @@ function Pf({ PfData }) {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = PfData[dataIndex];
+          const rowData = hsnData[dataIndex];
           return (
             <div>
-              {/* <BankCard rowId={rowData.id} /> */}
-              <PfCard rowId={rowData.id} />
+              <HsnCard rowId={rowData.id} />
             </div>
           );
         },
@@ -197,7 +208,7 @@ function Pf({ PfData }) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            PF Details
+            HSN Details
           </div>
           <div className="flex align-middle items-center gap-2">
             {/* <Button
@@ -208,14 +219,13 @@ function Pf({ PfData }) {
             >
               Create
             </Button> */}
-            {/* <BankCreation /> */}
-            <PfFileCreation />
-            <PfCreation />
+            <HsnFileCreation />
+            <HsnCreation />
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={PfData} columns={columns} options={options} />
+            <MUIDataTable data={hsnData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -223,4 +233,4 @@ function Pf({ PfData }) {
   );
 }
 
-export default Pf;
+export default Hsn;

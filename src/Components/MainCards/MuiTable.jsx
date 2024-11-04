@@ -15,7 +15,7 @@ const muiCache = createCache({
 
 
 function MuiTable({ tableData }) {
-  console.log("tableData", tableData);
+  // console.log("tableData", tableData);
   const [responsive, setResponsive] = useState("vertical");
   const [tableBodyHeight, setTableBodyHeight] = useState("525px");
   const [tableBodyMaxHeight, setTableBodyMaxHeight] = useState("");
@@ -169,24 +169,24 @@ function MuiTable({ tableData }) {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            backgroundColor: "#366FA1", // Header background color
+            backgroundColor: "#366FA1",
             paddingBlock: "2px",
-            color: "#ffffff !important", // Force white text color even after sorting
+            color: "#ffffff !important", 
             "&.MuiTableSortLabel-root": {
-              color: "#ffffff !important", // Sorting color override
+              color: "#ffffff !important", 
               "&:hover": {
                 color: "#ffffff !important",
               },
               "&.Mui-active": {
                 color: "#ffffff !important",
                 "& .MuiTableSortLabel-icon": {
-                  color: "#ffffff !important", // Sorting icon color override
+                  color: "#ffffff !important", 
                 },
               },
             },
           },
           body: {
-            paddingBlock: "0px", // Padding for body cells
+            paddingBlock: "0px",
           },
         },
       },
@@ -195,7 +195,8 @@ function MuiTable({ tableData }) {
 
   return (
     <>
-      <div style={{ padding: "40px 80px" }}>
+      {/* <div style={{ padding: "40px 80px" }}> */}
+      <div >
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
             Client Details

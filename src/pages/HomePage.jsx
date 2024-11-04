@@ -11,7 +11,8 @@ function HomePage() {
       const fetchClients = async () => {
           try {
               const response = await axios.get("http://127.0.0.1:8000/api/list-client");
-              setClients(response.data); // Assuming the data is returned in the response body
+              // console.log("response",response.data)
+              setClients(response.data.clients); // Assuming the data is returned in the response body
               setLoading(false);
           } catch (error) {
               console.error("Error fetching clients:", error);

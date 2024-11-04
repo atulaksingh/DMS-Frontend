@@ -10,9 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
-import PfCreation from "./PfCreation";
-import PfCard from "./PfCard";
-import PfFileCreation from "./PfFileCreation";
+import SalesCreation from "./SalesCreation";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -31,11 +29,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Pf({ PfData }) {
+function Sales({ bankData }) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; // Approximate height for one row
     const maxHeight = 525; // Maximum table body height
-    const calculatedHeight = PfData.length * rowHeight;
+    const calculatedHeight = bankData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -54,12 +52,12 @@ function Pf({ PfData }) {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [PfData]);
+  }, [bankData]);
 
   const columns = [
     {
-      name: "employee_code",
-      label: "Employee Code",
+      name: "bank_name",
+      label: "Bank Name",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -70,8 +68,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "employee_name",
-      label: "Employee Name",
+      name: "account_no",
+      label: "Account No",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -82,8 +80,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "uan",
-      label: "UAN",
+      name: "account_type",
+      label: "Account Type",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -94,8 +92,8 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "pf_number",
-      label: "PF Number",
+      name: "ifsc",
+      label: "IFSC Code",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -106,8 +104,20 @@ function Pf({ PfData }) {
       },
     },
     {
-      name: "status",
-      label: "Status",
+      name: "branch",
+      label: "Branch",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    {
+      name: "attachment",
+      label: "Document",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -122,13 +132,8 @@ function Pf({ PfData }) {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = PfData[dataIndex];
-          return (
-            <div>
-              {/* <BankCard rowId={rowData.id} /> */}
-              <PfCard rowId={rowData.id} />
-            </div>
-          );
+          const rowData = bankData[dataIndex];
+          return <div>{/* <BankCard rowId={rowData.id} /> */}</div>;
         },
         setCellHeaderProps: () => ({
           style: {
@@ -197,25 +202,15 @@ function Pf({ PfData }) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            PF Details
+            Sales Details
           </div>
-          <div className="flex align-middle items-center gap-2">
-            {/* <Button
-              variant="filled"
-              size="md"
-              className="bg-primary hover:bg-[#2d5e85]"
-              onClick={handleCreateOpen}
-            >
-              Create
-            </Button> */}
-            {/* <BankCreation /> */}
-            <PfFileCreation />
-            <PfCreation />
+          <div>
+            <SalesCreation />
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={PfData} columns={columns} options={options} />
+            <MUIDataTable data={bankData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -223,4 +218,4 @@ function Pf({ PfData }) {
   );
 }
 
-export default Pf;
+export default Sales;

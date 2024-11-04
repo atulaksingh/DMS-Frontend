@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ClientDetails from "./Components/MainCards/Clients/ClientDetails";
 import ClientUpdate from "./Components/MainCards/Clients/ClientUpdate";
 import BranchDetails from "./Components/MainCards/BranchD/BranchDetails";
+import Master from "./pages/Master";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -27,6 +28,7 @@ function App() {
         {/* <MenuBar /> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/master" element={<Master />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/client" element={<ClientCreation />} />

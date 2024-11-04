@@ -11,7 +11,8 @@ import {
   Avatar,
   Card,
   IconButton,
-  Collapse
+  Collapse,
+  ListItem
 } from "@material-tailwind/react";
 import {
   CubeTransparentIcon,
@@ -25,6 +26,9 @@ import {
   PowerIcon,
   RocketLaunchIcon,
   Bars2Icon,
+  Bars3Icon,
+  XMarkIcon,
+  ChevronUpIcon,
 } from "@heroicons/react/24/solid";
 import logo from "../../assets/Zacow1.png";
 import { Link } from "react-router-dom";
@@ -52,6 +56,128 @@ const profileMenuItems = [
     icon: PowerIcon,
   },
 ];
+
+
+
+const nestedMenuItems = [
+  {
+    title: "Hero",
+  },
+  {
+    title: "Features",
+  },
+  {
+    title: "Testimonials",
+  },
+  {
+    title: "Ecommerce",
+  },
+];
+ 
+function NavListMenuMaster() {
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [openNestedMenu, setopenNestedMenu] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const renderItems = nestedMenuItems.map(({ title }, key) => (
+    <a href="#" key={key}>
+      <MenuItem>{title}</MenuItem>
+    </a>
+  ));
+ 
+  return (
+    <React.Fragment>
+      <Menu
+        open={isMenuOpen}
+        handler={setIsMenuOpen}
+        placement="bottom"
+        allowHover={true}
+      >
+        <MenuHandler>
+          <Typography as="div" variant="small" className="font-medium">
+            <Link to={"/master"}>
+            <ListItem
+              className="flex items-center gap-2 py-2 pr-4 font-medium text-gray-900"
+              selected={isMenuOpen || isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen((cur) => !cur)}
+            >
+              Master
+              <ChevronDownIcon
+                strokeWidth={2.5}
+                className={`hidden h-3 w-3 transition-transform lg:block ${
+                  isMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+              <ChevronDownIcon
+                strokeWidth={2.5}
+                className={`block h-3 w-3 transition-transform lg:hidden ${
+                  isMobileMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+            </ListItem>
+            </Link>
+          </Typography>
+        </MenuHandler>
+        <MenuList className="hidden rounded-xl lg:block">
+          <Menu
+            placement="right-start"
+            allowHover
+            offset={15}
+            open={openNestedMenu}
+            handler={setopenNestedMenu}
+          >
+            <MenuHandler className="flex items-center justify-between">
+              <MenuItem>
+                Figma
+                <ChevronUpIcon
+                  strokeWidth={2.5}
+                  className={`h-3.5 w-3.5 transition-transform ${
+                    isMenuOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </MenuItem>
+            </MenuHandler>
+            <MenuList className="rounded-xl">{renderItems}</MenuList>
+          </Menu>
+          {/* <MenuItem>HSN</MenuItem> */}
+          <MenuItem><Link to="/master?tab=hsn">HSN</Link></MenuItem>
+          <MenuItem><Link to="/master?tab=product">Product</Link></MenuItem>
+          <MenuItem><Link to="/master?tab=description">Description</Link></MenuItem>
+    
+        </MenuList>
+      </Menu>
+      <div className="block lg:hidden">
+        <Collapse open={isMobileMenuOpen}>
+          <Menu
+            placement="bottom"
+            allowHover
+            offset={6}
+            open={openNestedMenu}
+            handler={setopenNestedMenu}
+          >
+            <MenuHandler className="flex items-center justify-between">
+              <MenuItem>
+                Figma
+                <ChevronUpIcon
+                  strokeWidth={2.5}
+                  className={`h-3.5 w-3.5 transition-transform ${
+                    isMenuOpen ? "rotate-90" : ""
+                  }`}
+                />
+              </MenuItem>
+            </MenuHandler>
+            <MenuList className="block rounded-xl lg:hidden">
+              {renderItems}
+            </MenuList>
+          </Menu>
+          <MenuItem>React</MenuItem>
+          <MenuItem>TailwindCSS</MenuItem>
+        </Collapse>
+      </div>
+    </React.Fragment>
+  );
+}
+
+
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -226,6 +352,7 @@ function NavList() {
           </MenuItem>
         </Typography>
       ))}
+      <NavListMenuMaster />
     </ul>
   );
 }
