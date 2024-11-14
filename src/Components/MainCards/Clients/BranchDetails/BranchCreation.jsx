@@ -1,4 +1,4 @@
-import { Button, DialogFooter } from "@material-tailwind/react";
+import { Button, DialogFooter, Option, Select } from "@material-tailwind/react";
 import React from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -8,6 +8,9 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { Country, State, City } from "country-state-city";
+import { Autocomplete, Stack, TextField } from "@mui/material";
+
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -23,22 +26,63 @@ const styleCreateMOdal = {
 function BranchCreation() {
   const { id } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
+
+  const [countries, setCountries] = useState(Country.getAllCountries());
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
+    setStates(State.getStatesOfCountry(country?.isoCode));
+    setCities([]);
+    setSelectedState(null);
+    setSelectedCity(null); // Reset city when country changes
+    setFormData((prev) => ({
+      ...prev,
+      country: country?.name, // Update formData with selected country
+    }));
+  };
+
+  const handleStateChange = (state) => {
+    setSelectedState(state);
+    setCities(City.getCitiesOfState(selectedCountry?.isoCode, state?.isoCode));
+    setSelectedCity(null); // Reset city when state changes
+    setFormData((prev) => ({
+      ...prev,
+      state: state?.name, // Update formData with selected state
+    }));
+  };
+
+  const handleCityChange = (city) => {
+    setSelectedCity(city);
+    setFormData((prev) => ({
+      ...prev,
+      city: city?.name, // Update formData with selected city
+    }));
+  };
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleCreateOpen = () => {
     setOpenCreateModal(true);
     setAnchorEl(null);
   };
-
+  // console.log("aa", countries);
   const handleCreateClose = () => setOpenCreateModal(false);
   const [formData, setFormData] = useState({
     branch_name: "",
     contact: "",
-    address: "",
+    gst_no: "",
+    country: "", 
     state: "",
     city: "",
-    gst_no: "",
+    address: "",
+    pincode: "",
   });
+  // console.log("hhhh->", formData);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -58,10 +102,12 @@ function BranchCreation() {
       // Append text fields to FormData
       formDataToSend.append("branch_name", formData.branch_name);
       formDataToSend.append("contact", formData.contact);
-      formDataToSend.append("address", formData.address);
+      formDataToSend.append("gst_no", formData.gst_no);
+      formDataToSend.append("country", formData.country);
       formDataToSend.append("state", formData.state);
       formDataToSend.append("city", formData.city);
-      formDataToSend.append("gst_no", formData.gst_no);
+      formDataToSend.append("address", formData.address);
+      formDataToSend.append("pincode", formData.pincode);
 
       // Make a POST request to your API
       const response = await axios.post(
@@ -69,7 +115,7 @@ function BranchCreation() {
         formDataToSend
       );
 
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success("Branch details created successfully!", {
         position: "top-right",
         autoClose: 2000,
@@ -80,12 +126,13 @@ function BranchCreation() {
       setFormData({
         branch_name: "",
         contact: "",
-        address: "",
+        gst_no: "",
+        country: "", 
         state: "",
         city: "",
-        gst_no: "",
+        address: "",
+        pincode: "",
       });
-
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create Branch details. Please try again.", {
@@ -116,7 +163,7 @@ function BranchCreation() {
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
               <div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-x-[85px]">
                   <div className="col-span-4">
                     <label htmlFor="branch_name">
                       <Typography
@@ -136,7 +183,7 @@ function BranchCreation() {
                         placeholder="Branch Name"
                         value={formData.branch_name}
                         onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        className="!border !border-[#cecece] bg-white text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
                         labelProps={{
                           className: "hidden",
                         }}
@@ -150,7 +197,7 @@ function BranchCreation() {
                       <Typography
                         variant="small"
                         color="blue-gray"
-                        className="block font-semibold mb-2"
+                        className="block font-semibold  mb-1"
                       >
                         Contact
                       </Typography>
@@ -164,34 +211,7 @@ function BranchCreation() {
                         placeholder="Contact"
                         value={formData.contact}
                         onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <label htmlFor="state">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        State
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="state"
-                        placeholder="State"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        className="!border !border-[#cecece] bg-white  text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
                         labelProps={{
                           className: "hidden",
                         }}
@@ -200,66 +220,12 @@ function BranchCreation() {
                     </div>
                   </div>
 
-                  <div className="col-span-2">
-                    <label htmlFor="city">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        city
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="city"
-                        placeholder="City"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <label htmlFor="address">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Address
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="address"
-                        placeholder="Address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
                   <div className="col-span-2">
                     <label htmlFor="gst_no">
                       <Typography
                         variant="small"
                         color="blue-gray"
-                        className="block font-semibold mb-2"
+                        className="block font-semibold mb-1 "
                       >
                         Gst No
                       </Typography>
@@ -273,7 +239,245 @@ function BranchCreation() {
                         placeholder="Gst No"
                         value={formData.gst_no}
                         onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        className="!border !border-[#cecece] bg-white  text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="gst_no">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-1 "
+                      >
+                        Country
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <div className="">
+                        <div className="">
+                          <Stack spacing={1} sx={{ width: 300 }}>
+                            <Autocomplete
+                              id="country-select"
+                              options={countries}
+                              freeSolo={false} // Disable free text input if you want to prevent extra clear button
+                              disableClearable
+                              getOptionLabel={(option) =>
+                                `${option.flag} ${option.name}`
+                              }
+                              onChange={(event, newValue) =>
+                                handleCountryChange(newValue)
+                              }
+                              renderOption={(props, option) => (
+                                <li
+                                  {...props}
+                                  key={option.isoCode}
+                                  style={{
+                                    padding: "4px 8px",
+                                    fontSize: "0.875rem",
+                                  }}
+                                >
+                                  {option.flag} {option.name}
+                                </li>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  size="small"
+                                  value={formData.location || ""}
+                                  placeholder="Select Country"
+                                  sx={{
+                                    "& .MuiInputBase-root": {
+                                      height: 33,
+                                      padding: "4px 6px",
+                                    },
+                                    "& .MuiOutlinedInput-input": {
+                                      padding: "4px 6px",
+                                    },
+                                  }}
+                                  InputProps={{
+                                    ...params.InputProps,
+                                    type: "search",
+                                  }}
+                                />
+                              )}
+                            />
+                          </Stack>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="gst_no">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-1 "
+                      >
+                        State
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <div className="">
+                        <div className="">
+                          <Stack spacing={1} sx={{ width: 300 }}>
+                            <Autocomplete
+                              id="state-select"
+                              options={states}
+                              disableClearable
+                              getOptionLabel={(option) => option.name}
+                              onChange={(event, newValue) =>
+                                handleStateChange(newValue)
+                              }
+                              renderOption={(props, option) => (
+                                <li
+                                  {...props}
+                                  key={option.isoCode}
+                                  style={{
+                                    padding: "4px 8px",
+                                    fontSize: "0.875rem",
+                                  }}
+                                >
+                                  {option.name}
+                                </li>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  size="small"
+                                  placeholder="Select State"
+                                  sx={{
+                                    "& .MuiInputBase-root": {
+                                      height: 33,
+                                      padding: "4px 6px",
+                                    },
+                                    "& .MuiOutlinedInput-input": {
+                                      padding: "4px 6px",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </Stack>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="gst_no">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-1 mt-2"
+                      >
+                        City
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <div className="">
+                        <div className="">
+                          <Stack spacing={1} sx={{ width: 300 }}>
+                            <Autocomplete
+                              id="city-select"
+                              options={cities}
+                              disableClearable
+                              getOptionLabel={(option) => option.name}
+                              onChange={(event, newValue) => {
+                                setSelectedCity(newValue);
+                                setFormData((prevData) => ({
+                                  ...prevData,
+                                  city: newValue ? newValue.name : "",
+                                }));
+                              }}
+                              renderOption={(props, option) => (
+                                <li
+                                  {...props}
+                                  key={option.name}
+                                  style={{
+                                    padding: "4px 8px",
+                                    fontSize: "0.875rem",
+                                  }}
+                                >
+                                  {option.name}
+                                </li>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  size="small"
+                                  placeholder="Select City"
+                                  sx={{
+                                    "& .MuiInputBase-root": {
+                                      height: 33,
+                                      padding: "20px 6px",
+                                    },
+                                    "& .MuiOutlinedInput-input": {
+                                      padding: "20px 6px",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </Stack>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label htmlFor="address">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-1 mt-2"
+                      >
+                        Address
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="address"
+                        placeholder="Address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="pincode">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-1 "
+                      >
+                        Pin Code
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="pincode"
+                        placeholder="Pin Code"
+                        value={formData.pincode}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
                         labelProps={{
                           className: "hidden",
                         }}

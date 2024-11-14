@@ -113,6 +113,7 @@ function CV({ cvData }) {
       options: {
         customBodyRender: (value, tableMeta, updateValue) => {
           const rowData = cvData[tableMeta.rowIndex];
+          if (rowData.customer && rowData.vendor) return "Customer and Vendor";
           if (rowData.customer) return "Customer";
           if (rowData.vendor) return "Vendor";
           return "";

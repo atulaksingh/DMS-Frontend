@@ -420,7 +420,7 @@ function SalesCreation() {
                   </div>
                 </div>
                 <div className="font-bold text-[15px] text-primary mt-3 mb-1">
-                  {" "}
+                 
                   Customer And Vendor Details
                 </div>
                 <div className="grid grid-cols-4 gap-4">

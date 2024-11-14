@@ -268,7 +268,9 @@ function ClientDetails() {
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <TabList
                   onChange={handleChange}
-                  aria-label="customized tabs example"
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="scrollable auto tabs example"
                   TabIndicatorProps={{
                     sx: {
                       backgroundColor: "primary",

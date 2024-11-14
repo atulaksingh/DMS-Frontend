@@ -12,7 +12,7 @@ import {
   Card,
   IconButton,
   Collapse,
-  ListItem
+  ListItem,
 } from "@material-tailwind/react";
 import {
   CubeTransparentIcon,
@@ -30,9 +30,16 @@ import {
   XMarkIcon,
   ChevronUpIcon,
 } from "@heroicons/react/24/solid";
+import { Input } from "@material-tailwind/react";
 import logo from "../../assets/Zacow1.png";
-import { Link } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
+import { DialogFooter } from "@material-tailwind/react";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 // profile menu component
 const profileMenuItems = [
   {
@@ -57,8 +64,6 @@ const profileMenuItems = [
   },
 ];
 
-
-
 const nestedMenuItems = [
   {
     title: "Hero",
@@ -73,111 +78,271 @@ const nestedMenuItems = [
     title: "Ecommerce",
   },
 ];
- 
+
+const styleCreateMOdal = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 750,
+  bgcolor: "background.paper",
+  //   border: "1px solid #000",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: "10px",
+};
+
 function NavListMenuMaster() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [openNestedMenu, setopenNestedMenu] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const { id } = useParams();
+  console.log("idddd",id)
   const renderItems = nestedMenuItems.map(({ title }, key) => (
     <a href="#" key={key}>
       <MenuItem>{title}</MenuItem>
     </a>
   ));
- 
+  const [formData, setFormData] = useState({
+    files: [],
+  });
+  // console.log("form",formData)
+  const [openCreateModal, setOpenCreateModal] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleCreateOpen = () => {
+    setOpenCreateModal(true);
+    setAnchorEl(null);
+  };
+  const handleFileChange = (event) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      files: Array.from(event.target.files), 
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    try {
+      // Create a FormData object
+      const formDataToSend = new FormData();
+
+
+      // Append multiple files if selected
+      for (let i = 0; i < formData.files.length; i++) {
+        formDataToSend.append("files", formData.files[i]);
+      }
+
+      // Make a POST request to your API
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/create-sales/${id}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      console.log(response.data); // Handle success response
+      toast.success("Upload Invoice  successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+
+      // Optionally close the modal and reset form
+      handleCreateClose();
+     
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toast.error("Failed to create bank details. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
+  
+  const handleCreateClose = () => setOpenCreateModal(false);
   return (
-    <React.Fragment>
-      <Menu
-        open={isMenuOpen}
-        handler={setIsMenuOpen}
-        placement="bottom"
-        allowHover={true}
-      >
-        <MenuHandler>
-          <Typography as="div" variant="small" className="font-medium">
-            <Link to={"/master"}>
-            <ListItem
-              className="flex items-center gap-2 py-2 pr-4 font-medium text-gray-900"
-              selected={isMenuOpen || isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen((cur) => !cur)}
+    <>
+        <ToastContainer />
+      <React.Fragment>
+        <Menu
+          open={isMenuOpen}
+          handler={setIsMenuOpen}
+          placement="bottom"
+          allowHover={true}
+        >
+          <MenuHandler>
+            <Typography as="div" variant="small" className="font-medium">
+              <Link to={"/master"}>
+                <ListItem
+                  className="flex items-center gap-2 py-2 pr-4 font-medium text-white"
+                  selected={isMenuOpen || isMobileMenuOpen}
+                  onClick={() => setIsMobileMenuOpen((cur) => !cur)}
+                >
+                  Master
+                  <ChevronDownIcon
+                    strokeWidth={2.5}
+                    className={`hidden h-3 w-3 transition-transform lg:block ${
+                      isMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                  <ChevronDownIcon
+                    strokeWidth={2.5}
+                    className={`block h-3 w-3 transition-transform lg:hidden ${
+                      isMobileMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </ListItem>
+              </Link>
+            </Typography>
+          </MenuHandler>
+          <MenuList className="hidden rounded-xl lg:block">
+            <Menu
+              placement="right-start"
+              allowHover
+              offset={15}
+              open={openNestedMenu}
+              handler={setopenNestedMenu}
             >
-              Master
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`hidden h-3 w-3 transition-transform lg:block ${
-                  isMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`block h-3 w-3 transition-transform lg:hidden ${
-                  isMobileMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-            </ListItem>
+              <MenuHandler className="flex items-center justify-between">
+                <MenuItem>
+                  Figma
+                  <ChevronUpIcon
+                    strokeWidth={2.5}
+                    className={`h-3.5 w-3.5 transition-transform ${
+                      isMenuOpen ? "rotate-90" : ""
+                    }`}
+                  />
+                </MenuItem>
+              </MenuHandler>
+              <MenuList className="rounded-xl">{renderItems}</MenuList>
+            </Menu>
+            {/* <MenuItem>HSN</MenuItem> */}
+            {/* <Link to="/master?tab=hsn"> */}
+            <MenuItem onClick={handleCreateOpen}>Upload Invoice</MenuItem>
+            {/* </Link> */}
+            <Link to="/master?tab=hsn">
+              <MenuItem>HSN</MenuItem>
             </Link>
-          </Typography>
-        </MenuHandler>
-        <MenuList className="hidden rounded-xl lg:block">
-          <Menu
-            placement="right-start"
-            allowHover
-            offset={15}
-            open={openNestedMenu}
-            handler={setopenNestedMenu}
-          >
-            <MenuHandler className="flex items-center justify-between">
-              <MenuItem>
-                Figma
-                <ChevronUpIcon
-                  strokeWidth={2.5}
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    isMenuOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </MenuItem>
-            </MenuHandler>
-            <MenuList className="rounded-xl">{renderItems}</MenuList>
-          </Menu>
-          {/* <MenuItem>HSN</MenuItem> */}
-          <MenuItem><Link to="/master?tab=hsn">HSN</Link></MenuItem>
-          <MenuItem><Link to="/master?tab=product">Product</Link></MenuItem>
-          <MenuItem><Link to="/master?tab=description">Description</Link></MenuItem>
-    
-        </MenuList>
-      </Menu>
-      <div className="block lg:hidden">
-        <Collapse open={isMobileMenuOpen}>
-          <Menu
-            placement="bottom"
-            allowHover
-            offset={6}
-            open={openNestedMenu}
-            handler={setopenNestedMenu}
-          >
-            <MenuHandler className="flex items-center justify-between">
-              <MenuItem>
-                Figma
-                <ChevronUpIcon
-                  strokeWidth={2.5}
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    isMenuOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </MenuItem>
-            </MenuHandler>
-            <MenuList className="block rounded-xl lg:hidden">
-              {renderItems}
-            </MenuList>
-          </Menu>
-          <MenuItem>React</MenuItem>
-          <MenuItem>TailwindCSS</MenuItem>
-        </Collapse>
+            <Link to="/master?tab=product">
+              <MenuItem>Product</MenuItem>
+            </Link>
+            <Link to="/master?tab=description">
+              <MenuItem>Description</MenuItem>
+            </Link>
+          </MenuList>
+        </Menu>
+        <div className="block lg:hidden">
+          <Collapse open={isMobileMenuOpen}>
+            <Menu
+              placement="bottom"
+              allowHover
+              offset={6}
+              open={openNestedMenu}
+              handler={setopenNestedMenu}
+            >
+              <MenuHandler className="flex items-center justify-between">
+                <MenuItem>
+                  Figma
+                  <ChevronUpIcon
+                    strokeWidth={2.5}
+                    className={`h-3.5 w-3.5 transition-transform ${
+                      isMenuOpen ? "rotate-90" : ""
+                    }`}
+                  />
+                </MenuItem>
+              </MenuHandler>
+              <MenuList className="block rounded-xl lg:hidden">
+                {renderItems}
+              </MenuList>
+            </Menu>
+            <MenuItem>React</MenuItem>
+            <MenuItem>TailwindCSS</MenuItem>
+          </Collapse>
+        </div>
+      </React.Fragment>
+
+      <div>
+        <Modal
+          open={openCreateModal}
+          onClose={handleCreateClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={styleCreateMOdal}>
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              component="h2"
+              className="text-center border-b-2 border-[#366FA1] pb-3"
+            >
+              Create Bank Details
+            </Typography>
+            <form className=" my-5 w-full " onSubmit={handleSubmit}>
+              <div>
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="col-span-2">
+                    <label htmlFor="attachment">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Attachments
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <input
+                        type="file"
+                        name="files"
+                        onChange={handleFileChange}
+                        multiple
+                        className="file-input file-input-bordered file-input-success w-full max-w-sm"
+                      />
+                    </div>
+                    {formData.files && formData.files.length > 0 && (
+  <div className="text-sm text-gray-500 mt-2">
+    <p>Selected files:</p>
+    {formData.files.map((file, index) => (
+      <p key={index} className="text-blue-500">
+        {file.name}
+      </p>
+    ))}
+  </div>
+)}
+
+                  </div>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={handleCreateClose}
+                  conained="text"
+                  color="red"
+                  className="mr-1 "
+                >
+                  <span>Cancel</span>
+                </Button>
+                <Button
+                  conained="contained"
+                  type="submit"
+                  //   color="green"
+                  // onClick={handleCreateClose}
+                  className="bg-primary"
+                >
+                  <span>Confirm</span>
+                </Button>
+              </DialogFooter>
+            </form>
+          </Box>
+        </Modal>
       </div>
-    </React.Fragment>
+    </>
   );
 }
-
-
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -263,7 +428,7 @@ function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const renderItems = navListMenuItems.map(({ title, description }) => (
-    <div  key={title}>
+    <div key={title}>
       <MenuItem>
         <Typography variant="h6" color="blue-gray" className="mb-1">
           {title}
@@ -374,15 +539,13 @@ function Header() {
       <Navbar className="mx-auto max-w-full p-2  lg:pl-6 bg-[#366FA1] rounded-none bg-opacity-100 border-none py-0">
         <div className="relative mx-auto flex items-center justify-between  text-white ">
           {/* <Typography as="a"  className=""> */}
-            <Link to="/">
-        
-                <img
-                  src={logo}
-                  alt="Logo"
-                  className="mr-4 ml-2 h-16 w-28 cursor-pointer py-0.5"
-                />
-          
-            </Link>
+          <Link to="/">
+            <img
+              src={logo}
+              alt="Logo"
+              className="mr-4 ml-2 h-16 w-28 cursor-pointer py-0.5"
+            />
+          </Link>
           {/* </Typography> */}
           <div className="hidden lg:block">
             <NavList />

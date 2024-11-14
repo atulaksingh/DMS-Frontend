@@ -41,10 +41,10 @@ function CVCreation() {
     gst_no: "",
     pan: "",
     address: "",
-    customer: "",
-    vendor: "",
+    customer: false,
+    vendor: false,
   });
-//   console.log("formdatata", formData);
+    // console.log("formdatata", formData);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -52,7 +52,13 @@ function CVCreation() {
       [name]: value,
     }));
   };
-
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked, // Toggle the value between true and false
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
 
@@ -92,10 +98,13 @@ function CVCreation() {
       });
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Client and Vendor details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      toast.error(
+        "Failed to create Client and Vendor details. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
 
@@ -234,30 +243,20 @@ function CVCreation() {
                   <div className="col-span-4">
                     <div className="col-span-4">
                       <div className="flex gap-10">
-                        <Radio
-                          name="type"
-                          label="Customer"
-                          ripple={true}
-                          onChange={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customer: true,
-                              vendor: false,
-                            }))
-                          }
-                        />
-                        <Radio
-                          name="type"
-                          label="Vendor"
-                          ripple={false}
-                          onChange={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customer: false,
-                              vendor: true,
-                            }))
-                          }
-                        />
+                        
+                      <Checkbox
+                        name="customer"
+                        label="Customer"
+                        ripple={false}
+                        checked={formData.customer} // Controlled checkbox state
+                        onChange={handleCheckboxChange} // Handle checkbox change
+                      />
+                      <Checkbox
+                        name="vendor"
+                        label="Vendor"
+                        checked={formData.vendor} // Controlled checkbox state
+                        onChange={handleCheckboxChange} // Handle checkbox change
+                      />
                       </div>
                     </div>
                   </div>

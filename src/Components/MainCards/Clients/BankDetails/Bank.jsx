@@ -212,14 +212,7 @@ function Bank({ bankData }) {
             Bank Details
           </div>
           <div>
-            {/* <Button
-              variant="filled"
-              size="md"
-              className="bg-primary hover:bg-[#2d5e85]"
-              onClick={handleCreateOpen}
-            >
-              Create
-            </Button> */}
+       
             <BankCreation />
           </div>
         </div>

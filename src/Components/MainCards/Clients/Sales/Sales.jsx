@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
 import SalesCreation from "./SalesCreation";
+import SalesFileCreation from "./SalesFileCreation";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -204,7 +205,10 @@ function Sales({ bankData }) {
           <div className="text-2xl text-gray-800 font-semibold">
             Sales Details
           </div>
-          <div>
+      
+          <div className="flex align-middle items-center gap-2">
+          
+            <SalesFileCreation />
             <SalesCreation />
           </div>
         </div>

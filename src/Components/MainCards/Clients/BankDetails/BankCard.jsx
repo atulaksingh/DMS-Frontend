@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -58,8 +58,9 @@ export default function BankCard({ rowId }) {
     ifsc: "",
     account_type: "",
     branch: "",
+    files: [],
   });
-  const [attachment, setAttachment] = useState(null); // State for file input
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -67,9 +68,11 @@ export default function BankCard({ rowId }) {
       [name]: value,
     }));
   };
-  // Handle file input change
   const handleFileChange = (e) => {
-    setAttachment(e.target.files[0]);
+    setFormData((prev) => ({
+      ...prev,
+      files: e.target.files, // Handles multiple files
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -87,10 +90,11 @@ export default function BankCard({ rowId }) {
       formDataToSend.append("branch", formData.branch);
 
       // Append file field to FormData
-      if (attachment) {
-        formDataToSend.append("attachment", attachment);
+      // Append multiple files if selected
+      for (let i = 0; i < formData.files.length; i++) {
+        formDataToSend.append("files", formData.files[i]);
       }
-
+      // console.log("form", formDataToSend);
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
@@ -117,7 +121,6 @@ export default function BankCard({ rowId }) {
         account_type: "",
         branch: "",
       });
-      setAttachment(null); // Clear the file input
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create bank details. Please try again.", {
@@ -181,7 +184,7 @@ export default function BankCard({ rowId }) {
       const response = await axios.get(
         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
       );
-      console.log("dd", response.data);
+      // console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
       console.error("Error fetching bank data:", error);
@@ -222,7 +225,7 @@ export default function BankCard({ rowId }) {
   // }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <div>
           <Modal
@@ -338,7 +341,7 @@ export default function BankCard({ rowId }) {
                       </div>
                     </form>
                   </div>
-                  <DialogFooter>
+                  <DialogFooter className="">
                     <Button
                       conained="gradient"
                       color="red"
@@ -535,8 +538,9 @@ export default function BankCard({ rowId }) {
                     <div className="">
                       <input
                         type="file"
-                        name="attachment"
+                        name="files"
                         onChange={handleFileChange}
+                        multiple
                         className="file-input file-input-bordered file-input-success w-full max-w-sm"
                       />
                     </div>
@@ -554,19 +558,22 @@ export default function BankCard({ rowId }) {
                     </label>
 
                     <div className="">
-                      {formData.attachment && (
-                        <p className="text-sm text-gray-500 mt-2">
-                          Selected file:
-                          <a
-                            href={`http://127.0.0.1:8000/${formData.attachment}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-500 underline"
-                          >
-                            {formData.attachment.name ||
-                              formData.attachment.replace("/media/", "")}
-                          </a>
-                        </p>
+                      {formData.files && formData.files.length > 0 && (
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p>Selected files:</p>
+                          {formData.files.map((file, index) => (
+                            <p key={index}>
+                              <a
+                                href={`http://127.0.0.1:8000${file.files}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-500 underline"
+                              >
+                                {file.files.split("/").pop()}
+                              </a>
+                            </p>
+                          ))}
+                        </div>
                       )}
                     </div>
                   </div>

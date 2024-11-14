@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Box from "@mui/material/Box";
-import { Input, Radio, Typography } from "@material-tailwind/react";
+import { Checkbox, Input, Radio, Typography } from "@material-tailwind/react";
 
 import Modal from "@mui/material/Modal";
 import { DialogFooter, Button } from "@material-tailwind/react";
@@ -22,9 +22,8 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 800,
   bgcolor: "background.paper",
-  //   border: "1px solid #000",
   boxShadow: 24,
-  paddingTop: "17px", // For vertical (top and bottom) padding
+  paddingTop: "17px", 
   paddingInline: "40px",
   borderRadius: "10px",
 };
@@ -38,7 +37,7 @@ const styleCreateMOdal = {
   //   border: "1px solid #000",
   boxShadow: 24,
   // p: 4,
-  paddingTop: "17px", // For vertical (top and bottom) padding
+  paddingTop: "17px", 
   paddingInline: "40px",
   borderRadius: "10px",
 };
@@ -57,8 +56,8 @@ export default function CVCard({ rowId }) {
     gst_no: "",
     pan: "",
     address: "",
-    customer: "",
-    vendor: "",
+    customer: false,
+    vendor: false,
   });
 
   const handleInputChange = (e) => {
@@ -66,6 +65,13 @@ export default function CVCard({ rowId }) {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: checked, 
     }));
   };
 
@@ -106,10 +112,13 @@ export default function CVCard({ rowId }) {
       });
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Client and Vendor details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      toast.error(
+        "Failed to create Client and Vendor details. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
   const open = Boolean(anchorEl);
@@ -304,7 +313,13 @@ export default function CVCard({ rowId }) {
                               Type :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {CVData.customer ? "Customer" : "Vendor"}
+                              {CVData.customer && CVData.vendor
+                                ? "Customer and Vendor"
+                                : CVData.customer
+                                ? "Customer"
+                                : CVData.vendor
+                                ? "Vendor"
+                                : ""}
                             </div>
                           </div>
                         </div>
@@ -470,31 +485,18 @@ export default function CVCard({ rowId }) {
                   <div className="col-span-4">
                     <div className="col-span-4">
                       <div className="flex gap-10">
-                        <Radio
-                          name="type"
+                        <Checkbox
+                          name="customer"
                           label="Customer"
-                          ripple={true}
-                          checked={formData.customer === true}
-                          onChange={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customer: true,
-                              vendor: false,
-                            }))
-                          }
-                        />
-                        <Radio
-                          name="type"
-                          label="Vendor"
                           ripple={false}
-                          checked={formData.vendor === true}
-                          onChange={() =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              customer: false,
-                              vendor: true,
-                            }))
-                          }
+                          checked={formData.customer}
+                          onChange={handleCheckboxChange}
+                        />
+                        <Checkbox
+                          name="vendor"
+                          label="Vendor"
+                          checked={formData.vendor}
+                          onChange={handleCheckboxChange}
                         />
                       </div>
                     </div>

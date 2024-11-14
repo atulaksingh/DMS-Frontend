@@ -22,6 +22,7 @@ const styleCreateMOdal = {
 };
 function BankCreation() {
     const { id } = useParams();
+    console.log("ddddddddddddd",id)
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -37,7 +38,15 @@ function BankCreation() {
     ifsc: "",
     account_type: "",
     branch: "",
+    files: [],
   });
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: e.target.files, // Handles multiple files
+    }));
+  };
+  // console.log("ffff",formData)
   const [attachment, setAttachment] = useState(null); // State for file input
 
   const handleInputChange = (e) => {
@@ -47,10 +56,7 @@ function BankCreation() {
       [name]: value,
     }));
   };
-  // Handle file input change
-  const handleFileChange = (e) => {
-    setAttachment(e.target.files[0]);
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -66,9 +72,9 @@ function BankCreation() {
       formDataToSend.append("account_type", formData.account_type);
       formDataToSend.append("branch", formData.branch);
 
-      // Append file field to FormData
-      if (attachment) {
-        formDataToSend.append("attachment", attachment);
+      // Append multiple files if selected
+      for (let i = 0; i < formData.files.length; i++) {
+        formDataToSend.append("files", formData.files[i]);
       }
 
       // Make a POST request to your API
@@ -278,12 +284,13 @@ function BankCreation() {
                       </label>
 
                       <div className="">
-                        <input
-                          type="file"
-                          name="attachment"
-                          onChange={handleFileChange}
-                          className="file-input file-input-bordered file-input-success w-full max-w-sm"
-                        />
+                      <input
+                        type="file"
+                        name="files"
+                        onChange={handleFileChange}
+                        multiple
+                        className="file-input file-input-bordered file-input-success w-full max-w-sm"
+                      />
                       </div>
                     </div>
                   </div>

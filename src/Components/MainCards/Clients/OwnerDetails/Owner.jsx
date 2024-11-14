@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
-import { Input, Typography } from "@material-tailwind/react";
+import { Checkbox, Input, Typography } from "@material-tailwind/react";
 import MUIDataTable from "mui-datatables";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CacheProvider } from "@emotion/react";
@@ -22,7 +22,6 @@ const muiCache = createCache({
   prepend: true,
 });
 
-
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -35,7 +34,7 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Owner({ownerData}) {
+function Owner({ ownerData }) {
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
@@ -46,6 +45,7 @@ function Owner({ownerData}) {
     email: "",
     it_password: "",
     mobile: "",
+    isadmin: false,
   });
   const notify = (message, type = "success") => {
     toast[type](message, { position: "top-right", autoClose: 1000 });
@@ -56,6 +56,12 @@ function Owner({ownerData}) {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+  const handleCheckboxChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      isadmin: e.target.checked,  // Update isadmin based on checkbox state
     }));
   };
   // console.log("formmmowner", formData);
@@ -98,7 +104,7 @@ function Owner({ownerData}) {
   };
 
   const calculateTableBodyHeight = () => {
-    const rowHeight = 80  ; // Approximate height for one row
+    const rowHeight = 80; // Approximate height for one row
     const maxHeight = 525; // Maximum table body height
     const calculatedHeight = ownerData.length * rowHeight;
     return calculatedHeight > maxHeight
@@ -221,7 +227,7 @@ function Owner({ownerData}) {
           const rowData = ownerData[dataIndex];
           return (
             <div>
-              <OwnerCard rowId={rowData.id}/>
+              <OwnerCard rowId={rowData.id} />
             </div>
           );
         },
@@ -307,219 +313,239 @@ function Owner({ownerData}) {
               Create Owner Details
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
-                <div>
-                  <div className="grid grid-cols-4 gap-4">
-                    <div className="col-span-3">
-                      <label htmlFor="owner_name">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Owner Name
-                        </Typography>
-                      </label>
+              <div>
+                <div className="grid grid-cols-4 gap-4">
+                  <div className="col-span-3">
+                    <label htmlFor="owner_name">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Owner Name
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="text"
-                          size="lg"
-                          name="owner_name"
-                          placeholder="Owner Name"
-                          value={formData.owner_name}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="owner_name"
+                        placeholder="Owner Name"
+                        value={formData.owner_name}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
                     </div>
-                    <div className="col-span-1">
-                      <label htmlFor="share">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Share
-                        </Typography>
-                      </label>
+                  </div>
+                  <div className="col-span-1">
+                    <label htmlFor="share">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Share
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="number"
-                          size="lg"
-                          name="share"
-                          placeholder="Share"
-                          value={formData.share}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="share"
+                        placeholder="Share"
+                        value={formData.share}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
                     </div>
-                    <div className="col-span-2">
-                      <label htmlFor="pan">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Pan Number
-                        </Typography>
-                      </label>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="pan">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Pan Number
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="text"
-                          size="lg"
-                          name="pan"
-                          placeholder="Pan Number"
-                          value={formData.pan}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="pan"
+                        placeholder="Pan Number"
+                        value={formData.pan}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
                     </div>
-                    <div className="col-span-2">
-                      <label htmlFor="aadhar">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Aadhar Number
-                        </Typography>
-                      </label>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="aadhar">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Aadhar Number
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="number"
-                          size="lg"
-                          name="aadhar"
-                          placeholder="Aadhar Number"
-                          value={formData.aadhar}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="aadhar"
+                        placeholder="Aadhar Number"
+                        value={formData.aadhar}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
                     </div>
+                  </div>
 
-                    <div className="col-span-2">
-                      <label htmlFor="email">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Email
-                        </Typography>
-                      </label>
+                  <div className="col-span-2">
+                    <label htmlFor="email">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Email
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="email"
-                          size="lg"
-                          name="email"
-                          placeholder="Email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="email"
+                        size="lg"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
                     </div>
-                    <div className="col-span-2">
-                      <label htmlFor="it_password">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Password
-                        </Typography>
-                      </label>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="it_password">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Password
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="password"
-                          size="lg"
-                          name="it_password"
-                          placeholder="Password"
-                          value={formData.it_password}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="password"
+                        size="lg"
+                        name="it_password"
+                        placeholder="Password"
+                        value={formData.it_password}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
                     </div>
-                    <div className="col-span-2">
-                      <label htmlFor="aadhar">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-2"
-                        >
-                          Mobile Number
-                        </Typography>
-                      </label>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="aadhar">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Mobile Number
+                      </Typography>
+                    </label>
 
-                      <div className="">
-                        <Input
-                          type="number"
-                          size="lg"
-                          name="mobile"
-                          placeholder="Mobile Number"
-                          value={formData.mobile}
-                          onChange={handleInputChange}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          containerProps={{ className: "min-w-full" }}
-                        />
-                      </div>
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="mobile"
+                        placeholder="Mobile Number"
+                        value={formData.mobile}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="aadhar">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Is Admin
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Checkbox
+                        color="blue"
+                        checked={formData.isadmin}
+                        onChange={handleCheckboxChange}
+                        label="Is Admin"
+                      />
                     </div>
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button
-                    onClick={handleCreateClose}
-                    conained="text"
-                    color="red"
-                    className="mr-1 "
-                  >
-                    <span>Cancel</span>
-                  </Button>
-                  <Button
-                    conained="filled"
-                    type="submit"
-                    //   color="green"
-                    // onClick={handleCreateClose}
-                    className="bg-primary"
-                  >
-                    <span>Confirm</span>
-                  </Button>
-                </DialogFooter>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={handleCreateClose}
+                  conained="text"
+                  color="red"
+                  className="mr-1 "
+                >
+                  <span>Cancel</span>
+                </Button>
+                <Button
+                  conained="filled"
+                  type="submit"
+                  //   color="green"
+                  // onClick={handleCreateClose}
+                  className="bg-primary"
+                >
+                  <span>Confirm</span>
+                </Button>
+              </DialogFooter>
             </form>
           </Box>
         </Modal>

@@ -692,12 +692,14 @@ function ClientCreation() {
                   <div className="flex align-middle">
                     <ul className="list-disc mr-5 w-full">
                       {filesList.map((file, index) => (
+                        <>
+                        {console.log("dj",file)}
                         <li
                           key={index} // Use index since file.id is not defined
                           className="flex items-center justify-between mb-2 bg-[#366FA1] p-2 rounded-md text-white"
                         >
                           <span>
-                            {file.files_name} ({file.files.length})
+                            {file.document_type} ({file.files.length})
                           </span>
                           <div className="flex items-center space-x-2">
                             <DeleteIcon
@@ -707,6 +709,7 @@ function ClientCreation() {
                             />
                           </div>
                         </li>
+                        </>
                       ))}
                     </ul>
                     {filesList.length > 0 && (
