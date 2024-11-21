@@ -130,7 +130,7 @@ function ProductDescriptionCreation() {
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Create product Details
+              Create Product Description Details
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
               <div>

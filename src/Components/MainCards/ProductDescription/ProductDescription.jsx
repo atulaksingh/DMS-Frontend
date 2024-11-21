@@ -213,7 +213,7 @@ function ProductDescription({ productDescriptionData }) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            HSN Details
+          Product Description Details
           </div>
           <div >
       

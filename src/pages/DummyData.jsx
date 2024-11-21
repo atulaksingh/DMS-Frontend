@@ -2,7 +2,9 @@ import {
   Button,
   Checkbox,
   DialogFooter,
+  Option,
   Radio,
+  Select,
 } from "@material-tailwind/react";
 import React from "react";
 import Modal from "@mui/material/Modal";
@@ -16,6 +18,21 @@ import { useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
+import Tab from "@mui/material/Tab";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import TabPanel from "@mui/lab/TabPanel";
 import { useEffect } from "react";
 const styleCreateMOdal = {
   position: "absolute",
@@ -26,43 +43,162 @@ const styleCreateMOdal = {
   bgcolor: "background.paper",
   //   border: "1px solid #000",
   boxShadow: 24,
-  p: 4,
+  paddingTop: "17px", // For vertical (top and bottom) padding
+  paddingInline: "40px",
   borderRadius: "10px",
 };
 function SalesCreation() {
   const { id } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [offData, setOffData] = useState([]);
+  const [value, setValue] = React.useState("1");
+  const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
   const [customerData, setCustomerData] = useState([]);
   const [product_ser_Data, setProduct_ser_Data] = useState([]);
+  const [branch_ser_name, setBranch_ser_name] = useState([]);
+  const [showBranchInput, setShowBranchInput] = useState(false);
+  const [branchNoGst, setBranchNoGst] = useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [selectedTDSTCSOption, setSelectedTDSTCSOption] = useState("");
+  const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
+  const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
+    useState("");
+  console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+  const [shouldShowIGST, setShouldShowIGST] = useState(false);
+  const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
+  const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
+  const [filteredInvoiceTypes, setFilteredInvoiceTypes] = useState([
+    "Unregistered Local",
+    "Unregistered Non-Local",
+  ]);
   const handleCreateOpen = () => {
     setOpenCreateModal(true);
     setAnchorEl(null);
   };
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleCreateClose = () => setOpenCreateModal(false);
   const [formData, setFormData] = useState({
+    offLocID: "",
     location: "",
     contact: "",
     address: "",
     city: "",
     state: "",
     country: "",
+    branchID: "",
+  });
+
+  const [vendorData, setVendorData] = useState({
+    vendorID: "",
     gst_no: "",
     name: "",
     pan: "",
     customer_address: "",
     customer: false,
     vendor: false,
-    hsnCode: "",
-    gst_rate: "",
   });
+  const [rows, setRows] = useState([
+    {
+      product: "",
+      hsnCode: "",
+      gstRate: "",
+      description: "",
+      unit: "",
+      rate: "",
+      product_amount: "",
+      cgst: "",
+      sgst: "",
+      igst: "",
+    },
+  ]);
+  const [invoiceData, setInvoiceData] = useState([
+    {
+      month: "",
+      invoice_no: "",
+      invoice_date: "",
+      invoice_type: "",
+      entry_type: "",
+      attach_invoice: "",
+      taxable_amount: "",
+      // cgst: "",
+      // sgst: "",
+      // igst: "",
+      total_invoice_value: "",
+      tds_tcs_rate: "",
+      tds_tcs_section: "",
+      tcs: "",
+      tds: "",
+      amount_receivable: "",
+    },
+  ]);
+  console.log("formData", formData);
+  console.log("vendor", vendorData);
+  console.log("rowsData", rows);
+  console.log("invoiceData", invoiceData);
+  // const handleInputChangeInvoiceData = (e) => {
+  //   const { name, value, type } = e.target;
+  //   const fieldValue = type === "file" ? e.target.files[0] : value;
+
+  //   setInvoiceData((prevData) => {
+  //     const updatedData = [...prevData];
+  //     updatedData[0] = {
+  //       ...updatedData[0],
+  //       [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
+  //     };
+  //     return updatedData;
+  //   });
+  // };
+
+
+
+  const handleInputChangeInvoiceData = (e) => {
+    const { name, value, type } = e.target;
+    const fieldValue = type === "file" ? e.target.files[0] : value;
+  
+    setInvoiceData((prevData) => {
+      const updatedData = [...prevData];
+      let updatedEntry = {
+        ...updatedData[0],
+        [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
+      };
+  
+      // Logic to reset the other field to blank
+      if (name === "tcs") {
+        updatedEntry.tds = ""; // Reset TDS to blank if TCS is filled
+      } else if (name === "tds") {
+        updatedEntry.tcs = ""; // Reset TCS to blank if TDS is filled
+      }
+  
+      if (name === "tds_tcs_rate") {
+        if (updatedEntry.tcs > 0) {
+          updatedEntry.tds = ""; // Reset TDS to blank if TCS rate is filled
+        } else if (updatedEntry.tds > 0) {
+          updatedEntry.tcs = ""; // Reset TCS to blank if TDS rate is filled
+        }
+      }
+  
+      updatedData[0] = updatedEntry;
+      return updatedData;
+    });
+  };
+  
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const handleInputChangeCL = (e) => {
+    const { name, value } = e.target;
+    setVendorData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -75,55 +211,108 @@ function SalesCreation() {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/create-sales/${id}`
+          `http://127.0.0.1:8000/api/get-sales/${id}`
         );
         console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
         setCustomerData(response.data.serializer_customer);
         setProduct_ser_Data(response.data.product_serializer);
+        setBranch_ser_name(response.data.branch_serializer);
       } catch (error) {}
     };
     fetchBankDetails();
   }, [id]);
 
-  const handleLocationChange11111 = async () => {
-    // if (!id) {
-    //   console.error("ID is not defined");
-    //   return;
-    // }
+  const handleLocationChange = async (newValue, isBranch = false) => {
+    if (isBranch && newValue && newValue.branch_name) {
+      // console.log("branchiddd--->",isBranch,newValue,newValue.branch_name)
+      setFormData({
+        ...formData,
+        branchID: newValue.id, // Store branchID when branch is selected
+      });
+    } else if (newValue && newValue.location) {
+      setFormData({
+        ...formData,
+        offLocID: newValue.id,
+        location: newValue.location,
+        contact: newValue.contact || "",
+        address: newValue.address || "",
+        city: newValue.city || "",
+        state: newValue.state || "",
+        country: newValue.country || "",
+      });
+      setShowBranchInput(false); // Hide branch input when a location is selected
 
-    try {
-      console.log(productID, "kkkk");
-
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/create-sales/${id}/?newValue=${selectedLocation}&productID=${productID}`
+      // Fetch additional data if needed
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${newValue.id}&productID=${productID}`
+        );
+        // console.log("Location Data:---->", response.data.branch_gst);
+        setBranchNoGst(response.data.branch_gst);
+      } catch (error) {
+        console.error("Error fetching location data:", error);
+      }
+    }
+  };
+  // console.log("123",branchNoGst)
+  const handleInputChangeLocation = async (event, newInputValue) => {
+    if (newInputValue === "") {
+      setFormData({
+        offLocID: "",
+        location: "",
+        contact: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        branchID: "", // Reset branchID as well
+      });
+      setShowBranchInput(false); // Hide custom branch input
+    } else {
+      const isLocationFound = offData.some(
+        (option) =>
+          option.location.toLowerCase() === newInputValue.toLowerCase()
       );
 
-      console.log("Product ID:", response);
+      if (!isLocationFound) {
+        setShowBranchInput(true);
+      } else {
+        setShowBranchInput(false);
+      }
 
-      // Update only the location-related fields in formData
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        location: response.data.location?.location || "", // Update location
-        contact: response.data.location?.contact || prevFormData.contact, // Preserve contact if not provided
-        address: response.data.location?.address || prevFormData.address, // Preserve address if not provided
-        city: response.data.location?.city || prevFormData.city, // Preserve city if not provided
-        state: response.data.location?.state || prevFormData.state, // Preserve state if not provided
-        country: response.data.location?.country || prevFormData.country, // Preserve country if not provided
-        hsnCode: response.data.hsn?.hsn_code || "", // Preserve country if not provided
-        gst_rate: response.data.hsn?.gst_rate || "", // Preserve country if not provided
-        // Do not overwrite gst_no, name, pan, customer, vendor unless you need to
-      }));
-    } catch (error) {
-      console.error("Error sending location id:", error);
+      setFormData({
+        ...formData,
+        location: newInputValue,
+      });
+
+      const matchingLocation = offData.find(
+        (option) =>
+          option.location.toLowerCase() === newInputValue.toLowerCase()
+      );
+
+      if (matchingLocation) {
+        setFormData({
+          ...formData,
+          offLocID: matchingLocation.id,
+          location: matchingLocation.location,
+          contact: matchingLocation.contact || "",
+          address: matchingLocation.address || "",
+          city: matchingLocation.city || "",
+          state: matchingLocation.state || "",
+          country: matchingLocation.country || "",
+        });
+      }
     }
   };
 
   const handleGstNoChange = (event, newValue1) => {
     // If user clears the input
+    setIsGstNoEmpty(!newValue1);
     if (!newValue1) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setVendorData((prevVendorData) => ({
+        ...prevVendorData,
+        vendorID: "",
         gst_no: "",
         name: "",
         pan: "",
@@ -134,15 +323,16 @@ function SalesCreation() {
       return;
     }
 
-    // Handle the case when a string is typed in the Autocomplete input
     if (typeof newValue1 === "string") {
       const matchedCustomer = customerData.find(
         (customer) => customer.gst_no === newValue1
       );
 
       if (matchedCustomer) {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
+        setVendorData((prevVendorData) => ({
+          ...prevVendorData,
+
+          vendorID: matchedCustomer.id,
           gst_no: matchedCustomer.gst_no,
           name: matchedCustomer.name,
           pan: matchedCustomer.pan,
@@ -151,9 +341,9 @@ function SalesCreation() {
           vendor: matchedCustomer.vendor,
         }));
       } else {
-        // If no match is found, allow custom GST number input
-        setFormData((prevFormData) => ({
-          ...prevFormData,
+        setVendorData((prevVendorData) => ({
+          ...prevVendorData,
+          vendorID: "",
           gst_no: newValue1,
           name: "",
           pan: "",
@@ -165,10 +355,10 @@ function SalesCreation() {
       return;
     }
 
-    // Handle the case where an object (customer) is selected
     if (newValue1 && newValue1.gst_no) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
+      setVendorData((prevVendorData) => ({
+        ...prevVendorData,
+        vendorID: newValue1.id,
         gst_no: newValue1.gst_no,
         name: newValue1.name || "",
         pan: newValue1.pan || "",
@@ -178,25 +368,131 @@ function SalesCreation() {
       }));
     }
   };
-  const handleProductChange = (event, newValue) => {
-    if (newValue && newValue.id) {
-      setProductID(newValue.id); // Set the selected product's ID
-      console.log("Selected Product ID:", newValue.id);
-    } else {
-      setProductID(""); // Clear product ID when no product is selected
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        hsnCode: "",  // Clear hsnCode when product is cleared
-        gst_rate: "", // Clear gst_rate when product is cleared
-      }));
+
+  const handleProductChange = async (index, newValue) => {
+    if (newValue) {
+      setProductID(newValue.id);
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+        );
+
+        const { hsn_code: hsnCode, gst_rate: gstRate } =
+          response.data.hsn || {};
+
+        setRows((prevRows) =>
+          prevRows.map((row, rowIndex) =>
+            rowIndex === index
+              ? { ...row, product: newValue.product_name, hsnCode, gstRate }
+              : row
+          )
+        );
+      } catch (error) {
+        console.error("Error fetching HSN code and GST rate:", error);
+      }
+    }
+  };
+
+  // useEffect(() => {
+  //   if (selectedLocation) {
+  //     handleLocationChange11111();
+  //   }
+  // }, [selectedLocation]);
+
+  // console.log("djjj", rows);
+  const handleInputChangeProduct = (index, field, value) => {
+    setRows((prevRows) =>
+      prevRows.map((row, rowIndex) =>
+        rowIndex === index ? { ...row, [field]: value } : row
+      )
+    );
+  };
+
+  const handleAddRow = () => {
+    setRows([
+      ...rows,
+      {
+        product: "",
+        hsnCode: "",
+        gstRate: "",
+        description: "",
+        unit: "",
+      },
+    ]);
+  };
+
+  const handleDeleteRow = (index) => {
+    const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index);
+    setRows(updatedRows);
+  };
+  const [salesInvoice, setSalesInvoice] = useState("100");
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+
+    const payload = {
+      // salesInvoice,
+      formData,
+      vendorData,
+      rows,
+    };
+
+    try {
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/create-sales/${id}`,
+        payload
+      );
+      console.log("Data submitted successfully:", response.data);
+      // Handle successful response
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      // Handle error response
     }
   };
   useEffect(() => {
-    if (selectedLocation || productID) {
-      handleLocationChange11111();
+    if (vendorData.gst_no && branchNoGst) {
+      const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
+      const branchGstPrefix = branchNoGst.slice(0, 2);
+
+      if (
+        vendorGstPrefix === branchGstPrefix &&
+        invoiceData[0].invoice_type.toLowerCase() === "sez"
+      ) {
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      } else if (vendorGstPrefix === branchGstPrefix) {
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(true);
+      } else {
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      }
+    } else if (!vendorData.gst_no) {
+      setFilteredInvoiceTypes(["Unregistered Local", "Unregistered Non-Local"]);
+
+      if (invoiceData[0].invoice_type.toLowerCase() === "unregistered local") {
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(true);
+      } else if (
+        invoiceData[0].invoice_type.toLowerCase() === "unregistered non-local"
+      ) {
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      } else {
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(false);
+      }
+    } else {
+      setFilteredInvoiceTypes([
+        "B2B",
+        "B2C-L",
+        "BSC-O",
+        "Nil Rated",
+        "Advance Received",
+        "SEZ",
+        "Export",
+      ]);
     }
-  }, [selectedLocation, productID]);
-  // console.log("formddddata1111->", productID);
+  }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
 
   return (
     <>
@@ -207,605 +503,2019 @@ function SalesCreation() {
           onClose={handleCreateClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
+          className="overflow-auto"
         >
           <Box sx={styleCreateMOdal}>
             <Typography
               id="modal-modal-title"
               variant="h5"
               component="h2"
-              className="text-center border-b-2 border-[#366FA1] pb-3"
+              className="text-center border-b-2 border-[#366FA1] pb-3 overflow-auto"
             >
               Create Sales Details
             </Typography>
-            <form className=" my-5 w-full ">
-              <div>
-                <div className="font-bold text-[15px] text-primary my-1">
-                  Office Location Details
-                </div>
-                <div className="grid grid-cols-4 gap-4">
-                  <div className="col-span-1">
-                    <label htmlFor="account_no">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Office Location
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Stack spacing={2} sx={{ width: 300 }}>
-                        <Autocomplete
-                          freeSolo
-                          id="free-solo-2-demo"
-                          disableClearable
-                          options={offData}
-                          getOptionLabel={(option) => option.location || ""}
-                          onChange={(event, newValue) => {
-                            if (newValue) {
-                              const selectedId = newValue.id;
-                              setSelectedLocation(selectedId);
-                              setFormData((prevFormData) => ({
-                                ...prevFormData,
-                                location: newValue.location || "", // Set location in formData
-                              }));
-                            } else {
-                              setFormData((prevFormData) => ({
-                                ...prevFormData,
-                                location: "", // Reset location if no value is selected
-                              }));
-                            }
-                          }}
-                          renderOption={(props, option) => (
-                            <li {...props} key={option.id}>
-                              {option.location}
-                            </li>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              size="small"
-                              value={formData.location ?? ""} // Use nullish coalescing to ensure value is never undefined
-                              className="border border-red-500"
-                              placeholder="office Location"
-                              slotProps={{
-                                input: {
-                                  ...params.InputProps,
-                                  type: "search",
-                                },
-                              }}
-                            />
-                          )}
-                        />
-                      </Stack>
+            <form
+              className=" my-5 w-full h-[700px] overflow-auto "
+              onSubmit={handleSubmit}
+            >
+              <div className="font-bold text-[15px] text-primary my-1">
+                Office Location Details
+              </div>
+              <div className="grid grid-cols-2">
+                <div>
+                  <div className="grid grid-cols-12 gap-2 mb-2">
+                    <div className="col-span-4 border-r-2 border-primary">
+                      <label htmlFor="account_no">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Office Location
+                        </Typography>
+                      </label>
                     </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <label htmlFor="contact">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Contact
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="contact"
-                        placeholder="Contact No"
-                        value={formData.contact}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <label htmlFor="address">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Address
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="address"
-                        placeholder="Address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <label htmlFor="city">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        City
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="city"
-                        placeholder="City"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <label htmlFor="state">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        State
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="state"
-                        placeholder="State"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <label htmlFor="country">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Country
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="country"
-                        placeholder="Country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="font-bold text-[15px] text-primary mt-3 mb-1">
-                 
-                  Customer And Vendor Details
-                </div>
-                <div className="grid grid-cols-4 gap-4">
-                  <div className="col-span-1">
-                    <label htmlFor="account_no">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Gst No
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Autocomplete
-                        freeSolo
-                        id="gst-no-autocomplete"
-                        disableClearable
-                        options={customerData}
-                        getOptionLabel={(option) =>
-                          typeof option === "string"
-                            ? option
-                            : option.gst_no || ""
-                        }
-                        onChange={handleGstNoChange}
-                        value={formData.gst_no || ""} // Bind value to formData.gst_no
-                        renderOption={(props, option) => (
-                          <li {...props} key={option.id}>
-                            {option.gst_no}
-                          </li>
-                        )}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            size="small"
-                            name="gst_no"
-                            value={formData.gst_no || ""} // Reset input value when formData.gst_no changes
-                            onChange={(e) =>
-                              handleGstNoChange(e, e.target.value)
-                            } // Update input value on type
-                            placeholder="Enter or select GST No."
-                            slotProps={{
-                              input: {
-                                ...params.InputProps,
-                                type: "search",
-                              },
-                            }}
+                    <div className="col-span-8">
+                      <div className="">
+                        <Stack spacing={1} sx={{ width: 300 }}>
+                          <Autocomplete
+                            freeSolo
+                            id="location-select"
+                            disableClearable
+                            options={offData}
+                            getOptionLabel={(option) => option.location || ""}
+                            onChange={(event, newValue) =>
+                              handleLocationChange(newValue)
+                            } // Handle location selection
+                            onInputChange={handleInputChangeLocation} // Handle location input change
+                            renderOption={(props, option) => (
+                              <li
+                                {...props}
+                                key={option.id}
+                                style={{
+                                  padding: "4px 8px",
+                                  fontSize: "0.875rem",
+                                }}
+                              >
+                                {option.location}
+                              </li>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                size="small"
+                                value={formData.location || ""}
+                                className="border border-red-500"
+                                placeholder="Office Location"
+                                sx={{
+                                  "& .MuiInputBase-root": {
+                                    height: 28,
+                                    padding: "4px 6px",
+                                  },
+                                  "& .MuiOutlinedInput-input": {
+                                    padding: "4px 6px",
+                                  },
+                                }}
+                                slotProps={{
+                                  input: {
+                                    ...params.InputProps,
+                                    type: "search",
+                                  },
+                                }}
+                              />
+                            )}
                           />
-                        )}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <label htmlFor="name">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Name
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="name"
-                        placeholder="Name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <label htmlFor="pan">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        PAN
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="pan"
-                        placeholder="PAN No"
-                        value={formData.pan}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-1">
-                    <label htmlFor="city">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Customer Address
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="customer_address"
-                        placeholder="Customer Address"
-                        value={formData.customer_address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-1">
-                    <label htmlFor="customer_type">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Customer Type
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <div className="col-span-4">
-                        <div className="flex gap-10">
-                          <Checkbox
-                            name="customer"
-                            label="Customer"
-                            ripple={false}
-                            checked={formData.customer || false}
-                            className="h-5 w-5 rounded-full border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0 "
-                            onChange={(e) =>
-                              setFormData((prevFormData) => ({
-                                ...prevFormData,
-                                customer: e.target.checked, // Update formData when Checkbox changes
-                              }))
-                            }
-                          />
-                          <Checkbox
-                            name="vendor"
-                            label="Vendor"
-                            ripple={false}
-                            checked={formData.vendor || false}
-                            onChange={(e) =>
-                              setFormData((prevFormData) => ({
-                                ...prevFormData,
-                                vendor: e.target.checked, // Update formData when Checkbox changes
-                              }))
-                            }
-                            className="h-5 w-5 rounded-full border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0"
-                          />
-                        </div>
+                        </Stack>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="font-bold text-[15px] text-primary mt-3 mb-1">
-                  Products Details
+                <div>
+                  <div className="grid grid-cols-12 gap-2 mb-2">
+                    <div className="col-span-4 border-r-2 border-primary">
+                      <label htmlFor="contact">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold"
+                        >
+                          Contact
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="col-span-8">
+                      {" "}
+                      <div className="h-7">
+                        <Input
+                          type="text"
+                          size="md"
+                          name="contact"
+                          placeholder="Contact No"
+                          value={formData.contact}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          style={{
+                            height: "28px",
+                            padding: "4px 6px",
+                            fontSize: "0.875rem",
+                            width: 300,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 gap-4">
-                  <div className="col-span-1">
-                    <label htmlFor="account_no">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Products
-                      </Typography>
-                    </label>
+                <div>
+                  <div className="grid grid-cols-12 gap-2 mb-2">
+                    <div className="col-span-4 border-r-2 border-primary">
+                      <label htmlFor="address">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Address
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="col-span-8 h-7">
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="md"
+                          name="address"
+                          placeholder="Address"
+                          value={formData.address}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="grid grid-cols-12 gap-2 mb-2">
+                    <div className="col-span-4 border-r-2 border-primary">
+                      <label htmlFor="address">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          City
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="col-span-8 h-7">
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="city"
+                          placeholder="City"
+                          value={formData.city}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="grid grid-cols-12 gap-2 mb-2">
+                    <div className="col-span-4 border-r-2 border-primary">
+                      <label htmlFor="address">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          State
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="col-span-8 h-7">
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="state"
+                          placeholder="State"
+                          value={formData.state}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="grid grid-cols-12 gap-2 mb-2">
+                    <div className="col-span-4 border-r-2 border-primary">
+                      <label htmlFor="address">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-2"
+                        >
+                          Country
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="col-span-8 h-7">
+                      <div className="">
+                        <Input
+                          type="text"
+                          size="lg"
+                          name="country"
+                          placeholder="Country"
+                          value={formData.country}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  {showBranchInput && (
+                    <div className="grid grid-cols-12 gap-2 mb-2">
+                      <div className="col-span-4 border-r-2 border-primary">
+                        <label htmlFor="address">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="block font-semibold mb-2"
+                          >
+                            Country
+                          </Typography>
+                        </label>
+                      </div>
+                      <div className="col-span-8 h-7">
+                        <div className="">
+                          <Stack spacing={1} sx={{ width: 300 }}>
+                            <Autocomplete
+                              freeSolo
+                              id="branch-select"
+                              disableClearable
+                              options={branch_ser_name}
+                              getOptionLabel={(option) =>
+                                option.branch_name || ""
+                              }
+                              onChange={(event, newValue) =>
+                                handleLocationChange(newValue, true)
+                              } // Handle branch selection
+                              renderOption={(props, option) => (
+                                <li
+                                  {...props}
+                                  key={option.id}
+                                  style={{
+                                    padding: "4px 8px",
+                                    fontSize: "0.875rem",
+                                  }}
+                                >
+                                  {option.branch_name}
+                                </li>
+                              )}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  size="small"
+                                  value={formData.branchID || ""}
+                                  className="border border-red-500"
+                                  placeholder="Branch Select"
+                                  sx={{
+                                    "& .MuiInputBase-root": {
+                                      height: 28,
+                                      padding: "4px 6px",
+                                    },
+                                    "& .MuiOutlinedInput-input": {
+                                      padding: "4px 6px",
+                                    },
+                                  }}
+                                  slotProps={{
+                                    input: {
+                                      ...params.InputProps,
+                                      type: "search",
+                                    },
+                                  }}
+                                />
+                              )}
+                            />
+                          </Stack>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
+              <div className="border-t-2 my-3 border-[#366FA1]">
+                <div className="grid grid-cols-4 my-1">
+                  <div>
+                    <div>
+                      <label htmlFor="month">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Month
+                        </Typography>
+                      </label>
+                    </div>
                     <div className="">
-                      <Autocomplete
-                        freeSolo
-                        id="product-no-autocomplete"
-                        disableClearable
-                        options={product_ser_Data}
-                        getOptionLabel={(option) =>
-                          typeof option === "string"
-                            ? option
-                            : option.product_name || ""
-                        }
-                        onChange={(event, newValue) => {
-                          if (newValue) {
-                            handleProductChange(event, newValue); // Store the product ID on change
-                          }
+                      <Input
+                        type="date"
+                        size="md"
+                        name="month"
+                        value={invoiceData[0].month}
+                        onChange={handleInputChangeInvoiceData}
+                        placeholder="Month"
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
                         }}
-                        value={
-                          product_ser_Data.find(
-                            (option) => option.id === formData.productID
-                          ) || null
-                        }
-                        renderOption={(props, option) => (
-                          <li {...props} key={option.id}>
-                            {option.product_name}
-                          </li>
-                        )}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            size="small"
-                            name="product"
-                            onChange={(e) =>
-                              handleProductChange(e, e.target.value)
-                            }
-                            placeholder="Enter or select GST No."
-                            slotProps={{
-                              input: {
-                                ...params.InputProps,
-                                type: "search",
-                              },
-                            }}
-                          />
-                        )}
+                        // containerProps={{ className: "min-w-full" }}
+                        style={{
+                          height: "28px", // Match this to your Autocomplete's root height
+                          padding: "4px 6px", // Match this padding
+                          fontSize: "0.875rem", // Ensure font size is consistent
+                          width: 300,
+                        }}
                       />
                     </div>
                   </div>
-
-                  <div className="col-span-1">
-                    <label htmlFor="hsnCode">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        HSN Code
-                      </Typography>
-                    </label>
-
+                  <div>
+                    <div>
+                      <label htmlFor="invoice_no">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Invoice No
+                        </Typography>
+                      </label>
+                    </div>
                     <div className="">
                       <Input
                         type="text"
-                        size="lg"
-                        name="hsnCode"
-                        placeholder="HSN Code"
-                        value={formData.hsnCode}
-                        onChange={handleInputChange}
+                        size="md"
+                        name="invoice_no"
+                        placeholder="Invoice No"
+                        value={invoiceData[0].invoice_no}
+                        onChange={handleInputChangeInvoiceData}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
                           className: "hidden",
                         }}
-                        containerProps={{ className: "min-w-full" }}
+                        // containerProps={{ className: "min-w-full" }}
+                        style={{
+                          height: "28px", // Match this to your Autocomplete's root height
+                          padding: "4px 6px", // Match this padding
+                          fontSize: "0.875rem", // Ensure font size is consistent
+                          width: 300,
+                        }}
                       />
                     </div>
                   </div>
-                  <div className="col-span-1">
-                    <label htmlFor="gst_rate">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        GST Rate
-                      </Typography>
-                    </label>
-
+                  <div>
+                    <div>
+                      <label htmlFor="invoice_date">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Invoice Date
+                        </Typography>
+                      </label>
+                    </div>
                     <div className="">
                       <Input
-                        type="text"
-                        size="lg"
-                        name="gst_rate"
-                        placeholder="GST Rate"
-                        value={formData.gst_rate}
-                        onChange={handleInputChange}
+                        type="date"
+                        size="md"
+                        name="invoice_date"
+                        placeholder="Invoice Date"
+                        value={invoiceData[0].invoice_date}
+                        onChange={handleInputChangeInvoiceData}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
                           className: "hidden",
                         }}
-                        containerProps={{ className: "min-w-full" }}
+                        // containerProps={{ className: "min-w-full" }}
+                        style={{
+                          height: "28px", // Match this to your Autocomplete's root height
+                          padding: "4px 6px", // Match this padding
+                          fontSize: "0.875rem", // Ensure font size is consistent
+                          width: 300,
+                        }}
                       />
                     </div>
                   </div>
-
-                  <div className="col-span-1">
-                    <label htmlFor="city">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Description
-                        
-                      </Typography>
-                    </label>
-
+                  <div>
+                    <div>
+                      <label htmlFor="invoice_type">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Invoice Type
+                        </Typography>
+                      </label>
+                    </div>
                     <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="desacription"
-                        placeholder="Description"
-                        value={formData.customer_address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
+                      <div className="">
+                        {/* <select
+                         name="invoice_type"
+                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                          value={invoiceData[0].invoice_type}
+                          onChange={handleInputChangeInvoiceData}
+                        >
+                          <option value="">Select Invoice Type</option>
+                          <option value="b2b">B2B</option>
+                          <option value="b2c-l">B2C-L</option>
+                          <option value="bsc-o">BSC-O</option>
+                          <option value="nil rated">Nil Rated</option>
+                          <option value="advance received">
+                            Advance Received
+                          </option>
+                          <option value="export">Export</option>
+                          <option value="unregistered local">
+                            Unregistered Local
+                          </option>
+                          <option value="unregistered non-local">
+                            Unregistered non-local
+                          </option>
+                          <option value="sez">SEZ</option>
+                        </select> */}
+                        {/* <select
+                          name="invoice_type"
+                          value={invoiceData[0].invoice_type}
+                          onChange={handleInputChangeInvoiceData}
+                        >
+                          {(vendorData.gst_no
+                            ? [
+                                "B2B",
+                                "B2C-L",
+                                "BSC-O",
+                                "Nil Rated",
+                                "Advance Received",
+                                "SEZ",
+                                "Export",
+                              ]
+                            : filteredInvoiceTypes
+                          ).map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select> */}
+
+                        <select
+                          name="invoice_type"
+                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                          value={invoiceData[0].invoice_type} // Ensures the selected value matches the state
+                          onChange={handleInputChangeInvoiceData}
+                        >
+                          {vendorData.gst_no === "" // Check if gst_no is empty
+                            ? // Show only these options when gst_no is empty
+                              [
+                                "Select Entity Type",
+                                "Unregistered Local",
+                                "Unregistered Non-Local",
+                              ].map((option) => (
+                                <option
+                                  key={option}
+                                  value={option.toLowerCase()}
+                                >
+                                  {option}
+                                </option>
+                              ))
+                            : // Show other options when gst_no is not empty
+                              [
+                                "Select Entity Type",
+                                "B2B",
+                                "B2C-L",
+                                "BSC-O",
+                                "Nil Rated",
+                                "Advance Received",
+                                "SEZ",
+                                "Export",
+                              ].map((option) => (
+                                <option
+                                  key={option}
+                                  value={option.toLowerCase()}
+                                >
+                                  {option}
+                                </option>
+                              ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-span-1">
-                    <label htmlFor="unit">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Unit
-                        
-                      </Typography>
-                    </label>
-
+                  <div>
+                    <div>
+                      <label htmlFor="entry_type">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Entity Type
+                        </Typography>
+                      </label>
+                    </div>
                     <div className="">
-                      <Input
-                        type="number"
-                        size="lg"
-                        name="unit"
-                        placeholder="Unit"
-                        value={formData.customer_address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
+                      <div className="">
+                        <select
+                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                          name="entry_type"
+                          value={invoiceData[0].entry_type}
+                          onChange={handleInputChangeInvoiceData}
+                        >
+                          <option value="">Select Entity Type</option>
+                          <option value="sales_invoice">Sales Invoice</option>
+                          <option value="debit_note">Debit Note</option>
+                          <option value="income">Income</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-span-1">
-                    <label htmlFor="rate">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Description
-                        
-                      </Typography>
-                    </label>
-
+                  <div>
+                    <div>
+                      <label htmlFor="attach_invoice">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Attach Invoice
+                        </Typography>
+                      </label>
+                    </div>
                     <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="desacription"
-                        placeholder="Description"
-                        value={formData.customer_address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
+                      <input
+                        type="file"
+                        size="md"
+                        name="attach_invoice"
+                        placeholder="Invoice Date"
+                        onChange={handleInputChangeInvoiceData}
                       />
                     </div>
                   </div>
                 </div>
               </div>
-              <DialogFooter>
+
+              <div>
+                <div className="py-5 px-0">
+                  <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                    <Box sx={{ width: "100%", typography: "body1" }}>
+                      <TabContext value={value}>
+                        <Box
+                          sx={{
+                            borderBottom: 1,
+                            borderColor: "divider",
+                            padding: 0,
+                            margin: 0,
+                            minHeight: "25px",
+                          }}
+                        >
+                          <TabList
+                            onChange={handleChange}
+                            aria-label="customized tabs example"
+                            TabIndicatorProps={{
+                              sx: {
+                                display: "none", // Hide the default tab indicator
+                                padding: 0,
+                                margin: 0,
+                              },
+                            }}
+                            sx={{
+                              padding: 0, // Remove any default padding from the TabList
+                              minHeight: "20px", // Set a specific minHeight for the TabList
+                            }}
+                          >
+                            <Tab
+                              label="Customer And Vendor Details"
+                              value="1"
+                              sx={{
+                                padding: "0px 10px", // Adjust padding as needed
+                                minHeight: "0px", // Reduced min height
+                                lineHeight: "2.2",
+                                fontSize: "0.75rem",
+                                "&.Mui-selected": {
+                                  color: "primary.main",
+                                  fontWeight: "bold",
+                                  borderTop: "1px solid",
+                                  borderLeft: "1px solid",
+                                  borderRight: "1px solid",
+                                  borderBottom: "0px",
+                                  borderColor: "primary.main",
+                                },
+                                "&:hover": {
+                                  color: "primary.main",
+                                },
+                              }}
+                            />
+                            <Tab
+                              label="Product Details"
+                              value="2"
+                              sx={{
+                                padding: "0px 10px", // Adjust padding as needed
+                                minHeight: "25px", // Reduced min height
+                                lineHeight: "2.2",
+                                fontSize: "0.75rem",
+                                "&.Mui-selected": {
+                                  color: "primary.main",
+                                  fontWeight: "bold",
+                                  borderTop: "1px solid",
+                                  borderLeft: "1px solid",
+                                  borderRight: "1px solid",
+                                  borderBottom: "0px",
+                                  borderColor: "primary.main",
+                                },
+                                "&:hover": {
+                                  color: "primary.main",
+                                },
+                              }}
+                            />
+                          </TabList>
+                        </Box>
+
+                        <TabPanel value="1" sx={{ padding: "20px 0" }}>
+                          <div className="grid grid-cols-2">
+                            <div>
+                              <div className="grid grid-cols-12 gap-2 3">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="account_no">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      Gst No
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8">
+                                  <div className="">
+                                    {/* <Stack spacing={1} sx={{ width: 300 }}> */}
+                                    <Autocomplete
+                                      sx={{ width: 300 }}
+                                      freeSolo
+                                      id="gst-no-autocomplete"
+                                      disableClearable
+                                      options={customerData}
+                                      getOptionLabel={(option) =>
+                                        typeof option === "string"
+                                          ? option
+                                          : option.gst_no || ""
+                                      }
+                                      onChange={handleGstNoChange}
+                                      value={vendorData.gst_no || ""} // Bind value to formData.gst_no
+                                      renderOption={(props, option) => (
+                                        <li {...props} key={option.id}>
+                                          {option.gst_no}
+                                        </li>
+                                      )}
+                                      renderInput={(params) => (
+                                        <TextField
+                                          {...params}
+                                          size="small"
+                                          name="gst_no"
+                                          value={vendorData.gst_no || ""} // Reset input value when formData.gst_no changes
+                                          onChange={(e) =>
+                                            handleGstNoChange(e, e.target.value)
+                                          } // Update input value on type
+                                          placeholder="Enter or select GST No."
+                                          sx={{
+                                            // Adjust the height and padding to reduce overall size
+                                            "& .MuiInputBase-root": {
+                                              height: 28, // Set your desired height here
+                                              padding: "4px 6px", // Adjust padding to make it smaller
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px 6px", // Input padding
+                                            },
+                                          }}
+                                          slotProps={{
+                                            input: {
+                                              ...params.InputProps,
+                                              type: "search",
+                                            },
+                                          }}
+                                        />
+                                      )}
+                                    />
+                                    {/* </Stack> */}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-12 gap-2 mb-3">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="contact">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      Name
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8">
+                                  {" "}
+                                  <div className="h-7">
+                                    <Input
+                                      type="text"
+                                      size="lg"
+                                      name="name"
+                                      placeholder="Name"
+                                      value={vendorData.name}
+                                      onChange={handleInputChangeCL}
+                                      className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                                      labelProps={{
+                                        className: "hidden",
+                                      }}
+                                      // containerProps={{ className: "min-w-full" }}
+                                      style={{
+                                        height: "28px", // Match this to your Autocomplete's root height
+                                        padding: "4px 6px", // Match this padding
+                                        fontSize: "0.875rem", // Ensure font size is consistent
+                                        width: 300,
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-12 gap-2 mb-3">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="address">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      PAN
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8 h-7">
+                                  <div className="">
+                                    <Input
+                                      type="text"
+                                      size="lg"
+                                      name="pan"
+                                      placeholder="PAN No"
+                                      value={vendorData.pan}
+                                      onChange={handleInputChangeCL}
+                                      className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                                      labelProps={{
+                                        className: "hidden",
+                                      }}
+                                      style={{
+                                        height: "28px", // Match this to your Autocomplete's root height
+                                        padding: "4px 6px", // Match this padding
+                                        fontSize: "0.875rem", // Ensure font size is consistent
+                                        width: 300,
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-12 gap-2 mb-3">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="address">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      Customer Address
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8 h-7">
+                                  <div className="">
+                                    <Input
+                                      type="text"
+                                      size="lg"
+                                      name="customer_address"
+                                      placeholder="Customer Address"
+                                      value={vendorData.customer_address}
+                                      onChange={handleInputChangeCL}
+                                      className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                                      labelProps={{
+                                        className: "hidden",
+                                      }}
+                                      style={{
+                                        height: "28px",
+                                        padding: "4px 6px",
+                                        fontSize: "0.875rem",
+                                        width: 300,
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-12 gap-2 mb-3 ">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="address">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      Customer Type
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8 h-7">
+                                  <div className="">
+                                    <div className="">
+                                      <div className="col-span-4 my-auto">
+                                        <div className="flex gap-10">
+                                          <Checkbox
+                                            name="customer"
+                                            label="Customer"
+                                            ripple={false}
+                                            checked={
+                                              vendorData.customer || false
+                                            }
+                                            className="h-5 w-5 rounded-full border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0 "
+                                            onChange={(e) =>
+                                              setVendorData(
+                                                (prevVendorData) => ({
+                                                  ...prevVendorData,
+                                                  customer: e.target.checked,
+                                                })
+                                              )
+                                            }
+                                          />
+                                          <Checkbox
+                                            name="vendor"
+                                            label="Vendor"
+                                            ripple={false}
+                                            checked={vendorData.vendor || false}
+                                            onChange={(e) =>
+                                              setVendorData(
+                                                (prevVendorData) => ({
+                                                  ...prevVendorData,
+                                                  vendor: e.target.checked,
+                                                })
+                                              )
+                                            }
+                                            className="h-5 w-5 rounded-full border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0"
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </TabPanel>
+                        <TabPanel value="2" sx={{ padding: "8px 0" }}>
+                          <div>
+                            <TableContainer
+                              component={Paper}
+                              className="shadow-md rounded-lg mt-3"
+                              style={{ maxHeight: "200px", overflowY: "auto" }}
+                            >
+                              <Table>
+                                <TableHead>
+                                  <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      Product
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      Description
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      HSN Code
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      Unit
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      Rate
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      Amount
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      GST Rate
+                                    </TableCell>
+
+                                    {shouldShowCGSTSGST && (
+                                      <>
+                                        <TableCell
+                                          className="font-semibold text-gray-600"
+                                          sx={{ padding: "4px" }}
+                                        >
+                                          SGST
+                                        </TableCell>
+                                        <TableCell
+                                          className="font-semibold text-gray-600"
+                                          sx={{ padding: "4px" }}
+                                        >
+                                          CGST
+                                        </TableCell>
+                                      </>
+                                    )}
+
+                                    {shouldShowIGST && (
+                                      <TableCell
+                                        className="font-semibold text-gray-600"
+                                        sx={{ padding: "4px" }}
+                                      >
+                                        Igst
+                                      </TableCell>
+                                    )}
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    >
+                                      Total Amount
+                                    </TableCell>
+                                    <TableCell
+                                      className="font-semibold text-gray-600"
+                                      sx={{ padding: "4px" }}
+                                    ></TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {/* <div style={{ maxHeight: "450px", overflowY: "auto" }}> */}
+                                  {rows.map((row, index) => (
+                                    <TableRow key={index} className="p-0 ">
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <Autocomplete
+                                          freeSolo
+                                          id={`product-autocomplete-${index}`}
+                                          disableClearable
+                                          options={product_ser_Data}
+                                          getOptionLabel={(option) =>
+                                            option.product_name || ""
+                                          }
+                                          onChange={(event, newValue) =>
+                                            handleProductChange(index, newValue)
+                                          }
+                                          value={
+                                            product_ser_Data.find(
+                                              (option) =>
+                                                option.product_name ===
+                                                row.product
+                                            ) || null
+                                          }
+                                          renderOption={(props, option) => (
+                                            <li {...props} key={option.id}>
+                                              {option.product_name}
+                                            </li>
+                                          )}
+                                          renderInput={(params) => (
+                                            <TextField
+                                              {...params}
+                                              size="small"
+                                              placeholder="select product"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                  width: "100px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          )}
+                                        />
+                                      </TableCell>
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.description}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "description",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.hsnCode}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "hsnCode",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.unit}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "unit",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.rate}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "rate",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.product_amount}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "product_amount",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.gstRate}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "gstRate",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+
+                                      {shouldShowCGSTSGST && (
+                                        <>
+                                          <TableCell sx={{ padding: "6px" }}>
+                                            <TextField
+                                              value={row.cgst}
+                                              onChange={(e) =>
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "cgst",
+                                                  e.target.value
+                                                )
+                                              }
+                                              variant="outlined"
+                                              size="small"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          </TableCell>
+                                          <TableCell sx={{ padding: "6px" }}>
+                                            <TextField
+                                              value={row.sgst}
+                                              onChange={(e) =>
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "sgst",
+                                                  e.target.value
+                                                )
+                                              }
+                                              variant="outlined"
+                                              size="small"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          </TableCell>
+                                        </>
+                                      )}
+                                      {shouldShowIGST && (
+                                        <>
+                                          <TableCell sx={{ padding: "6px" }}>
+                                            <TextField
+                                              value={row.igst}
+                                              onChange={(e) =>
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  e.target.value
+                                                )
+                                              }
+                                              variant="outlined"
+                                              size="small"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          </TableCell>
+                                        </>
+                                      )}
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <TextField
+                                          value={row.igst}
+                                          onChange={(e) =>
+                                            handleInputChangeProduct(
+                                              index,
+                                              "igst",
+                                              e.target.value
+                                            )
+                                          }
+                                          variant="outlined"
+                                          size="small"
+                                          sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                              padding: "2px",
+                                              fontSize: "0.875rem",
+                                              minHeight: "30px",
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              padding: "4px",
+                                            },
+                                          }}
+                                        />
+                                      </TableCell>
+                                      <TableCell sx={{ padding: "6px" }}>
+                                        <IconButton
+                                          size="small"
+                                          color="error"
+                                          onClick={() => handleDeleteRow(index)}
+                                          aria-label="delete"
+                                        >
+                                          <DeleteIcon fontSize="small" />
+                                        </IconButton>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                  {/* </div> */}
+                                  <TableRow>
+                                    <TableCell
+                                      colSpan={12}
+                                      className="text-blue-500 space-x-5 text-sm"
+                                    >
+                                      <div className="flex justify-between">
+                                        <div>
+                                          <button
+                                            onClick={handleAddRow}
+                                            type="button"
+                                            className=" bg-primary text-white p-2 rounded-md"
+                                          >
+                                            Add New Product
+                                          </button>
+                                        </div>
+                                        <div className="flex gap-4">
+                                          <div className="w-36">
+                                            <div className="col-span-6 font-bold mb-1 ">
+                                              Total Amount :
+                                            </div>
+                                            <TextField
+                                              // value={row.igst}
+                                              onChange={(e) =>
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  e.target.value
+                                                )
+                                              }
+                                              variant="outlined"
+                                              size="small"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          </div>
+                                          <div className="w-36">
+                                            <div className="col-span-6 font-bold mb-1 ">
+                                              Total Gst Rate :
+                                            </div>
+                                            <TextField
+                                              // value={row.igst}
+                                              onChange={(e) =>
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  e.target.value
+                                                )
+                                              }
+                                              variant="outlined"
+                                              size="small"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          </div>
+                                          <div className="w-36">
+                                            <div className="col-span-6 font-bold mb-1 ">
+                                              Total Invoice Value :
+                                            </div>
+                                            <TextField
+                                              // value={row.igst}
+                                              onChange={(e) =>
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  e.target.value
+                                                )
+                                              }
+                                              variant="outlined"
+                                              size="small"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </div>
+                        </TabPanel>
+                        <div>
+                          <div className="grid grid-cols-4 gap-4">
+                            <div className="col-span-1">1</div>
+                            <div className="col-span-1">2</div>
+                            <div className="col-span-1">
+                              <div className="text-sm my-2">
+                                {/* <div className="col-span-6 font-bold">
+                                  TCS :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="tcs"
+                                    value={invoiceData[0].tcs}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div> */}
+                                <select
+                                  id="option"
+                                  value={selectedTDSTCSOption}
+                                  onChange={(e) =>
+                                    setSelectedTDSTCSOption(e.target.value)
+                                  }
+                                  className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                >
+                                  <option value="" disabled>
+                                    Choose TDS/TCS
+                                  </option>
+                                  <option value="TCS">TCS</option>
+                                  <option value="TDS">TDS</option>
+                                </select>
+                              </div>
+                              {/* <div className="text-sm my-2">
+                                <select
+                                  id="option"
+                                  value={selectedTDSTCSRateOption}
+                                  onChange={(e) =>
+                                    setSelectedTDSTCSRateOption(e.target.value)
+                                  }
+                                  className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                >
+                                  <option value="" disabled>
+                                    Choose TDS/TCS Rate
+                                  </option>
+                                  <option value="TCS">TCS Rate</option>
+                                  <option value="TDS">TDS Rate</option>
+                                </select>
+                              </div> */}
+                              <div className="text-sm my-2">
+                                <select
+                                  id="option"
+                                  value={selectedTDSTCSectionOption}
+                                  onChange={(e) =>
+                                    setSelectedTDSTCSectionOption(
+                                      e.target.value
+                                    )
+                                  }
+                                  className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                >
+                                  <option value="" disabled>
+                                    Choose TDS/TCS Section
+                                  </option>
+                                  <option value="TCS">TCS Section</option>
+                                  <option value="TDS">TDS Section</option>
+                                </select>
+                              </div>
+                              {/* <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  TDS :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="tds"
+                                    value={invoiceData[0].tds}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div> */}
+                              {/* <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  TDS/TCS Rate :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="tds_tcs_rate"
+                                    value={invoiceData[0].tds_tcs_rate}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div> */}
+                              <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  Taxable Amount :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="taxable_amount"
+                                    value={invoiceData[0].taxable_amount}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  Total Invoice Value :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="total_invoice_value"
+                                    value={invoiceData[0].total_invoice_value}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-span-1">
+                              {/* <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  SGST :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="sgst"
+                                    value={invoiceData[0].sgst}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  IGST :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="igst"
+                                    value={invoiceData[0].igst}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  CGST :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="cgst"
+                                    value={invoiceData[0].cgst}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div> */}
+
+                              {/* {shouldShowCGSTSGST && (
+                                <>
+                                  <div className="grid grid-cols-12 text-sm my-2">
+                                    <div className="col-span-6 font-bold">
+                                      SGST :
+                                    </div>
+                                    <div className="col-span-6">
+                                      <TextField
+                                        variant="outlined"
+                                        size="small"
+                                        name="sgst"
+                                        value={invoiceData[0].sgst}
+                                        onChange={handleInputChangeInvoiceData}
+                                        sx={{
+                                          "& .MuiOutlinedInput-root": {
+                                            padding: "1px",
+                                            fontSize: "0.875rem",
+                                            minHeight: "1px",
+                                          },
+                                          "& .MuiOutlinedInput-input": {
+                                            padding: "2px",
+                                          },
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="grid grid-cols-12 text-sm my-2">
+                                    <div className="col-span-6 font-bold">
+                                      CGST :
+                                    </div>
+                                    <div className="col-span-6">
+                                      <TextField
+                                        variant="outlined"
+                                        size="small"
+                                        name="cgst"
+                                        value={invoiceData[0].cgst}
+                                        onChange={handleInputChangeInvoiceData}
+                                        sx={{
+                                          "& .MuiOutlinedInput-root": {
+                                            padding: "1px",
+                                            fontSize: "0.875rem",
+                                            minHeight: "1px",
+                                          },
+                                          "& .MuiOutlinedInput-input": {
+                                            padding: "2px",
+                                          },
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+
+                              {shouldShowIGST && (
+                                <>
+                                  <div className="grid grid-cols-12 text-sm my-2">
+                                    <div className="col-span-6 font-bold">
+                                      IGST :
+                                    </div>
+                                    <div className="col-span-6">
+                                      <TextField
+                                        variant="outlined"
+                                        size="small"
+                                        name="igst"
+                                        value={invoiceData[0].igst}
+                                        onChange={handleInputChangeInvoiceData}
+                                        sx={{
+                                          "& .MuiOutlinedInput-root": {
+                                            padding: "1px",
+                                            fontSize: "0.875rem",
+                                            minHeight: "1px",
+                                          },
+                                          "& .MuiOutlinedInput-input": {
+                                            padding: "2px",
+                                          },
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              )} */}
+
+                              {/* <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  TDS/TCS Section :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="tds_tcs_section"
+                                    value={invoiceData[0].tds_tcs_section}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div> */}
+                              <div className=" text-sm ">
+                                <div className="">
+                                  {selectedTDSTCSOption === "TCS" && (
+                                    <>
+                                      <div className="flex gap-5 ">
+                                        <div>
+                                          <input
+                                            id="tcs"
+                                            type="text"
+                                            name="tcs"
+                                            placeholder="Enter TCS value"
+                                            value={invoiceData[0].tcs}
+                                            onChange={handleInputChangeInvoiceData}
+                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                          />
+                                        </div>
+                                        <div>
+                                          <input
+                                            id="tcs"
+                                            type="text"
+                                            placeholder="Enter TCS Rate"
+                                            name="tds_tcs_rate"
+                                            value={invoiceData[0].tds_tcs_rate}
+                                            onChange={handleInputChangeInvoiceData}
+                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                          />
+                                        </div>
+                                      </div>
+                                    </>
+                                  )}
+                                  {selectedTDSTCSOption === "TDS" && (
+                                    <>
+                                      <div className="flex gap-5 ">
+                                        <div>
+                                          <input
+                                            id="tds"
+                                            type="text"
+                                            name="tds"
+                                            placeholder="Enter TDS value"
+                                            onChange={handleInputChangeInvoiceData}
+                                            value={invoiceData[0].tds}
+                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                          />
+                                        </div>
+                                        <div>
+                                          <input
+                                            id="tcs"
+                                            type="text"
+                                            placeholder="Enter TDS Rate"
+                                            name="tds_tcs_rate"
+                                            onChange={handleInputChangeInvoiceData}
+                                            value={invoiceData[0].tds_tcs_rate}
+                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                          />
+                                        </div>
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                              {/* <div className=" text-sm my-2">
+                                <div className="">
+                                  {selectedTDSTCSRateOption === "TCS" && (
+                                    <div>
+                                      <label
+                                        htmlFor="tcs"
+                                        className="block text-sm font-medium text-gray-700"
+                                      >
+                                        TCS Input
+                                      </label>
+                                      <input
+                                        id="tcs"
+                                        type="text"
+                                        placeholder="Enter TCS Rate value"
+                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      />
+                                    </div>
+                                  )}
+                                  {selectedTDSTCSRateOption === "TDS" && (
+                                    <div>
+                                      <label
+                                        htmlFor="tds"
+                                        className="block text-sm font-medium text-gray-700"
+                                      >
+                                        TDS Input
+                                      </label>
+                                      <input
+                                        id="tds"
+                                        type="text"
+                                        placeholder="Enter TDS Rate value"
+                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </div> */}
+                              <div className=" text-sm my-2">
+                                <div className="">
+                                  {selectedTDSTCSectionOption === "TCS" && (
+                                    <div>
+                                      <input
+                                        id="tcs"
+                                        type="text"
+                                        placeholder="Enter TCS Section value"
+                                
+                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      />
+                                    </div>
+                                  )}
+                                  {selectedTDSTCSectionOption === "TDS" && (
+                                    <div>
+                                      <input
+                                        id="tds"
+                                        type="text"
+                                        placeholder="Enter TDS Section value"
+                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-12 text-sm my-2">
+                                <div className="col-span-6 font-bold">
+                                  Amount Receivable :
+                                </div>
+                                <div className="col-span-6">
+                                  <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    name="amount_receivable"
+                                    value={invoiceData[0].amount_receivable}
+                                    onChange={handleInputChangeInvoiceData}
+                                    sx={{
+                                      "& .MuiOutlinedInput-root": {
+                                        padding: "1px",
+                                        fontSize: "0.875rem",
+                                        minHeight: "1px",
+                                      },
+                                      "& .MuiOutlinedInput-input": {
+                                        padding: "2px",
+                                      },
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </TabContext>
+                    </Box>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="p-4">
+                <label
+                  htmlFor="option"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Select an option
+                </label>
+                <select
+                  id="option"
+                  value={selectedTDSTCSOption}
+                  onChange={(e) => setSelectedTDSTCSOption(e.target.value)}
+                  className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="" disabled>
+                    Choose an option
+                  </option>
+                  <option value="TCS">TCS</option>
+                  <option value="TDS">TDS</option>
+                </select>
+
+                <div className="mt-4">
+                  {selectedTDSTCSOption === "TCS" && (
+                    <div>
+                      <label
+                        htmlFor="tcs"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        TCS Input
+                      </label>
+                      <input
+                        id="tcs"
+                        type="text"
+                        placeholder="Enter TCS value"
+                        className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  )}
+                  {selectedTDSTCSOption === "TDS" && (
+                    <div>
+                      <label
+                        htmlFor="tds"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        TDS Input
+                      </label>
+                      <input
+                        id="tds"
+                        type="text"
+                        placeholder="Enter TDS value"
+                        className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div> */}
+              <DialogFooter className="p-0">
                 <Button
                   onClick={handleCreateClose}
                   conained="text"
@@ -831,7 +2541,7 @@ function SalesCreation() {
       <Button
         conained="conained"
         size="md"
-        className="bg-primary hover:bg-[#2d5e85]"
+        className="bg-primary hover:bg-[#2d5e85] "
         onClick={handleCreateOpen}
       >
         Create
