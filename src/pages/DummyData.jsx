@@ -113,6 +113,7 @@ function SalesCreation() {
       cgst: "",
       sgst: "",
       igst: "",
+      total_invoice: 0,
     },
   ]);
   const [invoiceData, setInvoiceData] = useState([
@@ -124,12 +125,10 @@ function SalesCreation() {
       entry_type: "",
       attach_invoice: "",
       taxable_amount: "",
-      // cgst: "",
-      // sgst: "",
-      // igst: "",
+      totalall_gst:"",
       total_invoice_value: "",
       tds_tcs_rate: "",
-      tds_tcs_section: "",
+      // tds_tcs_section: "",
       tcs: "",
       tds: "",
       amount_receivable: "",
@@ -153,26 +152,24 @@ function SalesCreation() {
   //   });
   // };
 
-
-
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type } = e.target;
     const fieldValue = type === "file" ? e.target.files[0] : value;
-  
+
     setInvoiceData((prevData) => {
       const updatedData = [...prevData];
       let updatedEntry = {
         ...updatedData[0],
         [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
       };
-  
+
       // Logic to reset the other field to blank
       if (name === "tcs") {
         updatedEntry.tds = ""; // Reset TDS to blank if TCS is filled
       } else if (name === "tds") {
         updatedEntry.tcs = ""; // Reset TCS to blank if TDS is filled
       }
-  
+
       if (name === "tds_tcs_rate") {
         if (updatedEntry.tcs > 0) {
           updatedEntry.tds = ""; // Reset TDS to blank if TCS rate is filled
@@ -180,14 +177,11 @@ function SalesCreation() {
           updatedEntry.tcs = ""; // Reset TCS to blank if TDS rate is filled
         }
       }
-  
+
       updatedData[0] = updatedEntry;
       return updatedData;
     });
   };
-  
-
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -400,14 +394,173 @@ function SalesCreation() {
   // }, [selectedLocation]);
 
   // console.log("djjj", rows);
+  // const handleInputChangeProduct = (index, field, value) => {
+  //   setRows((prevRows) =>
+  //     prevRows.map((row, rowIndex) =>
+  //       rowIndex === index ? { ...row, [field]: value } : row
+  //     )
+  //   );
+  // };
+
   const handleInputChangeProduct = (index, field, value) => {
     setRows((prevRows) =>
-      prevRows.map((row, rowIndex) =>
-        rowIndex === index ? { ...row, [field]: value } : row
-      )
+      prevRows.map((row, rowIndex) => {
+        if (rowIndex === index) {
+          const updatedRow = { ...row, [field]: value };
+  
+          // Recalculate product_amount if unit or rate changes
+          if (field === "unit" || field === "rate") {
+            const unit = parseFloat(updatedRow.unit) || 0;
+            const rate = parseFloat(updatedRow.rate) || 0;
+            updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
+          }
+  
+          // Recalculate GST values when gstRate changes
+          if (updatedRow.gstRate) {
+            const gstValue = (
+              (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
+              100
+            ).toFixed(2);
+  
+            if (shouldShowCGSTSGST) {
+              const cgstValue = (gstValue / 2).toFixed(2);
+              const sgstValue = (gstValue / 2).toFixed(2);
+              updatedRow.cgst = cgstValue;
+              updatedRow.sgst = sgstValue;
+              updatedRow.igst = 0; // Reset IGST if CGST/SGST is enabled
+            } else if (shouldShowIGST) {
+              updatedRow.cgst = 0; // Reset CGST
+              updatedRow.sgst = 0; // Reset SGST
+              updatedRow.igst = gstValue;
+            }
+          }
+  
+          // Calculate GST value for total invoice calculation
+          const gstValueRow = shouldShowCGSTSGST
+            ? (parseFloat(updatedRow.cgst) || 0) + (parseFloat(updatedRow.sgst) || 0)
+            : parseFloat(updatedRow.igst) || 0;
+  
+          // Ensure total_invoice is calculated without NaN
+          updatedRow.total_invoice = (
+            (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
+          ).toFixed(2);
+  
+          // Return the updated row
+          return updatedRow;
+        }
+        return row;
+      })
     );
   };
+  
 
+
+  useEffect(() => {
+    setRows((prevRows) =>
+      prevRows.map((row) => {
+        if (row.product_amount && row.gstRate) {
+          const gstValue = (
+            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
+          ).toFixed(2);
+  
+          if (shouldShowCGSTSGST) {
+            const cgstValue = (gstValue / 2).toFixed(2);
+            const sgstValue = (gstValue / 2).toFixed(2);
+            row.cgst = cgstValue;
+            row.sgst = sgstValue;
+            row.igst = 0;
+          } else if (shouldShowIGST) {
+            row.cgst = 0;
+            row.sgst = 0;
+            row.igst = gstValue;
+          }
+        }
+  
+        // Calculate total_invoice for this row (product_amount + gstValue)
+        const gstValueRow = shouldShowCGSTSGST
+          ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
+          : parseFloat(row.igst) || 0;
+  
+        // Ensure total_invoice does not show NaN
+        row.total_invoice = (
+          (parseFloat(row.product_amount) || 0) + gstValueRow
+        ).toFixed(2);
+  
+        return row;
+      })
+    );
+  }, [shouldShowCGSTSGST, shouldShowIGST]);
+  
+
+  useEffect(() => {
+    // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
+    let totalAmount = 0;
+    let totalGSTValue = 0;
+    let totalInvoiceValueSum = 0;
+  
+    rows.forEach((row) => {
+      totalAmount += parseFloat(row.product_amount) || 0;
+  
+      if (shouldShowCGSTSGST) {
+        totalGSTValue +=
+          (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
+      } else if (shouldShowIGST) {
+        totalGSTValue += parseFloat(row.igst) || 0;
+      }
+  
+      // Sum up total_invoice values
+      totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
+    });
+  
+    // Update invoiceData with calculated values
+    setInvoiceData((prevData) =>
+      prevData.map((data, index) =>
+        index === 0
+          ? {
+              ...data,
+              taxable_amount: totalAmount.toFixed(2),
+              totalall_gst: totalGSTValue.toFixed(2),
+              total_invoice_value: totalInvoiceValueSum.toFixed(2),
+            }
+          : data
+      )
+    );
+  }, [rows, shouldShowCGSTSGST, shouldShowIGST]);
+  
+  useEffect(() => {
+    const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
+    const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
+    const TotalAllInvoice = parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+  
+    // Calculate TCS or TDS amount and format to 2 decimal places
+    const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
+  
+    setInvoiceData((prevData) =>
+      prevData.map((data, index) =>
+        index === 0
+          ? {
+              ...data,
+              tcs: selectedTDSTCSOption === "tcs" ? amountToAddOrSubtract : 0,
+              tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
+              amount_receivable:
+                selectedTDSTCSOption === "tcs"
+                  ? (TotalAllInvoice + parseFloat(amountToAddOrSubtract)).toFixed(2)
+                  : (TotalAllInvoice - parseFloat(amountToAddOrSubtract)).toFixed(
+                      2
+                    ),
+            }
+          : data
+      )
+    );
+  }, [
+    invoiceData[0]?.taxable_amount,
+    invoiceData[0]?.total_invoice_value,
+    invoiceData[0]?.tds_tcs_rate,
+    selectedTDSTCSOption,
+  ]);
+  
+
+  // console.log("Amount Receivable:", amountReceivable);
   const handleAddRow = () => {
     setRows([
       ...rows,
@@ -434,11 +587,12 @@ function SalesCreation() {
       formData,
       vendorData,
       rows,
+      invoiceData
     };
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-sales/${id}`,
+        `http://127.0.0.1:8000/api/create-sales-post/${id}`,
         payload
       );
       console.log("Data submitted successfully:", response.data);
@@ -1526,7 +1680,7 @@ function SalesCreation() {
                                       className="font-semibold text-gray-600"
                                       sx={{ padding: "4px" }}
                                     >
-                                      Total Amount
+                                      Total Invoice{" "}
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
@@ -1703,6 +1857,14 @@ function SalesCreation() {
                                               padding: "4px",
                                             },
                                           }}
+                                          slotProps={{
+                                            inputLabel: {
+                                              shrink: true, // Ensures the label stays visible
+                                            },
+                                          }}
+                                          inputProps={{
+                                            readOnly: true, // Making the field read-only
+                                          }}
                                         />
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
@@ -1734,7 +1896,7 @@ function SalesCreation() {
                                         <>
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
-                                              value={row.cgst}
+                                              value={row.cgst || ""}
                                               onChange={(e) =>
                                                 handleInputChangeProduct(
                                                   index,
@@ -1754,11 +1916,19 @@ function SalesCreation() {
                                                   padding: "4px",
                                                 },
                                               }}
+                                              slotProps={{
+                                                inputLabel: {
+                                                  shrink: true, // Ensures the label stays visible
+                                                },
+                                              }}
+                                              inputProps={{
+                                                readOnly: true, // Making the field read-only
+                                              }}
                                             />
                                           </TableCell>
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
-                                              value={row.sgst}
+                                              value={row.sgst || ""}
                                               onChange={(e) =>
                                                 handleInputChangeProduct(
                                                   index,
@@ -1778,45 +1948,61 @@ function SalesCreation() {
                                                   padding: "4px",
                                                 },
                                               }}
-                                            />
-                                          </TableCell>
-                                        </>
-                                      )}
-                                      {shouldShowIGST && (
-                                        <>
-                                          <TableCell sx={{ padding: "6px" }}>
-                                            <TextField
-                                              value={row.igst}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "igst",
-                                                  e.target.value
-                                                )
-                                              }
-                                              variant="outlined"
-                                              size="small"
-                                              sx={{
-                                                "& .MuiOutlinedInput-root": {
-                                                  padding: "2px",
-                                                  fontSize: "0.875rem",
-                                                  minHeight: "30px",
+                                              slotProps={{
+                                                inputLabel: {
+                                                  shrink: true, // Ensures the label stays visible
                                                 },
-                                                "& .MuiOutlinedInput-input": {
-                                                  padding: "4px",
-                                                },
+                                              }}
+                                              inputProps={{
+                                                readOnly: true, // Making the field read-only
                                               }}
                                             />
                                           </TableCell>
                                         </>
                                       )}
+
+                                      {shouldShowIGST && (
+                                        <TableCell sx={{ padding: "6px" }}>
+                                          <TextField
+                                            value={row.igst || ""}
+                                            onChange={(e) =>
+                                              handleInputChangeProduct(
+                                                index,
+                                                "igst",
+                                                e.target.value
+                                              )
+                                            }
+                                            variant="outlined"
+                                            size="small"
+                                            sx={{
+                                              "& .MuiOutlinedInput-root": {
+                                                padding: "2px",
+                                                fontSize: "0.875rem",
+                                                minHeight: "30px",
+                                              },
+                                              "& .MuiOutlinedInput-input": {
+                                                padding: "4px",
+                                              },
+                                            }}
+                                            slotProps={{
+                                              inputLabel: {
+                                                shrink: true, // Ensures the label stays visible
+                                              },
+                                            }}
+                                            inputProps={{
+                                              readOnly: true, // Making the field read-only
+                                            }}
+                                          />
+                                        </TableCell>
+                                      )}
+
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
-                                          value={row.igst}
+                                          value={row.total_invoice}
                                           onChange={(e) =>
                                             handleInputChangeProduct(
                                               index,
-                                              "igst",
+                                              "total_invoice",
                                               e.target.value
                                             )
                                           }
@@ -1831,6 +2017,14 @@ function SalesCreation() {
                                             "& .MuiOutlinedInput-input": {
                                               padding: "4px",
                                             },
+                                          }}
+                                          slotProps={{
+                                            inputLabel: {
+                                              shrink: true, // Ensures the label stays visible
+                                            },
+                                          }}
+                                          inputProps={{
+                                            readOnly: true, // Making the field read-only
                                           }}
                                         />
                                       </TableCell>
@@ -1865,17 +2059,11 @@ function SalesCreation() {
                                         <div className="flex gap-4">
                                           <div className="w-36">
                                             <div className="col-span-6 font-bold mb-1 ">
-                                              Total Amount :
+                                              Taxable Amount :
                                             </div>
                                             <TextField
-                                              // value={row.igst}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "igst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              value={invoiceData[0].taxable_amount}
+                                           
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -1895,14 +2083,14 @@ function SalesCreation() {
                                               Total Gst Rate :
                                             </div>
                                             <TextField
-                                              // value={row.igst}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "igst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              value={invoiceData[0].totalall_gst}
+                                              // onChange={(e) =>
+                                              //   handleInputChangeProduct(
+                                              //     index,
+                                              //     "igst",
+                                              //     e.target.value
+                                              //   )
+                                              // }
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -1922,14 +2110,14 @@ function SalesCreation() {
                                               Total Invoice Value :
                                             </div>
                                             <TextField
-                                              // value={row.igst}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "igst",
-                                                  e.target.value
-                                                )
-                                              }
+                                                value={invoiceData[0].total_invoice_value}
+                                              // onChange={(e) =>
+                                              //   handleInputChangeProduct(
+                                              //     index,
+                                              //     "igst",
+                                              //     e.target.value
+                                              //   )
+                                              // }
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -1955,8 +2143,8 @@ function SalesCreation() {
                         </TabPanel>
                         <div>
                           <div className="grid grid-cols-4 gap-4">
-                            <div className="col-span-1">1</div>
-                            <div className="col-span-1">2</div>
+                            <div className="col-span-1"></div>
+                            <div className="col-span-1"></div>
                             <div className="col-span-1">
                               <div className="text-sm my-2">
                                 {/* <div className="col-span-6 font-bold">
@@ -1992,8 +2180,8 @@ function SalesCreation() {
                                   <option value="" disabled>
                                     Choose TDS/TCS
                                   </option>
-                                  <option value="TCS">TCS</option>
-                                  <option value="TDS">TDS</option>
+                                  <option value="tcs">TCS</option>
+                                  <option value="tds">TDS</option>
                                 </select>
                               </div>
                               {/* <div className="text-sm my-2">
@@ -2012,7 +2200,7 @@ function SalesCreation() {
                                   <option value="TDS">TDS Rate</option>
                                 </select>
                               </div> */}
-                              <div className="text-sm my-2">
+                              {/* <div className="text-sm my-2">
                                 <select
                                   id="option"
                                   value={selectedTDSTCSectionOption}
@@ -2029,7 +2217,7 @@ function SalesCreation() {
                                   <option value="TCS">TCS Section</option>
                                   <option value="TDS">TDS Section</option>
                                 </select>
-                              </div>
+                              </div> */}
                               {/* <div className="grid grid-cols-12 text-sm my-2">
                                 <div className="col-span-6 font-bold">
                                   TDS :
@@ -2078,7 +2266,7 @@ function SalesCreation() {
                                   />
                                 </div>
                               </div> */}
-                              <div className="grid grid-cols-12 text-sm my-2">
+                              {/* <div className="grid grid-cols-12 text-sm my-2">
                                 <div className="col-span-6 font-bold">
                                   Taxable Amount :
                                 </div>
@@ -2125,7 +2313,7 @@ function SalesCreation() {
                                     }}
                                   />
                                 </div>
-                              </div>
+                              </div> */}
                             </div>
                             <div className="col-span-1">
                               {/* <div className="grid grid-cols-12 text-sm my-2">
@@ -2309,20 +2497,9 @@ function SalesCreation() {
                               </div> */}
                               <div className=" text-sm ">
                                 <div className="">
-                                  {selectedTDSTCSOption === "TCS" && (
+                                  {selectedTDSTCSOption === "tcs" && (
                                     <>
                                       <div className="flex gap-5 ">
-                                        <div>
-                                          <input
-                                            id="tcs"
-                                            type="text"
-                                            name="tcs"
-                                            placeholder="Enter TCS value"
-                                            value={invoiceData[0].tcs}
-                                            onChange={handleInputChangeInvoiceData}
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
                                         <div>
                                           <input
                                             id="tcs"
@@ -2330,24 +2507,9 @@ function SalesCreation() {
                                             placeholder="Enter TCS Rate"
                                             name="tds_tcs_rate"
                                             value={invoiceData[0].tds_tcs_rate}
-                                            onChange={handleInputChangeInvoiceData}
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
-                                  {selectedTDSTCSOption === "TDS" && (
-                                    <>
-                                      <div className="flex gap-5 ">
-                                        <div>
-                                          <input
-                                            id="tds"
-                                            type="text"
-                                            name="tds"
-                                            placeholder="Enter TDS value"
-                                            onChange={handleInputChangeInvoiceData}
-                                            value={invoiceData[0].tds}
+                                            onChange={
+                                              handleInputChangeInvoiceData
+                                            }
                                             className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2355,10 +2517,44 @@ function SalesCreation() {
                                           <input
                                             id="tcs"
                                             type="text"
+                                            name="tcs"
+                                            placeholder="Enter TCS value"
+                                            value={invoiceData[0].tcs}
+                                            onChange={
+                                              handleInputChangeInvoiceData
+                                            }
+                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                          />
+                                        </div>
+                                      </div>
+                                    </>
+                                  )}
+                                  {selectedTDSTCSOption === "tds" && (
+                                    <>
+                                      <div className="flex gap-5 ">
+                                        <div>
+                                          <input
+                                            id="tcs"
+                                            type="text"
                                             placeholder="Enter TDS Rate"
                                             name="tds_tcs_rate"
-                                            onChange={handleInputChangeInvoiceData}
+                                            onChange={
+                                              handleInputChangeInvoiceData
+                                            }
                                             value={invoiceData[0].tds_tcs_rate}
+                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                          />
+                                        </div>
+                                        <div>
+                                          <input
+                                            id="tds"
+                                            type="text"
+                                            name="tds"
+                                            placeholder="Enter TDS value"
+                                            onChange={
+                                              handleInputChangeInvoiceData
+                                            }
+                                            value={invoiceData[0].tds}
                                             className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2403,7 +2599,7 @@ function SalesCreation() {
                                   )}
                                 </div>
                               </div> */}
-                              <div className=" text-sm my-2">
+                              {/* <div className=" text-sm my-2">
                                 <div className="">
                                   {selectedTDSTCSectionOption === "TCS" && (
                                     <div>
@@ -2411,7 +2607,6 @@ function SalesCreation() {
                                         id="tcs"
                                         type="text"
                                         placeholder="Enter TCS Section value"
-                                
                                         className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                       />
                                     </div>
@@ -2427,7 +2622,7 @@ function SalesCreation() {
                                     </div>
                                   )}
                                 </div>
-                              </div>
+                              </div> */}
                               <div className="grid grid-cols-12 text-sm my-2">
                                 <div className="col-span-6 font-bold">
                                   Amount Receivable :
@@ -2437,8 +2632,9 @@ function SalesCreation() {
                                     variant="outlined"
                                     size="small"
                                     name="amount_receivable"
+                                    // value={amount_receivable}
                                     value={invoiceData[0].amount_receivable}
-                                    onChange={handleInputChangeInvoiceData}
+                                    // onChange={handleInputChangeInvoiceData}
                                     sx={{
                                       "& .MuiOutlinedInput-root": {
                                         padding: "1px",

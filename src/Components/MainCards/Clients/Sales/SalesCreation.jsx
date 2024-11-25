@@ -125,10 +125,10 @@ function SalesCreation() {
       entry_type: "",
       attach_invoice: "",
       taxable_amount: "",
-
+      totalall_gst:"",
       total_invoice_value: "",
       tds_tcs_rate: "",
-      tds_tcs_section: "",
+      // tds_tcs_section: "",
       tcs: "",
       tds: "",
       amount_receivable: "",
@@ -365,15 +365,14 @@ function SalesCreation() {
 
   const handleProductChange = async (index, newValue) => {
     if (newValue) {
-      setProductID(newValue.id);
+      setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
-
-        const { hsn_code: hsnCode, gst_rate: gstRate } =
-          response.data.hsn || {};
-
+  
+        const { hsn_code: hsnCode, gst_rate: gstRate } = response.data.hsn || {};
+  
         setRows((prevRows) =>
           prevRows.map((row, rowIndex) =>
             rowIndex === index
@@ -384,44 +383,44 @@ function SalesCreation() {
       } catch (error) {
         console.error("Error fetching HSN code and GST rate:", error);
       }
+    } else {
+      // Clear the product field if the value is cleared
+      setRows((prevRows) =>
+        prevRows.map((row, rowIndex) =>
+          rowIndex === index ? { ...row, product: "" } : row
+        )
+      );
     }
   };
 
-  // useEffect(() => {
-  //   if (selectedLocation) {
-  //     handleLocationChange11111();
-  //   }
-  // }, [selectedLocation]);
-
-  // console.log("djjj", rows);
-  // const handleInputChangeProduct = (index, field, value) => {
-  //   setRows((prevRows) =>
-  //     prevRows.map((row, rowIndex) =>
-  //       rowIndex === index ? { ...row, [field]: value } : row
-  //     )
-  //   );
-  // };
+  const handleInputChangeProductField = (index, value) => {
+    setRows((prevRows) =>
+      prevRows.map((row, rowIndex) =>
+        rowIndex === index ? { ...row, product: value } : row
+      )
+    );
+  };
 
   const handleInputChangeProduct = (index, field, value) => {
     setRows((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
           const updatedRow = { ...row, [field]: value };
-
+  
           // Recalculate product_amount if unit or rate changes
           if (field === "unit" || field === "rate") {
             const unit = parseFloat(updatedRow.unit) || 0;
             const rate = parseFloat(updatedRow.rate) || 0;
             updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
           }
-
+  
           // Recalculate GST values when gstRate changes
           if (updatedRow.gstRate) {
             const gstValue = (
-              (parseFloat(updatedRow.gstRate) * updatedRow.product_amount) /
+              (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
               100
             ).toFixed(2);
-
+  
             if (shouldShowCGSTSGST) {
               const cgstValue = (gstValue / 2).toFixed(2);
               const sgstValue = (gstValue / 2).toFixed(2);
@@ -434,34 +433,35 @@ function SalesCreation() {
               updatedRow.igst = gstValue;
             }
           }
+  
+          // Calculate GST value for total invoice calculation
           const gstValueRow = shouldShowCGSTSGST
-            ? (parseFloat(updatedRow.cgst) || 0) +
-              (parseFloat(updatedRow.sgst) || 0)
+            ? (parseFloat(updatedRow.cgst) || 0) + (parseFloat(updatedRow.sgst) || 0)
             : parseFloat(updatedRow.igst) || 0;
-
+  
+          // Ensure total_invoice is calculated without NaN
           updatedRow.total_invoice = (
-            parseFloat(updatedRow.product_amount) + gstValueRow
+            (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
           ).toFixed(2);
+  
+          // Return the updated row
           return updatedRow;
         }
         return row;
       })
     );
   };
-  const [totalAllAmount, setTotalAllAmount] = useState(0);
-  const [totalGST, setTotalGST] = useState(0);
-  const [totalInvoiceValue, setTotalInvoiceValue] = useState(0);
-  const [amountReceivable, setAmountReceivable] = useState(0);
-  // Recalculate GST when gstRate is changed globally for a row
+  
+
+
   useEffect(() => {
     setRows((prevRows) =>
       prevRows.map((row) => {
         if (row.product_amount && row.gstRate) {
           const gstValue = (
-            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
-            100
+            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
           ).toFixed(2);
-
+  
           if (shouldShowCGSTSGST) {
             const cgstValue = (gstValue / 2).toFixed(2);
             const sgstValue = (gstValue / 2).toFixed(2);
@@ -474,50 +474,66 @@ function SalesCreation() {
             row.igst = gstValue;
           }
         }
+  
         // Calculate total_invoice for this row (product_amount + gstValue)
         const gstValueRow = shouldShowCGSTSGST
           ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
           : parseFloat(row.igst) || 0;
-
+  
+        // Ensure total_invoice does not show NaN
         row.total_invoice = (
-          parseFloat(row.product_amount) + gstValueRow
+          (parseFloat(row.product_amount) || 0) + gstValueRow
         ).toFixed(2);
+  
         return row;
       })
     );
   }, [shouldShowCGSTSGST, shouldShowIGST]);
+  
 
   useEffect(() => {
+    // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
     let totalAmount = 0;
     let totalGSTValue = 0;
     let totalInvoiceValueSum = 0;
-
+  
     rows.forEach((row) => {
       totalAmount += parseFloat(row.product_amount) || 0;
-
+  
       if (shouldShowCGSTSGST) {
         totalGSTValue +=
           (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
       } else if (shouldShowIGST) {
         totalGSTValue += parseFloat(row.igst) || 0;
       }
-
+  
       // Sum up total_invoice values
       totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
     });
-
-    setTotalAllAmount(totalAmount.toFixed(2));
-    setTotalGST(totalGSTValue.toFixed(2));
-    setTotalInvoiceValue(totalInvoiceValueSum.toFixed(2)); // Format to 2 decimal places
+  
+    // Update invoiceData with calculated values
+    setInvoiceData((prevData) =>
+      prevData.map((data, index) =>
+        index === 0
+          ? {
+              ...data,
+              taxable_amount: totalAmount.toFixed(2),
+              totalall_gst: totalGSTValue.toFixed(2),
+              total_invoice_value: totalInvoiceValueSum.toFixed(2),
+            }
+          : data
+      )
+    );
   }, [rows, shouldShowCGSTSGST, shouldShowIGST]);
-  console.log("gstValue", shouldShowCGSTSGST, selectedTDSTCSOption);
+  
   useEffect(() => {
     const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
-    const totalAmount = parseFloat(totalAllAmount) || 0;
-const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
+    const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
+    const TotalAllInvoice = parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+  
     // Calculate TCS or TDS amount and format to 2 decimal places
-    const amountToAddOrSubtract = ((totalAmount*tdsTcsRate) / 100).toFixed(2);
-
+    const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
+  
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
         index === 0
@@ -535,9 +551,15 @@ const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
           : data
       )
     );
-  }, [totalInvoiceValue, invoiceData[0]?.tds_tcs_rate, selectedTDSTCSOption]);
+  }, [
+    invoiceData[0]?.taxable_amount,
+    invoiceData[0]?.total_invoice_value,
+    invoiceData[0]?.tds_tcs_rate,
+    selectedTDSTCSOption,
+  ]);
+  
 
-  console.log("Amount Receivable:", amountReceivable);
+  // console.log("Amount Receivable:", amountReceivable);
   const handleAddRow = () => {
     setRows([
       ...rows,
@@ -564,11 +586,12 @@ const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
       formData,
       vendorData,
       rows,
+      invoiceData
     };
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-sales/${id}`,
+        `http://127.0.0.1:8000/api/create-sales-post/${id}`,
         payload
       );
       console.log("Data submitted successfully:", response.data);
@@ -1669,48 +1692,44 @@ const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
                                   {rows.map((row, index) => (
                                     <TableRow key={index} className="p-0 ">
                                       <TableCell sx={{ padding: "6px" }}>
-                                        <Autocomplete
-                                          freeSolo
-                                          id={`product-autocomplete-${index}`}
-                                          disableClearable
-                                          options={product_ser_Data}
-                                          getOptionLabel={(option) =>
-                                            option.product_name || ""
-                                          }
-                                          onChange={(event, newValue) =>
-                                            handleProductChange(index, newValue)
-                                          }
-                                          value={
-                                            product_ser_Data.find(
-                                              (option) =>
-                                                option.product_name ===
-                                                row.product
-                                            ) || null
-                                          }
-                                          renderOption={(props, option) => (
-                                            <li {...props} key={option.id}>
-                                              {option.product_name}
-                                            </li>
-                                          )}
-                                          renderInput={(params) => (
-                                            <TextField
-                                              {...params}
-                                              size="small"
-                                              placeholder="select product"
-                                              sx={{
-                                                "& .MuiOutlinedInput-root": {
-                                                  padding: "2px",
-                                                  fontSize: "0.875rem",
-                                                  minHeight: "30px",
-                                                  width: "100px",
-                                                },
-                                                "& .MuiOutlinedInput-input": {
-                                                  padding: "4px",
-                                                },
-                                              }}
-                                            />
-                                          )}
-                                        />
+                                      <Autocomplete
+  freeSolo
+  id={`product-autocomplete-${index}`}
+  disableClearable
+  options={product_ser_Data}
+  getOptionLabel={(option) => option.product_name || ""}
+  onChange={(event, newValue) => handleProductChange(index, newValue)}
+  inputValue={row.product || ""} // Ensure inputValue is always a string
+  onInputChange={(event, value) => handleInputChangeProductField(index, value)}
+  value={
+    product_ser_Data.find((option) => option.product_name === row.product) ||
+    null
+  }
+  renderOption={(props, option) => (
+    <li {...props} key={option.id}>
+      {option.product_name}
+    </li>
+  )}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      size="small"
+      placeholder="select product"
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          padding: "2px",
+          fontSize: "0.875rem",
+          minHeight: "30px",
+          width: "100px",
+        },
+        "& .MuiOutlinedInput-input": {
+          padding: "4px",
+        },
+      }}
+    />
+  )}
+/>
+
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
@@ -2038,14 +2057,8 @@ const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
                                               Taxable Amount :
                                             </div>
                                             <TextField
-                                              value={totalAllAmount}
-                                              // onChange={(e) =>
-                                              //   handleInputChangeProduct(
-                                              //     index,
-                                              //     "igst",
-                                              //     e.target.value
-                                              //   )
-                                              // }
+                                              value={invoiceData[0].taxable_amount}
+                                           
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2065,7 +2078,7 @@ const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
                                               Total Gst Rate :
                                             </div>
                                             <TextField
-                                              value={totalGST}
+                                              value={invoiceData[0].totalall_gst}
                                               // onChange={(e) =>
                                               //   handleInputChangeProduct(
                                               //     index,
@@ -2092,7 +2105,7 @@ const TotalAllInvoice = parseFloat(totalInvoiceValue) || 0;
                                               Total Invoice Value :
                                             </div>
                                             <TextField
-                                              value={totalInvoiceValue}
+                                                value={invoiceData[0].total_invoice_value}
                                               // onChange={(e) =>
                                               //   handleInputChangeProduct(
                                               //     index,

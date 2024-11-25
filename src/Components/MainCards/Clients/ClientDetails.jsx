@@ -33,6 +33,7 @@ function ClientDetails() {
   const [sftData, setSftData] = useState(null);
   const [tdsReturnData, setTdsReturnData] = useState(null);
   const [tdsPaymentData, setTdsPaymentData] = useState(null);
+  const [salesInvoiceData, setSalesInvoiceData] = useState(null)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const handleChange = (event, newValue) => {
@@ -59,6 +60,7 @@ function ClientDetails() {
         setSftData(response.data.SFT);
         setTdsReturnData(response.data.TDS_Return);
         setTdsPaymentData(response.data.TDS_Payment);
+        setSalesInvoiceData(response.data.sales_invoice);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -446,7 +448,7 @@ function ClientDetails() {
                 
               </TabPanel>
               <TabPanel value="9">
-                <Sales bankData={bankData}/>
+                <Sales salesInvoiceData={salesInvoiceData}/>
               </TabPanel>
             </TabContext>
           </Box>

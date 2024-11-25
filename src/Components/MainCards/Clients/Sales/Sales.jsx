@@ -5,13 +5,14 @@ import MUIDataTable from "mui-datatables";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-
+import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
 import SalesCreation from "./SalesCreation";
 import SalesFileCreation from "./SalesFileCreation";
+import SalesCard from "./SalesCard";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -30,11 +31,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Sales({ bankData }) {
+function Sales({ salesInvoiceData }) {
   const calculateTableBodyHeight = () => {
-    const rowHeight = 80; // Approximate height for one row
-    const maxHeight = 525; // Maximum table body height
-    const calculatedHeight = bankData.length * rowHeight;
+    const rowHeight = 80; 
+    const maxHeight = 525; 
+    const calculatedHeight = salesInvoiceData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -53,12 +54,55 @@ function Sales({ bankData }) {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [bankData]);
+  }, [salesInvoiceData]);
 
   const columns = [
     {
-      name: "bank_name",
-      label: "Bank Name",
+      name: "id",
+      label: "Sr No",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    // {
+    //   name: "attach_e_way_bill",
+    //   label: "Attachments",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
+    {
+      name: "attach_e_way_bill",
+      label: "Attachments",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+        customBodyRender: (value) => (
+          value ? (
+            <a href={`http://127.0.0.1:8000${value}`} target="_blank" rel="noopener noreferrer">
+              <ImFilePicture size={20} color="#366FA1" />
+            </a>
+          ) : null
+        ),
+      },
+    },
+    {
+      name: "invoice_no",
+      label: "Invoice Number",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -69,8 +113,8 @@ function Sales({ bankData }) {
       },
     },
     {
-      name: "account_no",
-      label: "Account No",
+      name: "invoice_type",
+      label: "Invoice Type",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -92,30 +136,30 @@ function Sales({ bankData }) {
         }),
       },
     },
-    {
-      name: "ifsc",
-      label: "IFSC Code",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "branch",
-      label: "Branch",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
+    // {
+    //   name: "ifsc",
+    //   label: "IFSC Code",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
+    // {
+    //   name: "branch",
+    //   label: "Branch",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
     {
       name: "attachment",
       label: "Document",
@@ -133,8 +177,8 @@ function Sales({ bankData }) {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = bankData[dataIndex];
-          return <div>{/* <BankCard rowId={rowData.id} /> */}</div>;
+          const rowData = salesInvoiceData[dataIndex];
+          return <div>{/* <BankCard rowId={rowData.id} /> */} <SalesCard rowId={rowData.id}/> </div>;
         },
         setCellHeaderProps: () => ({
           style: {
@@ -214,7 +258,7 @@ function Sales({ bankData }) {
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={bankData} columns={columns} options={options} />
+            <MUIDataTable data={salesInvoiceData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
