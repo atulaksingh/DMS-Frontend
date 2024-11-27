@@ -125,8 +125,8 @@ function Sales({ salesInvoiceData }) {
       },
     },
     {
-      name: "account_type",
-      label: "Account Type",
+      name: "invoice_date",
+      label: "Invoice Date",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -172,13 +172,12 @@ function Sales({ salesInvoiceData }) {
         }),
       },
     },
-
     {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
           const rowData = salesInvoiceData[dataIndex];
-          return <div>{/* <BankCard rowId={rowData.id} /> */} <SalesCard rowId={rowData.id}/> </div>;
+          return <div>{/* <BankCard rowId={rowData.id} /> */} <SalesCard rowId={rowData.id} fileData={salesInvoiceData.attach_e_way_bill}/> </div>;
         },
         setCellHeaderProps: () => ({
           style: {
@@ -253,7 +252,7 @@ function Sales({ salesInvoiceData }) {
           <div className="flex align-middle items-center gap-2">
           
             <SalesFileCreation />
-            <SalesCreation />
+            {/* <SalesCreation /> */}
           </div>
         </div>
         <CacheProvider value={muiCache}>

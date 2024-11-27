@@ -18,6 +18,7 @@ import ClientDetails from "./Components/MainCards/Clients/ClientDetails";
 import ClientUpdate from "./Components/MainCards/Clients/ClientUpdate";
 import BranchDetails from "./Components/MainCards/BranchD/BranchDetails";
 import Master from "./pages/Master";
+import PurchaseInvoice from "./pages/PurchaseInvoice";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/clientUpdate/:id" element={<ClientUpdate />} />
           <Route path="/clientDetails/:id" element={<ClientDetails />} />
           <Route path="/branchDetails/:clientID/:branchID" element={<BranchDetails />} />
+          <Route path="/purchaseInvoice/:id/:rowId" element={<PurchaseInvoice />} />
         </Routes>
       </Router>
     </>

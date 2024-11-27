@@ -134,10 +134,10 @@ function SalesCreation() {
       amount_receivable: "",
     },
   ]);
-  console.log("formData", formData);
-  console.log("vendor", vendorData);
-  console.log("rowsData", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formData", formData);
+  // console.log("vendor", vendorData);
+  // console.log("rowsData", rows);
+  // console.log("invoiceData", invoiceData);
   // const handleInputChangeInvoiceData = (e) => {
   //   const { name, value, type } = e.target;
   //   const fieldValue = type === "file" ? e.target.files[0] : value;
@@ -207,7 +207,7 @@ function SalesCreation() {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}`
         );
-        console.log("ggggggg->", response.data);
+        // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
         setCustomerData(response.data.serializer_customer);
         setProduct_ser_Data(response.data.product_serializer);
