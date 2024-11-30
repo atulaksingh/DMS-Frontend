@@ -252,7 +252,7 @@ function Sales({ salesInvoiceData }) {
           <div className="flex align-middle items-center gap-2">
           
             <SalesFileCreation />
-            {/* <SalesCreation /> */}
+            <SalesCreation />
           </div>
         </div>
         <CacheProvider value={muiCache}>

@@ -166,7 +166,7 @@ function PurchaseInvoice() {
                   <div className="col-span-1 text-right">{product?.sgst}</div>
                 </>
               ) : (
-                <div className="text-right">{product?.igst}</div>
+                <div className="col-span-2 text-right">{product?.igst}</div>
               )}
 
               {/* </div> */}

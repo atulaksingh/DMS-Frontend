@@ -5,16 +5,13 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Box from "@mui/material/Box";
 import { Checkbox, Input, Typography } from "@material-tailwind/react";
-// import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-// import { DialogFooter,  } from "@material-tailwind/react";
 import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 
 import {
@@ -25,15 +22,8 @@ import {
   Radio,
   Select,
 } from "@material-tailwind/react";
-//   import React from "react";
-//   import Modal from "@mui/material/Modal";
-//   import Box from "@mui/material/Box";
-//   import axios from "axios";
-//   import { useState } from "react";
-//   import { Input, Typography } from "@material-tailwind/react";
-//   import { ToastContainer, toast } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
-//   import { useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -86,28 +76,12 @@ const ITEM_HEIGHT = 48;
 
 export default function SalesCard({ rowId, fileData }) {
   const { id } = useParams();
-  // console.log("rowIdbank", fileData, rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  //   const [formData, setFormData] = useState({
-  //     account_no: "",
-  //     bank_name: "",
-  //     ifsc: "",
-  //     account_type: "",
-  //     branch: "",
-  //     files: [],
-  //   });
 
-  //   const handleInputChange = (e) => {
-  //     const { name, value } = e.target;
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       [name]: value,
-  //     }));
-  //   };
   const handleFileChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -115,68 +89,12 @@ export default function SalesCard({ rowId, fileData }) {
     }));
   };
 
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault(); // Prevent default form submission
-
-  //     try {
-  //       // Create a FormData object
-  //       const formDataToSend = new FormData();
-
-  //       // Append text fields to FormData
-  //       formDataToSend.append("account_no", formData.account_no);
-  //       formDataToSend.append("bank_name", formData.bank_name);
-  //       formDataToSend.append("ifsc", formData.ifsc);
-  //       formDataToSend.append("account_type", formData.account_type);
-  //       formDataToSend.append("branch", formData.branch);
-
-  //       // Append file field to FormData
-  //       // Append multiple files if selected
-  //       for (let i = 0; i < formData.files.length; i++) {
-  //         formDataToSend.append("files", formData.files[i]);
-  //       }
-  //       // console.log("form", formDataToSend);
-  //       // Make a POST request to your API
-  //       const response = await axios.post(
-  //         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
-  //         formDataToSend,
-  //         {
-  //           headers: {
-  //             "Content-Type": "multipart/form-data",
-  //           },
-  //         }
-  //       );
-
-  //       console.log(response.data); // Handle success response
-  //       toast.success("Bank details update successfully!", {
-  //         position: "top-right",
-  //         autoClose: 2000,
-  //       });
-
-  //       // Optionally close the modal and reset form
-  //       handleCreateClose();
-  //       setFormData({
-  //         account_no: "",
-  //         bank_name: "",
-  //         ifsc: "",
-  //         account_type: "",
-  //         branch: "",
-  //       });
-  //     } catch (error) {
-  //       console.error("Error submitting data:", error);
-  //       toast.error("Failed to create bank details. Please try again.", {
-  //         position: "top-right",
-  //         autoClose: 2000,
-  //       });
-  //     }
-  //   };
-  //   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-  // console.log("row123", deleteId);
   const handleDeleteOpen = () => {
     setDeleteId(rowId);
     setOpenDeleteModal(true);
@@ -216,24 +134,6 @@ export default function SalesCard({ rowId, fileData }) {
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
   const handleViewClose = () => setOpenViewModal(false);
-  //   const handleCreateOpen = async () => {
-  //     setOpenCreateModal(true);
-  //     setAnchorEl(null);
-
-  //     try {
-  //       const response = await axios.get(
-  //         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
-  //       );
-  //       // console.log("dd", response.data);
-  //       setFormData(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching bank data:", error);
-  //       toast.error("Failed to load bank data. Please try again.", {
-  //         position: "top-right",
-  //         autoClose: 2000,
-  //       });
-  //     }
-  //   };
 
   //   const handleCreateClose = () => setOpenCreateModal(false);
   const [bankData, setBankData] = useState(null);
@@ -256,18 +156,8 @@ export default function SalesCard({ rowId, fileData }) {
     fetchBankDetails();
   }, [id, rowId]);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error loading client details: {error.message}</div>;
-  // }
-
   ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
 
-  //   const { id } = useParams();
-  //   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
   const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
@@ -290,10 +180,11 @@ export default function SalesCard({ rowId, fileData }) {
     "Unregistered Local",
     "Unregistered Non-Local",
   ]);
-  const handleCreateOpen = () => {
-    setOpenCreateModal(true);
-    setAnchorEl(null);
-  };
+  // const handleCreateOpen = () => {
+
+  //   setOpenCreateModal(true);
+  //   setAnchorEl(null);
+  // };
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -341,6 +232,7 @@ export default function SalesCard({ rowId, fileData }) {
       invoice_date: "",
       invoice_type: "",
       entry_type: "",
+      attach_e_way_bill:"",
       attach_invoice: "",
       taxable_amount: "",
       totalall_gst: "",
@@ -352,23 +244,37 @@ export default function SalesCard({ rowId, fileData }) {
       amount_receivable: "",
     },
   ]);
-  // console.log("formData", formData);
-  // console.log("vendor", vendorData);
-  // console.log("rowsData", rows);
-  // console.log("invoiceData", invoiceData);
-  // const handleInputChangeInvoiceData = (e) => {
-  //   const { name, value, type } = e.target;
-  //   const fieldValue = type === "file" ? e.target.files[0] : value;
+  console.log("formdata", formData);
+  console.log("vendorData", vendorData);
+  console.log("rows", rows);
+  console.log("invoiceData", invoiceData);
+  const handleCreateOpen = async () => {
+    setOpenCreateModal(true);
+    setAnchorEl(null);
 
-  //   setInvoiceData((prevData) => {
-  //     const updatedData = [...prevData];
-  //     updatedData[0] = {
-  //       ...updatedData[0],
-  //       [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
-  //     };
-  //     return updatedData;
-  //   });
-  // };
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/create-sales-post/${id}/${rowId}`
+      );
+      console.log("dd123", response.data);
+      setFormData(response.data.client_location);
+      setVendorData(response.data.customer);
+      setRows(response.data.product_summaries);
+      // setInvoiceData(response.data.sales_invoice);
+      if (response.data.sales_invoice) {
+        setInvoiceData([{
+          ...response.data.sales_invoice,
+          invoice_type: response.data.sales_invoice.invoice_type || "", // Ensure the field is populated
+        }]);
+      }
+    } catch (error) {
+      console.error("Error fetching bank data:", error);
+      toast.error("Failed to load bank data. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
 
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type } = e.target;
@@ -381,18 +287,17 @@ export default function SalesCard({ rowId, fileData }) {
         [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
       };
 
-      // Logic to reset the other field to blank
       if (name === "tcs") {
-        updatedEntry.tds = ""; // Reset TDS to blank if TCS is filled
+        updatedEntry.tds = ""; 
       } else if (name === "tds") {
-        updatedEntry.tcs = ""; // Reset TCS to blank if TDS is filled
+        updatedEntry.tcs = ""; 
       }
 
       if (name === "tds_tcs_rate") {
         if (updatedEntry.tcs > 0) {
-          updatedEntry.tds = ""; // Reset TDS to blank if TCS rate is filled
+          updatedEntry.tds = ""; 
         } else if (updatedEntry.tds > 0) {
-          updatedEntry.tcs = ""; // Reset TCS to blank if TDS rate is filled
+          updatedEntry.tcs = ""; 
         }
       }
 
@@ -425,7 +330,7 @@ export default function SalesCard({ rowId, fileData }) {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}`
         );
-        // console.log("ggggggg->", response.data);
+        console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
         setCustomerData(response.data.serializer_customer);
         setProduct_ser_Data(response.data.product_serializer);
@@ -436,41 +341,46 @@ export default function SalesCard({ rowId, fileData }) {
   }, [id]);
 
   const handleLocationChange = async (newValue, isBranch = false) => {
-    if (isBranch && newValue && newValue.branch_name) {
-      // console.log("branchiddd--->",isBranch,newValue,newValue.branch_name)
-      setFormData({
-        ...formData,
-        branchID: newValue.id, // Store branchID when branch is selected
-      });
-    } else if (newValue && newValue.location) {
-      setFormData({
-        ...formData,
-        offLocID: newValue.id,
-        location: newValue.location,
-        contact: newValue.contact || "",
-        address: newValue.address || "",
-        city: newValue.city || "",
-        state: newValue.state || "",
-        country: newValue.country || "",
-      });
-      setShowBranchInput(false); // Hide branch input when a location is selected
+    if (!newValue) return;
 
-      // Fetch additional data if needed
-      try {
+    try {
+      if (isBranch && newValue.branch_name) {
+        setFormData((prev) => ({
+          ...prev,
+          branchID: newValue.id, // Store branch ID
+        }));
+      } else if (newValue.location) {
+        const updatedFormData = {
+          offLocID: newValue.id,
+          location: newValue.location,
+          contact: newValue.contact || "",
+          address: newValue.address || "",
+          city: newValue.city || "",
+          state: newValue.state || "",
+          country: newValue.country || "",
+        };
+        setFormData(updatedFormData);
+        setShowBranchInput(false);
+
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
-        // console.log("Location Data:---->", response.data.branch_gst);
-        setBranchNoGst(response.data.branch_gst);
-      } catch (error) {
-        console.error("Error fetching location data:", error);
+        setBranchNoGst(response.data.branch_gst || "N/A");
       }
+    } catch (error) {
+      console.error("Error fetching branch/location data:", error);
+      toast.error("Failed to fetch location data. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
+
   // console.log("123",branchNoGst)
   const handleInputChangeLocation = async (event, newInputValue) => {
-    if (newInputValue === "") {
-      setFormData({
+    if (!newInputValue) {
+      setFormData((prev) => ({
+        ...prev,
         offLocID: "",
         location: "",
         contact: "",
@@ -478,43 +388,24 @@ export default function SalesCard({ rowId, fileData }) {
         city: "",
         state: "",
         country: "",
-        branchID: "", // Reset branchID as well
-      });
-      setShowBranchInput(false); // Hide custom branch input
+        branchID: "",
+      }));
+      setShowBranchInput(false);
+      return;
+    }
+
+    const matchingLocation = offData.find(
+      (option) => option.location.toLowerCase() === newInputValue.toLowerCase()
+    );
+
+    if (matchingLocation) {
+      handleLocationChange(matchingLocation);
     } else {
-      const isLocationFound = offData.some(
-        (option) =>
-          option.location.toLowerCase() === newInputValue.toLowerCase()
-      );
-
-      if (!isLocationFound) {
-        setShowBranchInput(true);
-      } else {
-        setShowBranchInput(false);
-      }
-
-      setFormData({
-        ...formData,
+      setShowBranchInput(true);
+      setFormData((prev) => ({
+        ...prev,
         location: newInputValue,
-      });
-
-      const matchingLocation = offData.find(
-        (option) =>
-          option.location.toLowerCase() === newInputValue.toLowerCase()
-      );
-
-      if (matchingLocation) {
-        setFormData({
-          ...formData,
-          offLocID: matchingLocation.id,
-          location: matchingLocation.location,
-          contact: matchingLocation.contact || "",
-          address: matchingLocation.address || "",
-          city: matchingLocation.city || "",
-          state: matchingLocation.state || "",
-          country: matchingLocation.country || "",
-        });
-      }
+      }));
     }
   };
 
@@ -625,46 +516,54 @@ export default function SalesCard({ rowId, fileData }) {
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
           const updatedRow = { ...row, [field]: value };
-
-          // Recalculate product_amount if unit or rate changes
-          if (field === "unit" || field === "rate") {
-            const unit = parseFloat(updatedRow.unit) || 0;
-            const rate = parseFloat(updatedRow.rate) || 0;
-            updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
-          }
-
-          // Recalculate GST values when gstRate changes
-          if (updatedRow.gstRate) {
-            const gstValue = (
-              (parseFloat(updatedRow.gstRate) *
-                parseFloat(updatedRow.product_amount)) /
-              100
-            ).toFixed(2);
-
-            if (shouldShowCGSTSGST) {
-              const cgstValue = (gstValue / 2).toFixed(2);
-              const sgstValue = (gstValue / 2).toFixed(2);
-              updatedRow.cgst = cgstValue;
-              updatedRow.sgst = sgstValue;
-              updatedRow.igst = 0; // Reset IGST if CGST/SGST is enabled
-            } else if (shouldShowIGST) {
-              updatedRow.cgst = 0; // Reset CGST
-              updatedRow.sgst = 0; // Reset SGST
-              updatedRow.igst = gstValue;
+  
+          // If invoice type is "Nil Rated", reset GST and total_invoice values
+          if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+            updatedRow.cgst = "0.00";
+            updatedRow.sgst = "0.00";
+            updatedRow.igst = "0.00";
+            updatedRow.product_amount = (parseFloat(updatedRow.unit) || 0) * (parseFloat(updatedRow.rate) || 0).toFixed(2);
+            updatedRow.total_invoice = updatedRow.product_amount; // Just product amount as total_invoice
+          } else {
+            // Recalculate product_amount if unit or rate changes
+            if (field === "unit" || field === "rate") {
+              const unit = parseFloat(updatedRow.unit) || 0;
+              const rate = parseFloat(updatedRow.rate) || 0;
+              updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
             }
+  
+            // Recalculate GST values when gstRate changes
+            if (updatedRow.gstRate) {
+              const gstValue = (
+                (parseFloat(updatedRow.gstRate) *
+                  parseFloat(updatedRow.product_amount)) / 100
+              ).toFixed(2);
+  
+              if (shouldShowCGSTSGST) {
+                const cgstValue = (gstValue / 2).toFixed(2);
+                const sgstValue = (gstValue / 2).toFixed(2);
+                updatedRow.cgst = cgstValue;
+                updatedRow.sgst = sgstValue;
+                updatedRow.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
+              } else if (shouldShowIGST) {
+                updatedRow.cgst = "0.00"; // Reset CGST
+                updatedRow.sgst = "0.00"; // Reset SGST
+                updatedRow.igst = gstValue;
+              }
+            }
+  
+            // Calculate GST value for total invoice calculation
+            const gstValueRow = shouldShowCGSTSGST
+              ? (parseFloat(updatedRow.cgst) || 0) +
+                (parseFloat(updatedRow.sgst) || 0)
+              : parseFloat(updatedRow.igst) || 0;
+  
+            // Ensure total_invoice is calculated without NaN
+            updatedRow.total_invoice = (
+              (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
+            ).toFixed(2);
           }
-
-          // Calculate GST value for total invoice calculation
-          const gstValueRow = shouldShowCGSTSGST
-            ? (parseFloat(updatedRow.cgst) || 0) +
-              (parseFloat(updatedRow.sgst) || 0)
-            : parseFloat(updatedRow.igst) || 0;
-
-          // Ensure total_invoice is calculated without NaN
-          updatedRow.total_invoice = (
-            (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
-          ).toFixed(2);
-
+  
           // Return the updated row
           return updatedRow;
         }
@@ -672,88 +571,128 @@ export default function SalesCard({ rowId, fileData }) {
       })
     );
   };
+  
 
+
+
+
+
+
+  
   useEffect(() => {
-    setRows((prevRows) =>
-      prevRows.map((row) => {
-        if (row.product_amount && row.gstRate) {
+    setRows((prevRows) => {
+      const updatedRows = prevRows.map((row) => {
+        // Check if the invoice type is "Nil Rated"
+        if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+          // Set all GST values to 0 when Nil Rated is selected
+          if (row.cgst !== "0.00" || row.sgst !== "0.00" || row.igst !== "0.00") {
+            row.cgst = "0.00";
+            row.sgst = "0.00";
+            row.igst = "0.00";
+          }
+  
+          // Set total_invoice to product_amount since no GST applies
+          row.total_invoice = (parseFloat(row.product_amount) || 0).toFixed(2);
+        } else if (row.product_amount && row.gstRate) {
+          // Recalculate GST and total_invoice if not "Nil Rated"
           const gstValue = (
-            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
-            100
+            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
           ).toFixed(2);
-
+  
           if (shouldShowCGSTSGST) {
             const cgstValue = (gstValue / 2).toFixed(2);
             const sgstValue = (gstValue / 2).toFixed(2);
             row.cgst = cgstValue;
             row.sgst = sgstValue;
-            row.igst = 0;
+            row.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
           } else if (shouldShowIGST) {
-            row.cgst = 0;
-            row.sgst = 0;
+            row.cgst = "0.00"; // Reset CGST
+            row.sgst = "0.00"; // Reset SGST
             row.igst = gstValue;
           }
+  
+          // Calculate total_invoice for this row
+          const gstValueRow = shouldShowCGSTSGST
+            ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
+            : parseFloat(row.igst) || 0;
+  
+          row.total_invoice = (
+            (parseFloat(row.product_amount) || 0) + gstValueRow
+          ).toFixed(2);
         }
-
-        // Calculate total_invoice for this row (product_amount + gstValue)
-        const gstValueRow = shouldShowCGSTSGST
-          ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
-          : parseFloat(row.igst) || 0;
-
-        // Ensure total_invoice does not show NaN
-        row.total_invoice = (
-          (parseFloat(row.product_amount) || 0) + gstValueRow
-        ).toFixed(2);
-
+  
         return row;
-      })
-    );
-  }, [shouldShowCGSTSGST, shouldShowIGST]);
+      });
+  
+      return updatedRows;
+    });
+  }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
+  
+  
+  
+
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
     let totalAmount = 0;
     let totalGSTValue = 0;
     let totalInvoiceValueSum = 0;
-
+  
+    // Check if invoice_type is "Nil Rated"
+    const isNilRated = invoiceData[0]?.invoice_type.toLowerCase() === "nil rated";
+  
     rows.forEach((row) => {
       totalAmount += parseFloat(row.product_amount) || 0;
-
+  
       if (shouldShowCGSTSGST) {
-        totalGSTValue +=
-          (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
+        totalGSTValue += (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
       } else if (shouldShowIGST) {
         totalGSTValue += parseFloat(row.igst) || 0;
       }
-
+  
       // Sum up total_invoice values
       totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
     });
-
-    // Update invoiceData with calculated values
-    setInvoiceData((prevData) =>
-      prevData.map((data, index) =>
-        index === 0
-          ? {
-              ...data,
-              taxable_amount: totalAmount.toFixed(2),
-              totalall_gst: totalGSTValue.toFixed(2),
-              total_invoice_value: totalInvoiceValueSum.toFixed(2),
-            }
-          : data
-      )
-    );
-  }, [rows, shouldShowCGSTSGST, shouldShowIGST]);
-
+  
+    // If invoice_type is Nil Rated, set totalall_gst to 0
+    const updatedTotalGST = isNilRated ? "0.00" : totalGSTValue.toFixed(2);
+  
+    // Avoid infinite loop by checking if the values have actually changed
+    const updatedInvoiceData = {
+      ...invoiceData[0],
+      taxable_amount: totalAmount.toFixed(2),
+      totalall_gst: updatedTotalGST,
+      total_invoice_value: totalInvoiceValueSum.toFixed(2),
+    };
+  
+    // Only update invoiceData if something has changed
+    if (
+      updatedInvoiceData.taxable_amount !== invoiceData[0]?.taxable_amount ||
+      updatedInvoiceData.totalall_gst !== invoiceData[0]?.totalall_gst ||
+      updatedInvoiceData.total_invoice_value !== invoiceData[0]?.total_invoice_value
+    ) {
+      setInvoiceData([updatedInvoiceData]);
+    }
+  }, [rows, shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
+  
+  
+  
   useEffect(() => {
     const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
     const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
     const TotalAllInvoice =
       parseFloat(invoiceData[0]?.total_invoice_value) || 0;
-
-    // Calculate TCS or TDS amount and format to 2 decimal places
+  
     const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
-
+  
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
         index === 0
@@ -779,7 +718,6 @@ export default function SalesCard({ rowId, fileData }) {
     invoiceData[0]?.tds_tcs_rate,
     selectedTDSTCSOption,
   ]);
-
   // console.log("Amount Receivable:", amountReceivable);
   const handleAddRow = () => {
     setRows([
@@ -790,6 +728,9 @@ export default function SalesCard({ rowId, fileData }) {
         gstRate: "",
         description: "",
         unit: "",
+        cgst: "0.00",
+        sgst: "0.00",
+        igst: "0.00", // Set default GST values to 0 when new row is added
       },
     ]);
   };
@@ -813,7 +754,11 @@ export default function SalesCard({ rowId, fileData }) {
     try {
       const response = await axios.put(
         `http://127.0.0.1:8000/api/create-sales-post/${id}/${rowId}`,
-        payload
+        payload, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       console.log("Data submitted successfully:", response.data);
       // Handle successful response
@@ -822,27 +767,137 @@ export default function SalesCard({ rowId, fileData }) {
       // Handle error response
     }
   };
+
+
+
+
+
+  
+useEffect(() => {
+  const currentType = invoiceData[0]?.invoice_type.toLowerCase();
+
+  if (currentType === "nil rated") {
+    // Always reset CGST and SGST to 0 for "Nil Rated"
+    setRows((prevRows) =>
+      prevRows.map((row) => ({
+        ...row,
+        cgst: "0.00",
+        sgst: "0.00",
+        igst: "0.00",
+        total_invoice: parseFloat(row.product_amount || 0).toFixed(2),
+      }))
+    );
+    setShouldShowIGST(false);
+    setShouldShowCGSTSGST(false);
+  } else if (currentType === "sez") {
+    // Handle SEZ case: Show IGST, hide CGST and SGST
+    setRows((prevRows) =>
+      prevRows.map((row) => {
+        if (row.product_amount && row.gstRate) {
+          const gstValue = (
+            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+            100
+          ).toFixed(2);
+          return {
+            ...row,
+            cgst: "0.00",
+            sgst: "0.00",
+            igst: gstValue,
+            total_invoice: (
+              parseFloat(row.product_amount) + parseFloat(gstValue)
+            ).toFixed(2),
+          };
+        }
+        return row;
+      })
+    );
+    setShouldShowIGST(true);
+    setShouldShowCGSTSGST(false);
+  } else {
+    // Handle other types based on GST matching
+    const vendorGstPrefix = vendorData.gst_no?.slice(0, 2);
+    const branchGstPrefix = branchNoGst?.slice(0, 2);
+
+    if (vendorGstPrefix === branchGstPrefix) {
+      // Same GST region: Show CGST and SGST
+      setRows((prevRows) =>
+        prevRows.map((row) => {
+          if (row.product_amount && row.gstRate) {
+            const gstValue = (
+              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+              100
+            ).toFixed(2);
+            const halfGst = (gstValue / 2).toFixed(2);
+            return {
+              ...row,
+              cgst: halfGst,
+              sgst: halfGst,
+              igst: "0.00",
+              total_invoice: (
+                parseFloat(row.product_amount) +
+                parseFloat(halfGst) +
+                parseFloat(halfGst)
+              ).toFixed(2),
+            };
+          }
+          return row;
+        })
+      );
+      setShouldShowIGST(false);
+      setShouldShowCGSTSGST(true);
+    } else {
+      // Different GST region: Show IGST
+      setRows((prevRows) =>
+        prevRows.map((row) => {
+          if (row.product_amount && row.gstRate) {
+            const gstValue = (
+              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+              100
+            ).toFixed(2);
+            return {
+              ...row,
+              cgst: "0.00",
+              sgst: "0.00",
+              igst: gstValue,
+              total_invoice: (
+                parseFloat(row.product_amount) + parseFloat(gstValue)
+              ).toFixed(2),
+            };
+          }
+          return row;
+        })
+      );
+      setShouldShowIGST(true);
+      setShouldShowCGSTSGST(false);
+    }
+  }
+}, [invoiceData[0]?.invoice_type, vendorData.gst_no, branchNoGst]);
+
+  
+  
+  
+  // Auto-detect TCS or TDS on initial load based on prepopulated values
   useEffect(() => {
-    if (vendorData.gst_no && branchNoGst) {
-      const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
-      const branchGstPrefix = branchNoGst.slice(0, 2);
+    if (invoiceData[0].tcs && parseFloat(invoiceData[0].tcs) > 0) {
+      setSelectedTDSTCSOption("tcs");
+    } else if (invoiceData[0].tds && parseFloat(invoiceData[0].tds) > 0) {
+      setSelectedTDSTCSOption("tds");
+    }
+  }, [invoiceData]);
 
-      if (
-        vendorGstPrefix === branchGstPrefix &&
-        invoiceData[0].invoice_type.toLowerCase() === "sez"
-      ) {
-        setShouldShowIGST(true);
-        setShouldShowCGSTSGST(false);
-      } else if (vendorGstPrefix === branchGstPrefix) {
-        setShouldShowIGST(false);
-        setShouldShowCGSTSGST(true);
-      } else {
-        setShouldShowIGST(true);
-        setShouldShowCGSTSGST(false);
-      }
-    } else if (!vendorData.gst_no) {
-      setFilteredInvoiceTypes(["Unregistered Local", "Unregistered Non-Local"]);
 
+
+
+
+  
+  useEffect(() => {
+    if (!vendorData.gst_no) {
+      setFilteredInvoiceTypes([
+        "Select Entity Type",
+        "Unregistered Local",
+        "Unregistered Non-Local",
+      ]);
+  
       if (invoiceData[0].invoice_type.toLowerCase() === "unregistered local") {
         setShouldShowIGST(false);
         setShouldShowCGSTSGST(true);
@@ -857,6 +912,7 @@ export default function SalesCard({ rowId, fileData }) {
       }
     } else {
       setFilteredInvoiceTypes([
+        "Select Entity Type",
         "B2B",
         "B2C-L",
         "BSC-O",
@@ -865,6 +921,23 @@ export default function SalesCard({ rowId, fileData }) {
         "SEZ",
         "Export",
       ]);
+  
+      const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
+      const branchGstPrefix = branchNoGst.slice(0, 2);
+  
+      if (
+        vendorGstPrefix === branchGstPrefix &&
+        invoiceData[0].invoice_type.toLowerCase() === "sez"
+      ) {
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      } else if (vendorGstPrefix === branchGstPrefix) {
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(true);
+      } else {
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      }
     }
   }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
   return (
@@ -894,31 +967,31 @@ export default function SalesCard({ rowId, fileData }) {
               </Typography> */}
 
               {/* {bankData && ( */}
-                <>
-                  <div>
-                    <form className=" my-5 w-full ">
-                      <SalesInvoice invoiceData={bankData}/>
-                    </form>
-                  </div>
-                  <DialogFooter className="">
-                    <Button
-                      conained="gradient"
-                      color="red"
-                      onClick={handleViewClose}
-                      className="mr-1 "
-                    >
-                      <span>Cancel</span>
-                    </Button>
-                    <Button
-                      conained="gradient"
-                      color="green"
-                      className="bg-primary"
-                      onClick={handleViewClose}
-                    >
-                      <span>Confirm</span>
-                    </Button>
-                  </DialogFooter>
-                </>
+              <>
+                <div>
+                  <form className=" my-5 w-full ">
+                    <SalesInvoice invoiceData={bankData} />
+                  </form>
+                </div>
+                <DialogFooter className="">
+                  <Button
+                    conained="gradient"
+                    color="red"
+                    onClick={handleViewClose}
+                    className="mr-1 "
+                  >
+                    <span>Cancel</span>
+                  </Button>
+                  <Button
+                    conained="gradient"
+                    color="green"
+                    className="bg-primary"
+                    onClick={handleViewClose}
+                  >
+                    <span>Confirm</span>
+                  </Button>
+                </DialogFooter>
+              </>
               {/* )} */}
             </Box>
           </Modal>
@@ -976,8 +1049,14 @@ export default function SalesCard({ rowId, fileData }) {
                             getOptionLabel={(option) => option.location || ""}
                             onChange={(event, newValue) =>
                               handleLocationChange(newValue)
-                            } // Handle location selection
-                            onInputChange={handleInputChangeLocation} // Handle location input change
+                            }
+                            onInputChange={handleInputChangeLocation}
+                            value={
+                              offData.find(
+                                (option) =>
+                                  option.location === formData.location
+                              ) || null
+                            } // Bind the value
                             renderOption={(props, option) => (
                               <li
                                 {...props}
@@ -994,8 +1073,6 @@ export default function SalesCard({ rowId, fileData }) {
                               <TextField
                                 {...params}
                                 size="small"
-                                value={formData.location || ""}
-                                className="border border-red-500"
                                 placeholder="Office Location"
                                 sx={{
                                   "& .MuiInputBase-root": {
@@ -1004,12 +1081,6 @@ export default function SalesCard({ rowId, fileData }) {
                                   },
                                   "& .MuiOutlinedInput-input": {
                                     padding: "4px 6px",
-                                  },
-                                }}
-                                slotProps={{
-                                  input: {
-                                    ...params.InputProps,
-                                    type: "search",
                                   },
                                 }}
                               />
@@ -1397,51 +1468,26 @@ export default function SalesCard({ rowId, fileData }) {
                     </div>
                     <div className="">
                       <div className="">
-                        <select
-                          name="invoice_type"
-                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                          style={{
-                            height: "28px", // Match this to your Autocomplete's root height
-                            padding: "4px 6px", // Match this padding
-                            fontSize: "0.875rem", // Ensure font size is consistent
-                            width: 300,
-                          }}
-                          value={invoiceData[0].invoice_type} // Ensures the selected value matches the state
-                          onChange={handleInputChangeInvoiceData}
-                        >
-                          {vendorData.gst_no === "" // Check if gst_no is empty
-                            ? // Show only these options when gst_no is empty
-                              [
-                                "Select Entity Type",
-                                "Unregistered Local",
-                                "Unregistered Non-Local",
-                              ].map((option) => (
-                                <option
-                                  key={option}
-                                  value={option.toLowerCase()}
-                                >
-                                  {option}
-                                </option>
-                              ))
-                            : // Show other options when gst_no is not empty
-                              [
-                                "Select Entity Type",
-                                "B2B",
-                                "B2C-L",
-                                "BSC-O",
-                                "Nil Rated",
-                                "Advance Received",
-                                "SEZ",
-                                "Export",
-                              ].map((option) => (
-                                <option
-                                  key={option}
-                                  value={option.toLowerCase()}
-                                >
-                                  {option}
-                                </option>
-                              ))}
-                        </select>
+                      
+
+<select
+  name="invoice_type"
+  className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+  style={{
+    height: "28px", 
+    padding: "4px 6px", 
+    fontSize: "0.875rem", 
+    width: 300,
+  }}
+  value={invoiceData[0].invoice_type || ""}
+  onChange={handleInputChangeInvoiceData}
+>
+  {filteredInvoiceTypes.map((option) => (
+    <option key={option} value={option.toLowerCase()}>
+      {option}
+    </option>
+  ))}
+</select>
                       </div>
                     </div>
                   </div>
@@ -1514,23 +1560,23 @@ export default function SalesCard({ rowId, fileData }) {
                       </label>
                     </div>
                     <div className="">
-                      {/* <input
+                      <input
                         type="file"
                         size="md"
-                        name="attach_invoice"
+                        name="attach_e_way_bill"
                         placeholder="Invoice Date"
                         onChange={handleInputChangeInvoiceData}
-                      /> */}
+                      />
+                        <ImFilePicture size={20} color="#366FA1" />
+
                       <a
                         href={`http://127.0.0.1:8000${bankData?.attach_e_way_bill}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <ImFilePicture size={20} color="#366FA1" />
-                        <p className="text-blue-500">
-                          {/* Extracting the filename from the path */}
+                        {/* <p className="text-blue-500">
                           {bankData?.attach_e_way_bill.split("/").pop()}
-                        </p>
+                        </p> */}
                       </a>
                     </div>
                   </div>
@@ -1562,16 +1608,16 @@ export default function SalesCard({ rowId, fileData }) {
                               },
                             }}
                             sx={{
-                              padding: 0, // Remove any default padding from the TabList
-                              minHeight: "20px", // Set a specific minHeight for the TabList
+                              padding: 0, 
+                              minHeight: "20px", 
                             }}
                           >
                             <Tab
                               label="Customer And Vendor Details"
                               value="1"
                               sx={{
-                                padding: "0px 10px", // Adjust padding as needed
-                                minHeight: "0px", // Reduced min height
+                                padding: "0px 10px", 
+                                minHeight: "0px", 
                                 lineHeight: "2.2",
                                 fontSize: "0.75rem",
                                 "&.Mui-selected": {
@@ -1592,8 +1638,8 @@ export default function SalesCard({ rowId, fileData }) {
                               label="Product Details"
                               value="2"
                               sx={{
-                                padding: "0px 10px", // Adjust padding as needed
-                                minHeight: "25px", // Reduced min height
+                                padding: "0px 10px", 
+                                minHeight: "25px", 
                                 lineHeight: "2.2",
                                 fontSize: "0.75rem",
                                 "&.Mui-selected": {
@@ -2417,28 +2463,7 @@ export default function SalesCard({ rowId, fileData }) {
                             <div className="col-span-1"></div>
                             <div className="col-span-1">
                               <div className="text-sm my-2">
-                                {/* <div className="col-span-6 font-bold">
-                                  TCS :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="tcs"
-                                    value={invoiceData[0].tcs}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div> */}
+                               
                                 <select
                                   id="option"
                                   value={selectedTDSTCSOption}
@@ -2454,317 +2479,10 @@ export default function SalesCard({ rowId, fileData }) {
                                   <option value="tds">TDS</option>
                                 </select>
                               </div>
-                              {/* <div className="text-sm my-2">
-                                <select
-                                  id="option"
-                                  value={selectedTDSTCSRateOption}
-                                  onChange={(e) =>
-                                    setSelectedTDSTCSRateOption(e.target.value)
-                                  }
-                                  className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                >
-                                  <option value="" disabled>
-                                    Choose TDS/TCS Rate
-                                  </option>
-                                  <option value="TCS">TCS Rate</option>
-                                  <option value="TDS">TDS Rate</option>
-                                </select>
-                              </div> */}
-                              {/* <div className="text-sm my-2">
-                                <select
-                                  id="option"
-                                  value={selectedTDSTCSectionOption}
-                                  onChange={(e) =>
-                                    setSelectedTDSTCSectionOption(
-                                      e.target.value
-                                    )
-                                  }
-                                  className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                >
-                                  <option value="" disabled>
-                                    Choose TDS/TCS Section
-                                  </option>
-                                  <option value="TCS">TCS Section</option>
-                                  <option value="TDS">TDS Section</option>
-                                </select>
-                              </div> */}
-                              {/* <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  TDS :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="tds"
-                                    value={invoiceData[0].tds}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div> */}
-                              {/* <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  TDS/TCS Rate :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="tds_tcs_rate"
-                                    value={invoiceData[0].tds_tcs_rate}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div> */}
-                              {/* <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  Taxable Amount :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="taxable_amount"
-                                    value={invoiceData[0].taxable_amount}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  Total Invoice Value :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="total_invoice_value"
-                                    value={invoiceData[0].total_invoice_value}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div> */}
+                            
                             </div>
                             <div className="col-span-1">
-                              {/* <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  SGST :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="sgst"
-                                    value={invoiceData[0].sgst}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  IGST :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="igst"
-                                    value={invoiceData[0].igst}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  CGST :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="cgst"
-                                    value={invoiceData[0].cgst}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div> */}
-
-                              {/* {shouldShowCGSTSGST && (
-                                <>
-                                  <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      SGST :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="sgst"
-                                        value={invoiceData[0].sgst}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      CGST :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="cgst"
-                                        value={invoiceData[0].cgst}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-
-                              {shouldShowIGST && (
-                                <>
-                                  <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      IGST :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="igst"
-                                        value={invoiceData[0].igst}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </>
-                              )} */}
-
-                              {/* <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold">
-                                  TDS/TCS Section :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="tds_tcs_section"
-                                    value={invoiceData[0].tds_tcs_section}
-                                    onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div> */}
+                           
                               <div className=" text-sm ">
                                 <div className="">
                                   {selectedTDSTCSOption === "tcs" && (
@@ -2833,66 +2551,7 @@ export default function SalesCard({ rowId, fileData }) {
                                   )}
                                 </div>
                               </div>
-                              {/* <div className=" text-sm my-2">
-                                <div className="">
-                                  {selectedTDSTCSRateOption === "TCS" && (
-                                    <div>
-                                      <label
-                                        htmlFor="tcs"
-                                        className="block text-sm font-medium text-gray-700"
-                                      >
-                                        TCS Input
-                                      </label>
-                                      <input
-                                        id="tcs"
-                                        type="text"
-                                        placeholder="Enter TCS Rate value"
-                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      />
-                                    </div>
-                                  )}
-                                  {selectedTDSTCSRateOption === "TDS" && (
-                                    <div>
-                                      <label
-                                        htmlFor="tds"
-                                        className="block text-sm font-medium text-gray-700"
-                                      >
-                                        TDS Input
-                                      </label>
-                                      <input
-                                        id="tds"
-                                        type="text"
-                                        placeholder="Enter TDS Rate value"
-                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                              </div> */}
-                              {/* <div className=" text-sm my-2">
-                                <div className="">
-                                  {selectedTDSTCSectionOption === "TCS" && (
-                                    <div>
-                                      <input
-                                        id="tcs"
-                                        type="text"
-                                        placeholder="Enter TCS Section value"
-                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      />
-                                    </div>
-                                  )}
-                                  {selectedTDSTCSectionOption === "TDS" && (
-                                    <div>
-                                      <input
-                                        id="tds"
-                                        type="text"
-                                        placeholder="Enter TDS Section value"
-                                        className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                              </div> */}
+                             
                               <div className="grid grid-cols-12 text-sm my-2">
                                 <div className="col-span-6 font-bold">
                                   Amount Receivable :

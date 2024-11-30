@@ -1,20 +1,39 @@
+import * as React from "react";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Box from "@mui/material/Box";
+import { Checkbox, Input, Typography } from "@material-tailwind/react";
+// import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+// import { DialogFooter,  } from "@material-tailwind/react";
+import { Link, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { ImFilePicture } from "react-icons/im";
+import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+const options = ["None", "Atria", "Callisto"];
+
 import {
   Button,
-  Checkbox,
+  // Checkbox,
   DialogFooter,
   Option,
   Radio,
   Select,
 } from "@material-tailwind/react";
-import React from "react";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import axios from "axios";
-import { useState } from "react";
-import { Input, Typography } from "@material-tailwind/react";
-import { ToastContainer, toast } from "react-toastify";
+//   import React from "react";
+//   import Modal from "@mui/material/Modal";
+//   import Box from "@mui/material/Box";
+//   import axios from "axios";
+//   import { useState } from "react";
+//   import { Input, Typography } from "@material-tailwind/react";
+//   import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useParams } from "react-router-dom";
+//   import { useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -29,11 +48,27 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
+  // IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect } from "react";
+import SalesInvoice from "./SalesInvoice";
+//   import { useEffect } from "react";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 1000,
+  bgcolor: "background.paper",
+  //   border: "1px solid #000",
+  boxShadow: 24,
+  //   paddingTop: "17px",
+  //   paddingInline: "10px",
+  marginBlock: "80px",
+  borderRadius: "10px",
+};
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -47,9 +82,192 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function SalesCreation() {
+const ITEM_HEIGHT = 48;
+
+export default function SalesCard({ rowId, fileData }) {
   const { id } = useParams();
+  // console.log("rowIdbank", fileData, rowId);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openViewModal, setOpenViewModal] = React.useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  //   const [formData, setFormData] = useState({
+  //     account_no: "",
+  //     bank_name: "",
+  //     ifsc: "",
+  //     account_type: "",
+  //     branch: "",
+  //     files: [],
+  //   });
+
+  //   const handleInputChange = (e) => {
+  //     const { name, value } = e.target;
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [name]: value,
+  //     }));
+  //   };
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      files: e.target.files, // Handles multiple files
+    }));
+  };
+
+  //   const handleSubmit = async (e) => {
+  //     e.preventDefault(); // Prevent default form submission
+
+  //     try {
+  //       // Create a FormData object
+  //       const formDataToSend = new FormData();
+
+  //       // Append text fields to FormData
+  //       formDataToSend.append("account_no", formData.account_no);
+  //       formDataToSend.append("bank_name", formData.bank_name);
+  //       formDataToSend.append("ifsc", formData.ifsc);
+  //       formDataToSend.append("account_type", formData.account_type);
+  //       formDataToSend.append("branch", formData.branch);
+
+  //       // Append file field to FormData
+  //       // Append multiple files if selected
+  //       for (let i = 0; i < formData.files.length; i++) {
+  //         formDataToSend.append("files", formData.files[i]);
+  //       }
+  //       // console.log("form", formDataToSend);
+  //       // Make a POST request to your API
+  //       const response = await axios.post(
+  //         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
+  //         formDataToSend,
+  //         {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         }
+  //       );
+
+  //       console.log(response.data); // Handle success response
+  //       toast.success("Bank details update successfully!", {
+  //         position: "top-right",
+  //         autoClose: 2000,
+  //       });
+
+  //       // Optionally close the modal and reset form
+  //       handleCreateClose();
+  //       setFormData({
+  //         account_no: "",
+  //         bank_name: "",
+  //         ifsc: "",
+  //         account_type: "",
+  //         branch: "",
+  //       });
+  //     } catch (error) {
+  //       console.error("Error submitting data:", error);
+  //       toast.error("Failed to create bank details. Please try again.", {
+  //         position: "top-right",
+  //         autoClose: 2000,
+  //       });
+  //     }
+  //   };
+  //   const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  // console.log("row123", deleteId);
+  const handleDeleteOpen = () => {
+    setDeleteId(rowId);
+    setOpenDeleteModal(true);
+    setAnchorEl(null);
+  };
+  const handleDeleteID = async () => {
+    try {
+      const response = await axios.delete(
+        `http://127.0.0.1:8000/api/delete-bank/${id}/${deleteId}`
+      );
+      // console.log("res-----bank---->", response);
+      setOpenDeleteModal(false);
+      if (response.status === 200) {
+        toast.success("bank deleted successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        toast.error("Failed to delete bank. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting bank data:", error);
+      toast.error("Failed to delete bank. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
+
+  const handleViewOpen = () => {
+    setOpenViewModal(true);
+    setAnchorEl(null);
+  };
+
+  const handleDeleteClose = () => setOpenDeleteModal(false);
+  const handleViewClose = () => setOpenViewModal(false);
+  //   const handleCreateOpen = async () => {
+  //     setOpenCreateModal(true);
+  //     setAnchorEl(null);
+
+  //     try {
+  //       const response = await axios.get(
+  //         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
+  //       );
+  //       // console.log("dd", response.data);
+  //       setFormData(response.data);
+  //     } catch (error) {
+  //       console.error("Error fetching bank data:", error);
+  //       toast.error("Failed to load bank data. Please try again.", {
+  //         position: "top-right",
+  //         autoClose: 2000,
+  //       });
+  //     }
+  //   };
+
+  //   const handleCreateClose = () => setOpenCreateModal(false);
+  const [bankData, setBankData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // console.log("gggggggg",bankData)
+  useEffect(() => {
+    const fetchBankDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/sales-view/${id}/${rowId}`
+        );
+        setBankData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetchBankDetails();
+  }, [id, rowId]);
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (error) {
+  //   return <div>Error loading client details: {error.message}</div>;
+  // }
+
+  ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
+
+  //   const { id } = useParams();
+  //   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
   const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
@@ -58,13 +276,13 @@ function SalesCreation() {
   const [branch_ser_name, setBranch_ser_name] = useState([]);
   const [showBranchInput, setShowBranchInput] = useState(false);
   const [branchNoGst, setBranchNoGst] = useState("");
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  //   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [selectedTDSTCSOption, setSelectedTDSTCSOption] = useState("");
   const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
   const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
     useState("");
-  console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+  // console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
   const [shouldShowIGST, setShouldShowIGST] = useState(false);
   const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
   const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -125,7 +343,7 @@ function SalesCreation() {
       entry_type: "",
       attach_invoice: "",
       taxable_amount: "",
-      totalall_gst:"",
+      totalall_gst: "",
       total_invoice_value: "",
       tds_tcs_rate: "",
       // tds_tcs_section: "",
@@ -134,10 +352,10 @@ function SalesCreation() {
       amount_receivable: "",
     },
   ]);
-  console.log("formData", formData);
-  console.log("vendor", vendorData);
-  console.log("rowsData", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formData", formData);
+  // console.log("vendor", vendorData);
+  // console.log("rowsData", rows);
+  // console.log("invoiceData", invoiceData);
   // const handleInputChangeInvoiceData = (e) => {
   //   const { name, value, type } = e.target;
   //   const fieldValue = type === "file" ? e.target.files[0] : value;
@@ -207,7 +425,7 @@ function SalesCreation() {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}`
         );
-        console.log("ggggggg->", response.data);
+        // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
         setCustomerData(response.data.serializer_customer);
         setProduct_ser_Data(response.data.product_serializer);
@@ -365,7 +583,7 @@ function SalesCreation() {
 
   const handleProductChange = async (index, newValue) => {
     if (newValue) {
-      setProductID(newValue.id);
+      setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
@@ -384,44 +602,45 @@ function SalesCreation() {
       } catch (error) {
         console.error("Error fetching HSN code and GST rate:", error);
       }
+    } else {
+      // Clear the product field if the value is cleared
+      setRows((prevRows) =>
+        prevRows.map((row, rowIndex) =>
+          rowIndex === index ? { ...row, product: "" } : row
+        )
+      );
     }
   };
 
-  // useEffect(() => {
-  //   if (selectedLocation) {
-  //     handleLocationChange11111();
-  //   }
-  // }, [selectedLocation]);
-
-  // console.log("djjj", rows);
-  // const handleInputChangeProduct = (index, field, value) => {
-  //   setRows((prevRows) =>
-  //     prevRows.map((row, rowIndex) =>
-  //       rowIndex === index ? { ...row, [field]: value } : row
-  //     )
-  //   );
-  // };
+  const handleInputChangeProductField = (index, value) => {
+    setRows((prevRows) =>
+      prevRows.map((row, rowIndex) =>
+        rowIndex === index ? { ...row, product: value } : row
+      )
+    );
+  };
 
   const handleInputChangeProduct = (index, field, value) => {
     setRows((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
           const updatedRow = { ...row, [field]: value };
-  
+
           // Recalculate product_amount if unit or rate changes
           if (field === "unit" || field === "rate") {
             const unit = parseFloat(updatedRow.unit) || 0;
             const rate = parseFloat(updatedRow.rate) || 0;
             updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
           }
-  
+
           // Recalculate GST values when gstRate changes
           if (updatedRow.gstRate) {
             const gstValue = (
-              (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
+              (parseFloat(updatedRow.gstRate) *
+                parseFloat(updatedRow.product_amount)) /
               100
             ).toFixed(2);
-  
+
             if (shouldShowCGSTSGST) {
               const cgstValue = (gstValue / 2).toFixed(2);
               const sgstValue = (gstValue / 2).toFixed(2);
@@ -434,17 +653,18 @@ function SalesCreation() {
               updatedRow.igst = gstValue;
             }
           }
-  
+
           // Calculate GST value for total invoice calculation
           const gstValueRow = shouldShowCGSTSGST
-            ? (parseFloat(updatedRow.cgst) || 0) + (parseFloat(updatedRow.sgst) || 0)
+            ? (parseFloat(updatedRow.cgst) || 0) +
+              (parseFloat(updatedRow.sgst) || 0)
             : parseFloat(updatedRow.igst) || 0;
-  
+
           // Ensure total_invoice is calculated without NaN
           updatedRow.total_invoice = (
             (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
           ).toFixed(2);
-  
+
           // Return the updated row
           return updatedRow;
         }
@@ -452,17 +672,16 @@ function SalesCreation() {
       })
     );
   };
-  
-
 
   useEffect(() => {
     setRows((prevRows) =>
       prevRows.map((row) => {
         if (row.product_amount && row.gstRate) {
           const gstValue = (
-            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
+            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+            100
           ).toFixed(2);
-  
+
           if (shouldShowCGSTSGST) {
             const cgstValue = (gstValue / 2).toFixed(2);
             const sgstValue = (gstValue / 2).toFixed(2);
@@ -475,43 +694,42 @@ function SalesCreation() {
             row.igst = gstValue;
           }
         }
-  
+
         // Calculate total_invoice for this row (product_amount + gstValue)
         const gstValueRow = shouldShowCGSTSGST
           ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
           : parseFloat(row.igst) || 0;
-  
+
         // Ensure total_invoice does not show NaN
         row.total_invoice = (
           (parseFloat(row.product_amount) || 0) + gstValueRow
         ).toFixed(2);
-  
+
         return row;
       })
     );
   }, [shouldShowCGSTSGST, shouldShowIGST]);
-  
 
   useEffect(() => {
     // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
     let totalAmount = 0;
     let totalGSTValue = 0;
     let totalInvoiceValueSum = 0;
-  
+
     rows.forEach((row) => {
       totalAmount += parseFloat(row.product_amount) || 0;
-  
+
       if (shouldShowCGSTSGST) {
         totalGSTValue +=
           (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
       } else if (shouldShowIGST) {
         totalGSTValue += parseFloat(row.igst) || 0;
       }
-  
+
       // Sum up total_invoice values
       totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
     });
-  
+
     // Update invoiceData with calculated values
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
@@ -526,15 +744,16 @@ function SalesCreation() {
       )
     );
   }, [rows, shouldShowCGSTSGST, shouldShowIGST]);
-  
+
   useEffect(() => {
     const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
     const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
-    const TotalAllInvoice = parseFloat(invoiceData[0]?.total_invoice_value) || 0;
-  
+    const TotalAllInvoice =
+      parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+
     // Calculate TCS or TDS amount and format to 2 decimal places
     const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
-  
+
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
         index === 0
@@ -544,10 +763,12 @@ function SalesCreation() {
               tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
               amount_receivable:
                 selectedTDSTCSOption === "tcs"
-                  ? (TotalAllInvoice + parseFloat(amountToAddOrSubtract)).toFixed(2)
-                  : (TotalAllInvoice - parseFloat(amountToAddOrSubtract)).toFixed(
-                      2
-                    ),
+                  ? (
+                      TotalAllInvoice + parseFloat(amountToAddOrSubtract)
+                    ).toFixed(2)
+                  : (
+                      TotalAllInvoice - parseFloat(amountToAddOrSubtract)
+                    ).toFixed(2),
             }
           : data
       )
@@ -558,7 +779,6 @@ function SalesCreation() {
     invoiceData[0]?.tds_tcs_rate,
     selectedTDSTCSOption,
   ]);
-  
 
   // console.log("Amount Receivable:", amountReceivable);
   const handleAddRow = () => {
@@ -587,12 +807,12 @@ function SalesCreation() {
       formData,
       vendorData,
       rows,
-      invoiceData
+      invoiceData,
     };
 
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-sales-post/${id}`,
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/create-sales-post/${id}/${rowId}`,
         payload
       );
       console.log("Data submitted successfully:", response.data);
@@ -647,27 +867,83 @@ function SalesCreation() {
       ]);
     }
   }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
-
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
+      <div>
+        <div>
+          <Modal
+            open={openViewModal}
+            onClose={handleViewClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            animate={{
+              mount: { scale: 1, y: 0 },
+              unmount: { scale: 0.9, y: -100 },
+            }}
+            className="overflow-auto"
+          >
+            <Box sx={style}>
+              {/* <Typography
+                id="modal-modal-title"
+                variant="h5"
+                component="h2"
+                className="text-center border-b-2 border-[#366FA1] pb-3 "
+              >
+                Details View
+              </Typography> */}
+
+              {/* {bankData && ( */}
+                <>
+                  <div>
+                    <form className=" my-5 w-full ">
+                      <SalesInvoice invoiceData={bankData}/>
+                    </form>
+                  </div>
+                  <DialogFooter className="">
+                    <Button
+                      conained="gradient"
+                      color="red"
+                      onClick={handleViewClose}
+                      className="mr-1 "
+                    >
+                      <span>Cancel</span>
+                    </Button>
+                    <Button
+                      conained="gradient"
+                      color="green"
+                      className="bg-primary"
+                      onClick={handleViewClose}
+                    >
+                      <span>Confirm</span>
+                    </Button>
+                  </DialogFooter>
+                </>
+              {/* )} */}
+            </Box>
+          </Modal>
+        </div>
+      </div>
+
+      {/* //////////////////////////Update Data Modal open//////// */}
+
       <div>
         <Modal
           open={openCreateModal}
           onClose={handleCreateClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-          className="overflow-auto"
         >
           <Box sx={styleCreateMOdal}>
             <Typography
               id="modal-modal-title"
               variant="h5"
               component="h2"
-              className="text-center border-b-2 border-[#366FA1] pb-3 overflow-auto"
+              className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Create Sales Details
+              Update Sales Invoice Details
             </Typography>
+
             <form
               className=" my-5 w-full h-[700px] overflow-auto "
               onSubmit={handleSubmit}
@@ -1121,58 +1397,6 @@ function SalesCreation() {
                     </div>
                     <div className="">
                       <div className="">
-                        {/* <select
-                         name="invoice_type"
-                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                          style={{
-                            height: "28px", // Match this to your Autocomplete's root height
-                            padding: "4px 6px", // Match this padding
-                            fontSize: "0.875rem", // Ensure font size is consistent
-                            width: 300,
-                          }}
-                          value={invoiceData[0].invoice_type}
-                          onChange={handleInputChangeInvoiceData}
-                        >
-                          <option value="">Select Invoice Type</option>
-                          <option value="b2b">B2B</option>
-                          <option value="b2c-l">B2C-L</option>
-                          <option value="bsc-o">BSC-O</option>
-                          <option value="nil rated">Nil Rated</option>
-                          <option value="advance received">
-                            Advance Received
-                          </option>
-                          <option value="export">Export</option>
-                          <option value="unregistered local">
-                            Unregistered Local
-                          </option>
-                          <option value="unregistered non-local">
-                            Unregistered non-local
-                          </option>
-                          <option value="sez">SEZ</option>
-                        </select> */}
-                        {/* <select
-                          name="invoice_type"
-                          value={invoiceData[0].invoice_type}
-                          onChange={handleInputChangeInvoiceData}
-                        >
-                          {(vendorData.gst_no
-                            ? [
-                                "B2B",
-                                "B2C-L",
-                                "BSC-O",
-                                "Nil Rated",
-                                "Advance Received",
-                                "SEZ",
-                                "Export",
-                              ]
-                            : filteredInvoiceTypes
-                          ).map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select> */}
-
                         <select
                           name="invoice_type"
                           className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
@@ -1275,6 +1499,39 @@ function SalesCreation() {
                         placeholder="Invoice Date"
                         onChange={handleInputChangeInvoiceData}
                       />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <label htmlFor="attach_invoice">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Eway Bill
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="">
+                      {/* <input
+                        type="file"
+                        size="md"
+                        name="attach_invoice"
+                        placeholder="Invoice Date"
+                        onChange={handleInputChangeInvoiceData}
+                      /> */}
+                      <a
+                        href={`http://127.0.0.1:8000${bankData?.attach_e_way_bill}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <ImFilePicture size={20} color="#366FA1" />
+                        <p className="text-blue-500">
+                          {/* Extracting the filename from the path */}
+                          {bankData?.attach_e_way_bill.split("/").pop()}
+                        </p>
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -1704,6 +1961,13 @@ function SalesCreation() {
                                           onChange={(event, newValue) =>
                                             handleProductChange(index, newValue)
                                           }
+                                          inputValue={row.product || ""} // Ensure inputValue is always a string
+                                          onInputChange={(event, value) =>
+                                            handleInputChangeProductField(
+                                              index,
+                                              value
+                                            )
+                                          }
                                           value={
                                             product_ser_Data.find(
                                               (option) =>
@@ -2062,8 +2326,9 @@ function SalesCreation() {
                                               Taxable Amount :
                                             </div>
                                             <TextField
-                                              value={invoiceData[0].taxable_amount}
-                                           
+                                              value={
+                                                invoiceData[0].taxable_amount
+                                              }
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2083,7 +2348,9 @@ function SalesCreation() {
                                               Total Gst Rate :
                                             </div>
                                             <TextField
-                                              value={invoiceData[0].totalall_gst}
+                                              value={
+                                                invoiceData[0].totalall_gst
+                                              }
                                               // onChange={(e) =>
                                               //   handleInputChangeProduct(
                                               //     index,
@@ -2110,7 +2377,10 @@ function SalesCreation() {
                                               Total Invoice Value :
                                             </div>
                                             <TextField
-                                                value={invoiceData[0].total_invoice_value}
+                                              value={
+                                                invoiceData[0]
+                                                  .total_invoice_value
+                                              }
                                               // onChange={(e) =>
                                               //   handleInputChangeProduct(
                                               //     index,
@@ -2734,16 +3004,115 @@ function SalesCreation() {
           </Box>
         </Modal>
       </div>
-      <Button
-        conained="conained"
-        size="md"
-        className="bg-primary hover:bg-[#2d5e85] "
-        onClick={handleCreateOpen}
-      >
-        Create
-      </Button>
+
+      {/* /////////////////////////////delete modal//////////////////// */}
+
+      <div>
+        <Modal
+          open={openDeleteModal}
+          onClose={handleDeleteClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          animate={{
+            mount: { scale: 1, y: 0 },
+            unmount: { scale: 0.9, y: -100 },
+          }}
+        >
+          <Box sx={style}>
+            <Typography
+              id="modal-modal-title"
+              variant="h5"
+              component="h2"
+              className="text-center border-b-2 border-[#366FA1] pb-3"
+            >
+              Delete
+            </Typography>
+
+            <div>
+              <div className="w-full max-w-md mx-auto pb-7">
+                <div className="my-8 text-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-14 fill-red-500 inline"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                      data-original="#000000"
+                    />
+                    <path
+                      d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                      data-original="#000000"
+                    />
+                  </svg>
+                  <h4 className="text-gray-800 text-lg font-semibold mt-4">
+                    Are you sure you want to delete it?
+                  </h4>
+                  <p className="text-sm text-gray-600 mt-4">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    auctor auctor arcu, at fermentum dui. Maecenas
+                  </p>
+                </div>
+
+                <div className="flex flex-col space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleDeleteID}
+                    className="px-4 py-2 rounded-lg text-white text-sm tracking-wide bg-red-500 hover:bg-red-600 active:bg-red-500"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeleteClose}
+                    className="px-4 py-2 rounded-lg text-gray-800 text-sm tracking-wide bg-gray-200 hover:bg-gray-300 active:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Box>
+        </Modal>
+      </div>
+
+      <div>
+        <IconButton
+          aria-label="more"
+          id="long-button"
+          aria-controls={open ? "long-menu" : undefined}
+          aria-expanded={open ? "true" : undefined}
+          aria-haspopup="true"
+          onClick={handleClick}
+        >
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          MenuListProps={{
+            "aria-labelledby": "long-button",
+          }}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          slotProps={{
+            paper: {
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: "20ch",
+              },
+            },
+          }}
+        >
+          {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
+
+          <Link to={`/purchaseInvoice/${id}/${rowId}`}>
+            <MenuItem>View</MenuItem>
+          </Link>
+          <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
+          <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
+        </Menu>
+      </div>
     </>
   );
 }
-
-export default SalesCreation;

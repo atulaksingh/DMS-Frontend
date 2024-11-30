@@ -123,7 +123,8 @@ function SalesCreation() {
       invoice_date: "",
       invoice_type: "",
       entry_type: "",
-      attach_invoice: "",
+      // attach_invoice: "",
+      // attach_e_way_bill:"",
       taxable_amount: "",
       totalall_gst:"",
       total_invoice_value: "",
@@ -134,10 +135,10 @@ function SalesCreation() {
       amount_receivable: "",
     },
   ]);
-  // console.log("formData", formData);
-  // console.log("vendor", vendorData);
-  // console.log("rowsData", rows);
-  // console.log("invoiceData", invoiceData);
+  console.log("formData", formData);
+  console.log("vendor", vendorData);
+  console.log("rowsData", rows);
+  console.log("invoiceData", invoiceData);
   // const handleInputChangeInvoiceData = (e) => {
   //   const { name, value, type } = e.target;
   //   const fieldValue = type === "file" ? e.target.files[0] : value;
@@ -155,21 +156,21 @@ function SalesCreation() {
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type } = e.target;
     const fieldValue = type === "file" ? e.target.files[0] : value;
-
+  
     setInvoiceData((prevData) => {
       const updatedData = [...prevData];
       let updatedEntry = {
         ...updatedData[0],
         [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
       };
-
+  
       // Logic to reset the other field to blank
       if (name === "tcs") {
         updatedEntry.tds = ""; // Reset TDS to blank if TCS is filled
       } else if (name === "tds") {
         updatedEntry.tcs = ""; // Reset TCS to blank if TDS is filled
       }
-
+  
       if (name === "tds_tcs_rate") {
         if (updatedEntry.tcs > 0) {
           updatedEntry.tds = ""; // Reset TDS to blank if TCS rate is filled
@@ -177,11 +178,12 @@ function SalesCreation() {
           updatedEntry.tcs = ""; // Reset TCS to blank if TDS rate is filled
         }
       }
-
+  
       updatedData[0] = updatedEntry;
       return updatedData;
     });
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -591,8 +593,13 @@ function SalesCreation() {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-sales-post/${id}`,
-        payload
+        `http://127.0.0.1:8000/api/create-sales-post2/${id}`,
+        payload,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       console.log("Data submitted successfully:", response.data);
       // Handle successful response
@@ -1272,6 +1279,28 @@ function SalesCreation() {
                         size="md"
                         name="attach_invoice"
                         placeholder="Invoice Date"
+                        onChange={handleInputChangeInvoiceData}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <label htmlFor="attach_e_way_bill">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Eway Bill
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="">
+                      <input
+                        type="file"
+                        size="md"
+                        name="attach_e_way_bill"
+                        placeholder="Eway Bill"
                         onChange={handleInputChangeInvoiceData}
                       />
                     </div>
