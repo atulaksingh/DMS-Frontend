@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -44,7 +44,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function OfficeLocCard({ rowId }) {
+export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
   const { clientID, branchID } = useParams();
   // console.log("rowIdOffice Location", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -96,9 +96,12 @@ export default function OfficeLocCard({ rowId }) {
         position: "top-right",
         autoClose: 2000,
       });
-
+ 
+      setTimeout(() => {
+        fetchBranchDetails();
+        handleCreateClose();
+      }, 500); // Delay to ensure the toast stays for a while
       // Optionally close the modal and reset form
-      handleCreateClose();
       setFormData({
         location: "",
         contact: "",
@@ -141,6 +144,7 @@ export default function OfficeLocCard({ rowId }) {
           position: "top-right",
           autoClose: 2000,
         });
+        fetchBranchDetails();
       } else {
         toast.error("Failed to delete Office Location. Please try again.", {
           position: "top-right",
@@ -171,7 +175,7 @@ export default function OfficeLocCard({ rowId }) {
       const response = await axios.get(
         `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`
       );
-      console.log("dd", response.data);
+      // console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
       console.error("Error fetching Office Location data:", error);
@@ -213,7 +217,7 @@ export default function OfficeLocCard({ rowId }) {
   // }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <div>
           <Modal

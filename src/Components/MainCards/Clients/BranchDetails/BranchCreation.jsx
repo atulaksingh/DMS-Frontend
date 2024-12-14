@@ -6,10 +6,12 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import { Country, State, City } from "country-state-city";
 import { Autocomplete, Stack, TextField } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 
 const styleCreateMOdal = {
   position: "absolute",
@@ -25,6 +27,7 @@ const styleCreateMOdal = {
 };
 function BranchCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
 
   const [countries, setCountries] = useState(Country.getAllCountries());
@@ -94,11 +97,11 @@ function BranchCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("branch_name", formData.branch_name);
       formDataToSend.append("contact", formData.contact);
@@ -108,31 +111,39 @@ function BranchCreation() {
       formDataToSend.append("city", formData.city);
       formDataToSend.append("address", formData.address);
       formDataToSend.append("pincode", formData.pincode);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-branch/${id}`,
         formDataToSend
       );
-
-      // console.log(response.data); // Handle success response
-      toast.success("Branch details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        branch_name: "",
-        contact: "",
-        gst_no: "",
-        country: "", 
-        state: "",
-        city: "",
-        address: "",
-        pincode: "",
-      });
+  
+      // Check if the response is successful
+      if (response.status === 201 || response.data.success) {
+        toast.success("Branch details created successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          branch_name: "",
+          contact: "",
+          gst_no: "",
+          country: "",
+          state: "",
+          city: "",
+          address: "",
+          pincode: "",
+        });
+      } else {
+        // Handle non-successful response
+        throw new Error("Failed to create branch details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create Branch details. Please try again.", {
@@ -141,10 +152,11 @@ function BranchCreation() {
       });
     }
   };
+  
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer />       */}
       <div>
         <Modal
           open={openCreateModal}

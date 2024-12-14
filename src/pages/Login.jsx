@@ -17,6 +17,8 @@ import FacebookOutlinedIcon from "@mui/icons-material/FacebookOutlined";
 import logo from "../assets/Zaco_LOGO.png";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import GoogleIcon from "@mui/icons-material/Google";
+import ReduxCard from "../Components/ReduxCard";
+
 function Login() {
   return (
     <>
@@ -144,6 +146,9 @@ function Login() {
         </div>
       </div>
     </div>
+
+
+    <ReduxCard />
     </>
   );
 }

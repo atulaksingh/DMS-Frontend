@@ -6,7 +6,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 const styleCreateMOdal = {
   position: "absolute",
@@ -20,7 +20,7 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function BranchDocCreation() {
+function BranchDocCreation({fetchBranchDetails}) {
   const { clientID, branchID } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -58,21 +58,21 @@ function BranchDocCreation() {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       const formDataToSend = new FormData();
-
+  
       // Append each form field to FormData
       formDataToSend.append("document_type", formData.document_type);
       formDataToSend.append("login", formData.login);
       formDataToSend.append("password", formData.password);
       formDataToSend.append("remark", formData.remark);
-
+  
       // Append multiple files if selected
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-branchdoc/${branchID}`,
@@ -83,15 +83,34 @@ function BranchDocCreation() {
           },
         }
       );
+  
+      // Check if the response is successful
+      if (response.status === 200) {
+        // Call fetchBranchDetails only on successful response
+        fetchBranchDetails();
+  
+  
+        setFormData({
+          document_type: "",
+          login: "",
+          password: "",
+          remark: "",
+          files: [],
+        });
+        handleCreateClose();
 
-      // console.log(response); // Handle success response
-      toast.success("Bank details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
+        // Optionally close the modal and reset form
+        toast.success("Bank details created successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        // Handle error response (if not 200)
+        toast.error("Failed to create bank details. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create bank details. Please try again.", {
@@ -100,10 +119,10 @@ function BranchDocCreation() {
       });
     }
   };
-
+  
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

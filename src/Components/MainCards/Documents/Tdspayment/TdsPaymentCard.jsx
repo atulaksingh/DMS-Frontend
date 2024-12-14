@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -46,6 +48,7 @@ const ITEM_HEIGHT = 48;
 
 export default function TdsPaymentCard({ rowId }) {
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdTds Return", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -79,11 +82,11 @@ export default function TdsPaymentCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("client_name", formData.client_name);
       formDataToSend.append("date", formData.date);
@@ -97,7 +100,7 @@ export default function TdsPaymentCard({ rowId }) {
       formDataToSend.append("tds_section", formData.tds_section);
       formDataToSend.append("tds_amount", formData.tds_amount);
       formDataToSend.append("net_amount", formData.net_amount);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-tdspayment/${id}/${rowId}`,
@@ -108,37 +111,45 @@ export default function TdsPaymentCard({ rowId }) {
           },
         }
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("Tds Return details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        client_name: "",
-        date: "",
-        PAN: "",
-        amount: "",
-        cgst: "",
-        sgst: "",
-        igst: "",
-        total_amt: "",
-        tds_rate: "",
-        tds_section: "",
-        tds_amount: "",
-        net_amount: "",
-      });
+  
+      if (response.status === 200) { // Check if response is successful
+        console.log(response.data); // Handle success response
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          client_name: "",
+          date: "",
+          PAN: "",
+          amount: "",
+          cgst: "",
+          sgst: "",
+          igst: "",
+          total_amt: "",
+          tds_rate: "",
+          tds_section: "",
+          tds_amount: "",
+          net_amount: "",
+        });
+      } else {
+        throw new Error("Failed to update Tds Return details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Tds Return details. Please try again.", {
+      toast.error("Failed to update Tds Return details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -160,10 +171,11 @@ export default function TdsPaymentCard({ rowId }) {
       // console.log("res-----Tds Return---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("Tds Return deleted successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
       } else {
         toast.error("Failed to delete Tds Return. Please try again.", {
           position: "top-right",

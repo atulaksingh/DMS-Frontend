@@ -13,7 +13,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
+// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -45,7 +47,7 @@ const ITEM_HEIGHT = 48;
 
 export default function CVCard({ rowId }) {
   const { id } = useParams();
-
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
@@ -77,43 +79,52 @@ export default function CVCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const formDataToSend = new FormData();
-
+  
       formDataToSend.append("name", formData.name);
       formDataToSend.append("gst_no", formData.gst_no);
       formDataToSend.append("pan", formData.pan);
       formDataToSend.append("address", formData.address);
       formDataToSend.append("customer", formData.customer);
       formDataToSend.append("vendor", formData.vendor);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-customer/${id}/${rowId}`,
         formDataToSend
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("Client and Vendor details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        name: "",
-        gst_no: "",
-        pan: "",
-        address: "",
-        customer: "",
-        vendor: "",
-      });
+  
+      if (response.status === 200) { // Check if response is successful
+        console.log(response.data); // Log success response
+  
+        // Dispatch fetchClientDetails only on success
+        dispatch(fetchClientDetails(id));
+  
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          name: "",
+          gst_no: "",
+          pan: "",
+          address: "",
+          customer: "",
+          vendor: "",
+        });
+      } else {
+        throw new Error("Failed to update Client and Vendor details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error(
-        "Failed to create Client and Vendor details. Please try again.",
+        error.response?.data?.Message || 
+        "Failed to update Client and Vendor details. Please try again.",
         {
           position: "top-right",
           autoClose: 2000,
@@ -121,6 +132,7 @@ export default function CVCard({ rowId }) {
       );
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -142,12 +154,13 @@ export default function CVCard({ rowId }) {
       // console.log("res-----Client and Vendor---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("Client and Vendor deleted successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
       } else {
-        toast.error("Failed to delete Client and Vendor. Please try again.", {
+        toast.error(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -217,7 +230,7 @@ export default function CVCard({ rowId }) {
   }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <div>
           <Modal

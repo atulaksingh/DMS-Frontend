@@ -8,7 +8,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 const styleCreateMOdal = {
   position: "absolute",
@@ -22,7 +22,7 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function OfficeLocCreation() {
+function OfficeLocCreation({fetchBranchDetails}) {
     const { branchID } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -76,21 +76,28 @@ function OfficeLocCreation() {
       );
 
       console.log(response.data); // Handle success response
-      toast.success("Office Location details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
 
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        location: "",
-        contact: "",
-        address: "",
-        city: "",
-        state: "",
-        country:""
-      });
+
+      // if (response.status === 200 && response.data.Message === "Office Location Created") {
+        // Success
+        fetchBranchDetails();
+      
+        setFormData({
+          location: "",
+          contact: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+        });
+        handleCreateClose();
+      
+        toast.success("Office Location details created successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+     
+      
  
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -103,7 +110,7 @@ function OfficeLocCreation() {
 
   return (
     <>
-    <ToastContainer />
+    {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

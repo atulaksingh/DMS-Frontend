@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -46,6 +48,7 @@ const ITEM_HEIGHT = 48;
 
 export default function TdsReturnCard({ rowId }) {
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdTds Return", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -80,11 +83,11 @@ export default function TdsReturnCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("challan_date", formData.challan_date);
       formDataToSend.append("challan_no", formData.challan_no);
@@ -99,12 +102,12 @@ export default function TdsReturnCard({ rowId }) {
         "last_filed_return_ack_no",
         formData.last_filed_return_ack_no
       );
-
+  
       // Append file field to FormData
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`,
@@ -115,33 +118,42 @@ export default function TdsReturnCard({ rowId }) {
           },
         }
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("Tds Return details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        challan_date: "",
-        challan_no: "",
-        challan_type: "",
-        tds_section: "",
-        amount: "",
-        last_filed_return_ack_date: "",
-        last_filed_return_ack_no: "",
-        files: [],
-      });
+  
+      if (response.status === 200) {
+        // Handle success response
+        console.log(response.data);
+        toast.success("Tds Return details update successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          challan_date: "",
+          challan_no: "",
+          challan_type: "",
+          tds_section: "",
+          amount: "",
+          last_filed_return_ack_date: "",
+          last_filed_return_ack_no: "",
+          files: [],
+        });
+      } else {
+        throw new Error("Unexpected response status.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Tds Return details. Please try again.", {
+      toast.error("Failed to update Tds Return details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -167,6 +179,7 @@ export default function TdsReturnCard({ rowId }) {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
       } else {
         toast.error("Failed to delete Tds Return. Please try again.", {
           position: "top-right",

@@ -6,8 +6,9 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom"; 
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -22,9 +23,11 @@ const styleCreateMOdal = {
 };
 function BankCreation() {
     const { id } = useParams();
-    console.log("ddddddddddddd",id)
+    // console.log("ddddddddddddd",id)
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const dispatch = useDispatch(); // To dispatch actions for fetching client details
+  // const history = useHistory(); // For redirecting after successful form submission
   const open = Boolean(anchorEl);
   const handleCreateOpen = () => {
     setOpenCreateModal(true);
@@ -93,7 +96,8 @@ function BankCreation() {
         position: "top-right",
         autoClose: 2000,
       });
-
+      dispatch(fetchClientDetails(id)); // This will trigger fetching client details using the id
+      // history.push(`/client-details/${id}`);
       // Optionally close the modal and reset form
       handleCreateClose();
       setFormData({
@@ -115,7 +119,6 @@ function BankCreation() {
 
   return (
     <>
-    <ToastContainer />
       <div>
         <Modal
           open={openCreateModal}

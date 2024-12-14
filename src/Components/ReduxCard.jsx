@@ -1,8 +1,3 @@
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
@@ -13,19 +8,18 @@ import TabPanel from "@mui/lab/TabPanel";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-
+import Owner from "./MainCards/Clients/OwnerDetails/Owner";
+import Bank from "./MainCards/Clients/BankDetails/Bank";
+import Branch from "./MainCards/Clients/BranchDetails/Branch";
+import ClientUser from "./MainCards/Clients/ClientUser/ClientUser";
+import CompanyDocuments from "./MainCards/Clients/CompanyDocuments/CompanyDocuments";
+import CV from "./MainCards/Clients/CorV/CV";
+import Documents from "./MainCards/Documents/Documents";
+import Purchase from "./MainCards/Clients/Purchase/Purchase";
+import Sales from "./MainCards/Clients/Sales/Sales";
 import { useDispatch, useSelector } from "react-redux";
-import Owner from "./OwnerDetails/Owner";
-import Bank from "./BankDetails/Bank";
-import Branch from "./BranchDetails/Branch";
-import ClientUser from "./ClientUser/ClientUser";
-import CompanyDocuments from "./CompanyDocuments/CompanyDocuments";
-import CV from "./CorV/CV";
-import Documents from "../Documents/Documents";
-import Purchase from "./Purchase/Purchase";
-import Sales from "./Sales/Sales";
-import { fetchClientDetails } from "../../Redux/clientSlice";
-function ClientDetails() {
+import { fetchClientDetails } from "./Redux/clientSlice";
+function ReduxCard() {
   const id = 1;
 
   const [value, setValue] = React.useState("1");
@@ -53,7 +47,6 @@ function ClientDetails() {
     tdsReturnData,
     tdsPaymentData,
     salesInvoiceData,
-    purchaseInvoiceData,
     status,
     error,
   } = useSelector((state) => state.client);
@@ -357,7 +350,7 @@ function ClientDetails() {
 
               </TabPanel>
               <TabPanel value="8">
-                <Purchase purchaseInvoiceData={purchaseInvoiceData}/>
+                <Purchase salesInvoiceData={salesInvoiceData}/>
               </TabPanel>
               <TabPanel value="9">
                 <Sales salesInvoiceData={salesInvoiceData}/>
@@ -370,5 +363,4 @@ function ClientDetails() {
   );
 }
 
-export default ClientDetails;
-
+export default ReduxCard;

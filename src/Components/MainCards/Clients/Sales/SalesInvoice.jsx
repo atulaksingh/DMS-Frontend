@@ -1,7 +1,7 @@
 import React from "react";
 
 function SalesInvoice({ invoiceData }) {
-  console.log("123", invoiceData);
+  // console.log("123", invoiceData);
   return (
     <div>
       {" "}

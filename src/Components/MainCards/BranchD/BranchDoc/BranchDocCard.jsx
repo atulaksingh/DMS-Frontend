@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -44,7 +44,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function BranchDocCard({ rowId }) {
+export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
   const { branchID } = useParams();
   // console.log("rowIdbranchDoc", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -78,21 +78,21 @@ export default function BranchDocCard({ rowId }) {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       const formDataToSend = new FormData();
-
+  
       // Append each form field to FormData
       formDataToSend.append("document_type", formData.document_type);
       formDataToSend.append("login", formData.login);
       formDataToSend.append("password", formData.password);
       formDataToSend.append("remark", formData.remark);
-
+  
       // Append multiple files if selected
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-branchdoc/${branchID}/${rowId}`,
@@ -103,15 +103,17 @@ export default function BranchDocCard({ rowId }) {
           },
         }
       );
-
-      // console.log(response); // Handle success response
+  
+      // Handle success response and show toast
       toast.success("branchDoc details created successfully!", {
         position: "top-right",
         autoClose: 2000,
       });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
+      setTimeout(() => {
+        fetchBranchDetails();
+        handleCreateClose();
+      }, 500); // Delay to ensure the toast stays for a while
+      
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create branchDoc details. Please try again.", {
@@ -120,6 +122,7 @@ export default function BranchDocCard({ rowId }) {
       });
     }
   };
+  
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -142,10 +145,11 @@ export default function BranchDocCard({ rowId }) {
       // console.log("res-----branchDoc---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("branchDoc deleted successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+          fetchBranchDetails();
       } else {
         toast.error("Failed to delete branchDoc. Please try again.", {
           position: "top-right",
@@ -218,7 +222,7 @@ export default function BranchDocCard({ rowId }) {
   // }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <div>
           <Modal

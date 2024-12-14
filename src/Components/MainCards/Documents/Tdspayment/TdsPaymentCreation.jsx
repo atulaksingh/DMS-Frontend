@@ -6,8 +6,10 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -22,6 +24,7 @@ const styleCreateMOdal = {
 };
 function TdsPaymentCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -57,11 +60,11 @@ function TdsPaymentCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("client_name", formData.client_name);
       formDataToSend.append("date", formData.date);
@@ -75,35 +78,42 @@ function TdsPaymentCreation() {
       formDataToSend.append("tds_section", formData.tds_section);
       formDataToSend.append("tds_amount", formData.tds_amount);
       formDataToSend.append("net_amount", formData.net_amount);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-tdspayment/${id}`,
         formDataToSend
       );
-
-      console.log(response); // Handle success response
-      toast.success("Tds Payment details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        client_name: "",
-        date: "",
-        PAN: "",
-        amount: "",
-        cgst: "",
-        sgst: "",
-        igst: "",
-        total_amt: "",
-        tds_rate: "",
-        tds_section: "",
-        tds_amount: "",
-        net_amount: "",
-      });
+  
+      if (response.status === 200) { // Check if response is successful
+        console.log(response.data); // Handle success response
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          client_name: "",
+          date: "",
+          PAN: "",
+          amount: "",
+          cgst: "",
+          sgst: "",
+          igst: "",
+          total_amt: "",
+          tds_rate: "",
+          tds_section: "",
+          tds_amount: "",
+          net_amount: "",
+        });
+      } else {
+        throw new Error("Failed to create Tds Payment details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create Tds Payment details. Please try again.", {
@@ -112,10 +122,11 @@ function TdsPaymentCreation() {
       });
     }
   };
+  
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

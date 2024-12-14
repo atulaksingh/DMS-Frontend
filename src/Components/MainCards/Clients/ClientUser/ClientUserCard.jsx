@@ -13,7 +13,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -46,6 +48,7 @@ const ITEM_HEIGHT = 48;
 
 export default function ClientUserCard({ rowId }) {
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdClientUser", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -70,41 +73,49 @@ export default function ClientUserCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("first_name", formData.first_name);
       formDataToSend.append("last_name", formData.last_name);
       formDataToSend.append("email", formData.email);
       formDataToSend.append("username", formData.username);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-clientuser/${id}/${rowId}`,
         formDataToSend
       );
-
-    //   console.log(response.data); // Handle success response
-      toast.success("ClientUser details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        first_name: "",
-        last_name: "",
-        email: "",
-        username: "",
-      });
-      setAttachment(null); // Clear the file input
+  // console.log("ss",response.data)
+      // Check if the response is successful
+      if (response.status === 200) {
+        // console.log("ss",response.data)
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          username: "",
+        });
+        setAttachment(null); // Clear the file input
+      } else {
+        throw new Error("Failed to update ClientUser details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create ClientUser details. Please try again.", {
+      toast.error("Failed to update ClientUser details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -135,6 +146,7 @@ export default function ClientUserCard({ rowId }) {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
       } else {
         toast.error("Failed to delete ClientUser. Please try again.", {
           position: "top-right",
@@ -206,7 +218,7 @@ export default function ClientUserCard({ rowId }) {
   // }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <div>
           <Modal

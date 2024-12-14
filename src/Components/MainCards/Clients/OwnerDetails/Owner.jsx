@@ -16,6 +16,8 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 // import { DialogFooter, Button } from "@material-tailwind/react";
 const muiCache = createCache({
   key: "mui-datatables",
@@ -35,8 +37,9 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function Owner({ ownerData }) {
+  if (!ownerData) return <div>No owner data available</div>;
   const { id } = useParams();
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     owner_name: "",
     share: "",
@@ -66,7 +69,7 @@ function Owner({ ownerData }) {
   };
   // console.log("formmmowner", formData);
   const handleSubmit = async (e) => {
-    console.log("enter");
+    // console.log("enter");
     e.preventDefault(); // Prevent default form submission
 
     try {
@@ -75,12 +78,13 @@ function Owner({ ownerData }) {
         `http://127.0.0.1:8000/api/create-owner/${id}`,
         formData
       );
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success("Owner created successfully!", {
         position: "top-right",
         autoClose: 2000,
       });
       // Optionally close the modal and reset form
+      dispatch(fetchClientDetails(id)); 
       handleCreateClose();
       // setErrorMessage("");
       setFormData({

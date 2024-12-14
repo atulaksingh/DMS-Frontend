@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -47,6 +49,7 @@ const ITEM_HEIGHT = 48;
 export default function BankCard({ rowId }) {
   const { id } = useParams();
   // console.log("rowIdbank", rowId);
+  const dispatch = useDispatch(); 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
@@ -107,6 +110,7 @@ export default function BankCard({ rowId }) {
       );
 
       console.log(response.data); // Handle success response
+      dispatch(fetchClientDetails(id));
       toast.success("Bank details update successfully!", {
         position: "top-right",
         autoClose: 2000,
@@ -148,6 +152,7 @@ export default function BankCard({ rowId }) {
         `http://127.0.0.1:8000/api/delete-bank/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
+      dispatch(fetchClientDetails(id));
       setOpenDeleteModal(false);
       if (response.status === 200) {
         toast.success("bank deleted successfully!", {

@@ -19,6 +19,8 @@ import { format } from "date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -52,6 +54,7 @@ const ITEM_HEIGHT = 48;
 
 export default function AirCard({ rowId }) {
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdair", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -102,10 +105,11 @@ export default function AirCard({ rowId }) {
       );
 
       if (response.status === 200) {
-        toast.success("air details Update successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
         handleCreateClose();
         setFormData({
           financial_year: "",
@@ -144,10 +148,11 @@ export default function AirCard({ rowId }) {
       // console.log("res-----air---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("air deleted successfully!", {
+        toast.success(`${response.data.Messgae}`, {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
       } else {
         toast.error("Failed to delete air. Please try again.", {
           position: "top-right",
@@ -201,7 +206,7 @@ export default function AirCard({ rowId }) {
       console.error("Failed to fetch data for update:", error);
     }
   };
-  console.log("dd", formData, fileDetails);
+  // console.log("dd", formData, fileDetails);
 
   const handleCreateClose = () => setOpenCreateModal(false);
   const [airData, setAirData] = useState(null);

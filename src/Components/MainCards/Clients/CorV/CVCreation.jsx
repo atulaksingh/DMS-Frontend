@@ -11,8 +11,10 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -27,6 +29,7 @@ const styleCreateMOdal = {
 };
 function CVCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -61,11 +64,11 @@ function CVCreation() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("name", formData.name);
       formDataToSend.append("gst_no", formData.gst_no);
@@ -73,19 +76,23 @@ function CVCreation() {
       formDataToSend.append("address", formData.address);
       formDataToSend.append("customer", formData.customer);
       formDataToSend.append("vendor", formData.vendor);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-customer/${id}`,
         formDataToSend
       );
-
+  
       console.log(response.data);
-      toast.success("Customer and Vendor details created successfully!", {
+  
+      // Call the dispatch function after a successful response
+      dispatch(fetchClientDetails(id));
+  
+      toast.success(`${response.data.Message}`, {
         position: "top-right",
         autoClose: 2000,
       });
-
+  
       // Optionally close the modal and reset form
       handleCreateClose();
       setFormData({
@@ -107,10 +114,11 @@ function CVCreation() {
       );
     }
   };
+  
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -6,13 +7,17 @@ import MUIDataTable from "mui-datatables";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-
+import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
-import OfficeLocCard from "./OfficeLocCard";
-import OfficeLocCreation from "./OfficeLocCreation";
+import PurchaseCreation from "./PurchaseCreation";
+import PurchaseFileCreation from "./PurchaseFileCreation";
+import PurchaseCard from "./PurchaseCard";
+// import SalesCreation from "./SalesCreation";
+// import SalesFileCreation from "./SalesFileCreation";
+// import SalesCard from "./SalesCard";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -31,13 +36,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
-
-
+function Purchase({ purchaseInvoiceData }) {
   const calculateTableBodyHeight = () => {
-    const rowHeight = 80; // Approximate height for one row
-    const maxHeight = 525; // Maximum table body height
-    const calculatedHeight = officeLocationData.length * rowHeight;
+    const rowHeight = 80; 
+    const maxHeight = 525; 
+    const calculatedHeight = purchaseInvoiceData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -54,15 +57,57 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
   const [viewColumnBtn, setViewColumnBtn] = useState(true);
   const [filterBtn, setFilterBtn] = useState(true);
 
-
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [officeLocationData]);
+  }, [purchaseInvoiceData]);
 
   const columns = [
     {
-      name: "location",
-      label: "Location",
+      name: "id",
+      label: "Sr No",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    // {
+    //   name: "attach_e_way_bill",
+    //   label: "Attachments",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
+    {
+      name: "attach_e_way_bill",
+      label: "Attachments",
+      options: {
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+        customBodyRender: (value) => (
+          value ? (
+            <a href={`http://127.0.0.1:8000${value}`} target="_blank" rel="noopener noreferrer">
+              <ImFilePicture size={20} color="#366FA1" />
+            </a>
+          ) : null
+        ),
+      },
+    },
+    {
+      name: "invoice_no",
+      label: "Invoice Number",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -73,8 +118,8 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
       },
     },
     {
-      name: "contact",
-      label: "Contact",
+      name: "invoice_type",
+      label: "Invoice Type",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -85,8 +130,8 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
       },
     },
     {
-      name: "address",
-      label: "Address",
+      name: "invoice_date",
+      label: "Invoice Date",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -96,9 +141,33 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
         }),
       },
     },
+    // {
+    //   name: "ifsc",
+    //   label: "IFSC Code",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
+    // {
+    //   name: "branch",
+    //   label: "Branch",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
     {
-      name: "city",
-      label: "City",
+      name: "attachment",
+      label: "Document",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -108,41 +177,14 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
         }),
       },
     },
-    {
-      name: "state",
-      label: "State",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "country",
-      label: "Country",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-
     {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = officeLocationData[dataIndex];
-          return (
-            <div>
-              <OfficeLocCard rowId={rowData.id} fetchBranchDetails={fetchBranchDetails} />
-            </div>
-          );
+          const rowData = purchaseInvoiceData[dataIndex];
+          return <div>{/* <BankCard rowId={rowData.id} /> */} 
+          <PurchaseCard rowId={rowData.id} fileData={purchaseInvoiceData.attach_e_way_bill}/> 
+          </div>;
         },
         setCellHeaderProps: () => ({
           style: {
@@ -211,15 +253,19 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Office Location Details
+            Purchase Details
           </div>
-          <div>
-       <OfficeLocCreation fetchBranchDetails={fetchBranchDetails}/>
+      
+          <div className="flex align-middle items-center gap-2">
+          
+           
+            <PurchaseFileCreation />
+            <PurchaseCreation />
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={officeLocationData} columns={columns} options={options} />
+            <MUIDataTable data={purchaseInvoiceData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -227,4 +273,5 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
   );
 }
 
-export default OfficeLoc;
+export default Purchase;
+

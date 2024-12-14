@@ -8,8 +8,10 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -24,6 +26,7 @@ const styleCreateMOdal = {
 };
 function TdsReturnCreation() {
     const { id } = useParams();
+    const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -61,11 +64,11 @@ function TdsReturnCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("challan_date", formData.challan_date);
       formDataToSend.append("challan_no", formData.challan_no);
@@ -74,12 +77,12 @@ function TdsReturnCreation() {
       formDataToSend.append("amount", formData.amount);
       formDataToSend.append("last_filed_return_ack_date", formData.last_filed_return_ack_date);
       formDataToSend.append("last_filed_return_ack_no", formData.last_filed_return_ack_no);
-
+  
       // Append file field to FormData
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-tds/${id}`,
@@ -90,25 +93,31 @@ function TdsReturnCreation() {
           },
         }
       );
-
-      console.log(response); // Handle success response
-      toast.success("Tds Return details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        challan_date: "",
-        challan_no: "",
-        challan_type: "",
-        tds_section: "",
-        amount: "",
-        last_filed_return_ack_no:"",
-        last_filed_return_ack_date:""
-      });
- 
+  
+      if (response.status === 200) { // Ensure the request was successful
+        console.log(response.data); // Handle success response
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          challan_date: "",
+          challan_no: "",
+          challan_type: "",
+          tds_section: "",
+          amount: "",
+          last_filed_return_ack_no: "",
+          last_filed_return_ack_date: "",
+        });
+      } else {
+        throw new Error("Unexpected response status.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create Tds Return details. Please try again.", {
@@ -117,10 +126,11 @@ function TdsReturnCreation() {
       });
     }
   };
+  
 
   return (
     <>
-    <ToastContainer />
+    {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

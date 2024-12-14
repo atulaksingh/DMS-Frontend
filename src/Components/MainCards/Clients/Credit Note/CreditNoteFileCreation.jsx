@@ -1,3 +1,7 @@
+
+
+
+
 import { Button, DialogFooter } from "@material-tailwind/react";
 import React from "react";
 import Modal from "@mui/material/Modal";
@@ -8,8 +12,6 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
-import { fetchClientDetails } from "../../../Redux/clientSlice";
-import { useDispatch } from "react-redux";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -22,9 +24,8 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function SalesFileCreation() {
+function CreditNoteFileCreation() {
   const { id } = useParams();
-  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -57,7 +58,7 @@ function SalesFileCreation() {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-sales/${id}`,
+        `http://127.0.0.1:8000/api/create-purchase/${id}`,
         formDataToSend,
         {
           headers: {
@@ -66,12 +67,12 @@ function SalesFileCreation() {
         }
       );
 
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success("Sales E-way bill uploaded  successfully!", {
         position: "top-right",
         autoClose: 2000,
       });
-      dispatch(fetchClientDetails(id));
+
       handleCreateClose();
       setFormData((prevData) => ({
         ...prevData,
@@ -186,4 +187,4 @@ function SalesFileCreation() {
   );
 }
 
-export default SalesFileCreation;
+export default CreditNoteFileCreation;

@@ -14,9 +14,11 @@ import { useState } from "react";
 import { Country, State, City } from "country-state-city";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { Autocomplete, Stack } from "@mui/material";
 import { TextField } from "@mui/material";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { useDispatch } from "react-redux";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -49,6 +51,7 @@ const ITEM_HEIGHT = 48;
 
 export default function BranchCard({ rowId }) {
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdBranch", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -118,11 +121,11 @@ export default function BranchCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("branch_name", formData.branch_name);
       formDataToSend.append("contact", formData.contact);
@@ -132,39 +135,47 @@ export default function BranchCard({ rowId }) {
       formDataToSend.append("city", formData.city);
       formDataToSend.append("address", formData.address);
       formDataToSend.append("pincode", formData.pincode);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-branch/${id}/${rowId}`,
         formDataToSend
       );
-
-      // console.log(response.data); // Handle success response
-      toast.success("Branch details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        branch_name: "",
-        contact: "",
-        gst_no: "",
-        country: "",
-        state: "",
-        city: "",
-        address: "",
-        pincode: "",
-      });
+  
+      // Check if the response is successful
+      if (response.status === 200 || response.data.success) {
+        toast.success("Branch details updated successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          branch_name: "",
+          contact: "",
+          gst_no: "",
+          country: "",
+          state: "",
+          city: "",
+          address: "",
+          pincode: "",
+        });
+      } else {
+        throw new Error("Failed to update branch details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Branch details. Please try again.", {
+      toast.error("Failed to update Branch details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -184,12 +195,14 @@ export default function BranchCard({ rowId }) {
         `http://127.0.0.1:8000/api/delete-branch/${id}/${deleteId}`
       );
       // console.log("res-----Branch---->", response);
+      
       setOpenDeleteModal(false);
       if (response.status === 200) {
         toast.success("Branch deleted successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
+        dispatch(fetchClientDetails(id));
       } else {
         toast.error("Failed to delete Branch. Please try again.", {
           position: "top-right",
@@ -215,50 +228,59 @@ export default function BranchCard({ rowId }) {
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
     setAnchorEl(null);
-
+  
     try {
       const response = await axios.get(
         `http://127.0.0.1:8000/api/edit-branch/${id}/${rowId}`
       );
-      const branchData = response.data;
-
-      console.log("Branch Data:", branchData);
-
-      // Find the matching country, state, and city based on the received data
-      const country = countries.find((c) => c.name === branchData.country);
-      const state = country
-        ? State.getStatesOfCountry(country.isoCode).find(
-            (s) => s.name === branchData.state
-          )
-        : null;
-      const city = state
-        ? City.getCitiesOfState(country.isoCode, state.isoCode).find(
-            (ci) => ci.name === branchData.city
-          )
-        : null;
-
-      // Set the form data with the received branch data
-      setFormData({
-        branch_name: branchData.branch_name,
-        contact: branchData.contact,
-        gst_no: branchData.gst_no,
-        country: branchData.country,
-        state: branchData.state,
-        city: branchData.city,
-        address: branchData.address,
-        pincode: branchData.pincode,
-      });
-
-      // Set selected country, state, and city
-      setSelectedCountry(country);
-      setSelectedState(state);
-      setSelectedCity(city);
-
-      // Update states and cities lists based on the selected country and state
-      setStates(country ? State.getStatesOfCountry(country.isoCode) : []);
-      setCities(
-        state ? City.getCitiesOfState(country.isoCode, state.isoCode) : []
-      );
+  
+      // Check if the response is successful
+      if (response.status === 200 || response.data.success) {
+        const branchData = response.data;
+  
+        console.log("Branch Data:", branchData);
+  
+        // Find the matching country, state, and city based on the received data
+        const country = countries.find((c) => c.name === branchData.country);
+        const state = country
+          ? State.getStatesOfCountry(country.isoCode).find(
+              (s) => s.name === branchData.state
+            )
+          : null;
+        const city = state
+          ? City.getCitiesOfState(country.isoCode, state.isoCode).find(
+              (ci) => ci.name === branchData.city
+            )
+          : null;
+  
+        // Set the form data with the received branch data
+        setFormData({
+          branch_name: branchData.branch_name,
+          contact: branchData.contact,
+          gst_no: branchData.gst_no,
+          country: branchData.country,
+          state: branchData.state,
+          city: branchData.city,
+          address: branchData.address,
+          pincode: branchData.pincode,
+        });
+  
+        // Set selected country, state, and city
+        setSelectedCountry(country);
+        setSelectedState(state);
+        setSelectedCity(city);
+  
+        // Update states and cities lists based on the selected country and state
+        setStates(country ? State.getStatesOfCountry(country.isoCode) : []);
+        setCities(
+          state ? City.getCitiesOfState(country.isoCode, state.isoCode) : []
+        );
+  
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+      } else {
+        throw new Error("Failed to load Branch data.");
+      }
     } catch (error) {
       console.error("Error fetching Branch data:", error);
       toast.error("Failed to load Branch data. Please try again.", {
@@ -267,6 +289,7 @@ export default function BranchCard({ rowId }) {
       });
     }
   };
+  
 
   const handleCreateClose = () => setOpenCreateModal(false);
   const [bankData, setBankData] = useState(null);
@@ -275,7 +298,7 @@ export default function BranchCard({ rowId }) {
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
 
       {/* //////////////////////////Update Data Modal open//////// */}
 

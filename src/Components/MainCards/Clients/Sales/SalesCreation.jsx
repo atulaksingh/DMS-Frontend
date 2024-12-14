@@ -13,7 +13,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -34,6 +34,8 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect } from "react";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { useDispatch } from "react-redux";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -49,6 +51,7 @@ const styleCreateMOdal = {
 };
 function SalesCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
@@ -110,9 +113,9 @@ function SalesCreation() {
       unit: "",
       rate: "",
       product_amount: "",
-      cgst: "",
-      sgst: "",
-      igst: "",
+      cgst: 0,
+      sgst: 0,
+      igst: 0,
       total_invoice: 0,
     },
   ]);
@@ -123,8 +126,8 @@ function SalesCreation() {
       invoice_date: "",
       invoice_type: "",
       entry_type: "",
-      // attach_invoice: "",
-      // attach_e_way_bill:"",
+      attach_invoice: "",
+      attach_e_way_bill:"",
       taxable_amount: "",
       totalall_gst:"",
       total_invoice_value: "",
@@ -236,6 +239,7 @@ function SalesCreation() {
         city: newValue.city || "",
         state: newValue.state || "",
         country: newValue.country || "",
+        branchID:newValue.branch || ""
       });
       setShowBranchInput(false); // Hide branch input when a location is selected
 
@@ -403,6 +407,9 @@ function SalesCreation() {
     );
   };
 
+
+
+
   const handleInputChangeProduct = (index, field, value) => {
     setRows((prevRows) =>
       prevRows.map((row, rowIndex) => {
@@ -416,8 +423,13 @@ function SalesCreation() {
             updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
           }
   
-          // Recalculate GST values when gstRate changes
-          if (updatedRow.gstRate) {
+          // Check if invoice_type is "Nil Rated"
+          if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+            updatedRow.cgst = "0";
+            updatedRow.sgst = "0";
+            updatedRow.igst = "0";
+          } else if (updatedRow.gstRate) {
+            // Recalculate GST values when gstRate changes
             const gstValue = (
               (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
               100
@@ -446,7 +458,6 @@ function SalesCreation() {
             (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
           ).toFixed(2);
   
-          // Return the updated row
           return updatedRow;
         }
         return row;
@@ -454,26 +465,97 @@ function SalesCreation() {
     );
   };
   
-
-
   useEffect(() => {
-    setRows((prevRows) =>
-      prevRows.map((row) => {
-        if (row.product_amount && row.gstRate) {
+    setRows((prevRows) => {
+      const updatedRows = prevRows.map((row) => {
+        let updatedRow = { ...row };  // Create a copy to avoid direct mutation of state
+  
+        // Check if the invoice type is "Nil Rated"
+        if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+          // Set all GST values to 0 when Nil Rated is selected
+          if (
+            updatedRow.cgst !== "0.00" ||
+            updatedRow.sgst !== "0.00" ||
+            updatedRow.igst !== "0.00"
+          ) {
+            updatedRow.cgst = "0.00";
+            updatedRow.sgst = "0.00";
+            updatedRow.igst = "0.00";
+          }
+  
+          // Set total_invoice to product_amount since no GST applies
+          updatedRow.total_invoice = (parseFloat(updatedRow.product_amount) || 0).toFixed(2);
+        } else if (updatedRow.product_amount && updatedRow.gstRate) {
+          // Recalculate GST and total_invoice if not "Nil Rated"
           const gstValue = (
-            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
+            (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
+            100
           ).toFixed(2);
   
           if (shouldShowCGSTSGST) {
             const cgstValue = (gstValue / 2).toFixed(2);
             const sgstValue = (gstValue / 2).toFixed(2);
-            row.cgst = cgstValue;
-            row.sgst = sgstValue;
-            row.igst = 0;
+            updatedRow.cgst = cgstValue;
+            updatedRow.sgst = sgstValue;
+            updatedRow.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
           } else if (shouldShowIGST) {
-            row.cgst = 0;
-            row.sgst = 0;
-            row.igst = gstValue;
+            updatedRow.cgst = "0.00"; // Reset CGST
+            updatedRow.sgst = "0.00"; // Reset SGST
+            updatedRow.igst = gstValue;
+          }
+  
+          // Calculate total_invoice for this row
+          const gstValueRow = shouldShowCGSTSGST
+            ? (parseFloat(updatedRow.cgst) || 0) + (parseFloat(updatedRow.sgst) || 0)
+            : parseFloat(updatedRow.igst) || 0;
+  
+          updatedRow.total_invoice = (
+            (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
+          ).toFixed(2);
+        }
+  
+        return updatedRow;
+      });
+  
+      // Only set the state if the rows have actually changed
+      // If the updated rows are different from the previous ones, then set state
+      if (JSON.stringify(updatedRows) !== JSON.stringify(prevRows)) {
+        return updatedRows;
+      }
+  
+      // Otherwise, return the previous state (no change)
+      return prevRows;
+    });
+  }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
+
+  
+
+  
+  useEffect(() => {
+    setRows((prevRows) =>
+      prevRows.map((row) => {
+        // Ensure SGST, CGST, IGST are set to 0 if invoice_type is "Nil Rated"
+        if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+          row.cgst = "0";
+          row.sgst = "0";
+          row.igst = "0";
+        } else {
+          if (row.product_amount && row.gstRate) {
+            const gstValue = (
+              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
+            ).toFixed(2);
+  
+            if (shouldShowCGSTSGST) {
+              const cgstValue = (gstValue / 2).toFixed(2);
+              const sgstValue = (gstValue / 2).toFixed(2);
+              row.cgst = cgstValue;
+              row.sgst = sgstValue;
+              row.igst = 0;
+            } else if (shouldShowIGST) {
+              row.cgst = 0;
+              row.sgst = 0;
+              row.igst = gstValue;
+            }
           }
         }
   
@@ -482,7 +564,6 @@ function SalesCreation() {
           ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
           : parseFloat(row.igst) || 0;
   
-        // Ensure total_invoice does not show NaN
         row.total_invoice = (
           (parseFloat(row.product_amount) || 0) + gstValueRow
         ).toFixed(2);
@@ -490,7 +571,8 @@ function SalesCreation() {
         return row;
       })
     );
-  }, [shouldShowCGSTSGST, shouldShowIGST]);
+  }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData[0]?.invoice_type]);
+  
   
 
   useEffect(() => {
@@ -603,11 +685,61 @@ function SalesCreation() {
       );
       console.log("Data submitted successfully:", response.data);
       // Handle successful response
+      if (response.status === 200) {
+        // Handle success response
+        console.log(response.data);
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+       
+      } else {
+        throw new Error("Unexpected response status.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
     }
   };
+
+  useEffect(() => {
+    const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
+    const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
+    const TotalAllInvoice = parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+  
+    // Calculate TCS or TDS amount and format to 2 decimal places
+    const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
+  
+    setInvoiceData((prevData) =>
+      prevData.map((data, index) =>
+        index === 0
+          ? {
+              ...data,
+              tcs: selectedTDSTCSOption === "tcs" ? amountToAddOrSubtract : 0,
+              tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
+              amount_receivable:
+                selectedTDSTCSOption === "tcs"
+                  ? (TotalAllInvoice + parseFloat(amountToAddOrSubtract)).toFixed(2)
+                  : (TotalAllInvoice - parseFloat(amountToAddOrSubtract)).toFixed(2),
+            }
+          : data
+      )
+    );
+  }, [
+    invoiceData[0]?.taxable_amount,
+    invoiceData[0]?.total_invoice_value,
+    invoiceData[0]?.tds_tcs_rate,
+    selectedTDSTCSOption,
+  ]);
+
+  
+
   useEffect(() => {
     if (vendorData.gst_no && branchNoGst) {
       const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
@@ -656,7 +788,7 @@ function SalesCreation() {
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

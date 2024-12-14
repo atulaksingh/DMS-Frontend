@@ -23,24 +23,24 @@ function BranchDetails() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const fetchBranchDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/detail-branch/${clientID}/${branchID}`
+      );
+      // console.log("branch------------->", response.data);
+      setBranchData(response.data.Branch);
+      setOfficeLocationData(response.data.Office_Location);
+      setBranchDocumentsData(response.data.Branch_Document);
 
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchBranchDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/detail-branch/${clientID}/${branchID}`
-        );
-        console.log("branch------------->", response.data);
-        setBranchData(response.data.Branch);
-        setOfficeLocationData(response.data.Office_Location);
-        setBranchDocumentsData(response.data.Branch_Document);
-
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
+  
 
     fetchBranchDetails();
   }, [clientID, branchID]);
@@ -283,11 +283,11 @@ function BranchDetails() {
               </Box>
               <TabPanel value="1">
          
-                <BranchDoc branchDocumentsData={branchDocumentsData}/>
+                <BranchDoc branchDocumentsData={branchDocumentsData} fetchBranchDetails={fetchBranchDetails}/>
               </TabPanel>
               <TabPanel value="2">
                 {/* <Bank bankData={bankData} /> */}
-                <OfficeLoc officeLocationData={officeLocationData}/>
+                <OfficeLoc officeLocationData={officeLocationData} fetchBranchDetails={fetchBranchDetails}/>
               </TabPanel>
            
             </TabContext>

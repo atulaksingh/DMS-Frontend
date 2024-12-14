@@ -1,19 +1,22 @@
+
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-function PurchaseInvoice() {
+function SalesInvoice() {
   const { id, rowId } = useParams();
   //   console.log("res", useParams());
   const [invoiceData, setInvoiceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // console.log("gggggggg",invoiceData)
+  // console.log("gggggggg",bankData)
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/purchase-view/${id}/${rowId}`
+          `http://127.0.0.1:8000/api/sales-view/${id}/${rowId}`
         );
         setInvoiceData(response.data);
         setLoading(false);
@@ -24,7 +27,7 @@ function PurchaseInvoice() {
     };
     fetchBankDetails();
   }, [id, rowId]);
-  // console.log("res", invoiceData);
+//   console.log("res", invoiceData);
   const handlePrint = () => {
     window.print();
   };
@@ -78,7 +81,7 @@ function PurchaseInvoice() {
               <p className="text-gray-600">
                 Address : {invoiceData?.customer_address || "Not Available"}
               </p>
-              <p className="text-gray-600">       
+              <p className="text-gray-600">
                 GST No : {invoiceData?.customer_gst_no || "Not Available"}
               </p>
               <p className="text-gray-600">
@@ -295,4 +298,5 @@ function PurchaseInvoice() {
   );
 }
 
-export default PurchaseInvoice;
+export default SalesInvoice;
+

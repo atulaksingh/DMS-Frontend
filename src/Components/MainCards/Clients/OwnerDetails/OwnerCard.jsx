@@ -13,7 +13,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -46,6 +48,7 @@ const ITEM_HEIGHT = 48;
 
 export default function OwnerCard({ rowId }) {
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdowner", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -77,20 +80,31 @@ export default function OwnerCard({ rowId }) {
         `http://127.0.0.1:8000/api/edit-owner/${id}/${rowId}`,
         formData
       );
-      toast.success("Owner updated successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      handleCreateClose();
-      setFormData({
-        owner_name: "",
-        share: "",
-        pan: "",
-        aadhar: "",
-        email: "",
-        it_password: "",
-        mobile: "",
-      });
+      
+      // Check if response is successful (you can adjust this depending on the response structure)
+      if (response.status === 200) {
+        toast.success("Owner updated successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch fetchClientDetails to update the client data in Redux
+        dispatch(fetchClientDetails(id));
+  
+        // Close the form (e.g., modal) after a successful update
+        handleCreateClose();
+  
+        // Reset the form data
+        setFormData({
+          owner_name: "",
+          share: "",
+          pan: "",
+          aadhar: "",
+          email: "",
+          it_password: "",
+          mobile: "",
+        });
+      }
     } catch (error) {
       toast.error("Failed to update Owner. Please try again.", {
         position: "top-right",
@@ -98,6 +112,7 @@ export default function OwnerCard({ rowId }) {
       });
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -117,6 +132,7 @@ export default function OwnerCard({ rowId }) {
         `http://127.0.0.1:8000/api/delete-owner/${id}/${deleteId}`
       );
       // console.log("res-----owner---->", response);
+      dispatch(fetchClientDetails(id)); 
       setOpenDeleteModal(false)
       if (response.status === 200) {
         toast.success("Owner deleted successfully!", {
@@ -195,7 +211,7 @@ export default function OwnerCard({ rowId }) {
   // }
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openViewModal}

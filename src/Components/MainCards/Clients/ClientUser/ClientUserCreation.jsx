@@ -6,8 +6,10 @@ import axios from "axios";
 import { useState } from "react";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -22,6 +24,7 @@ const styleCreateMOdal = {
 };
 function ClientUserCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -48,49 +51,65 @@ function ClientUserCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("first_name", formData.first_name);
       formDataToSend.append("last_name", formData.last_name);
       formDataToSend.append("email", formData.email);
       formDataToSend.append("password", formData.password);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/user-clientform/${id}`,
         formDataToSend
       );
-
-      console.log(response.data); // Handle success response
-      toast.success(response.data.message, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        first_name: "",
-        last_name: "",
-        email: "",
-        password: "",
-      });
+  
+      // Check if the response is successful
+      if (response.status === 200) {
+        console.log(response.data); // Handle success response
+        handleCreateClose();
+  
+        // Show toast notification with response message
+        toast.success(response?.data?.Message, {
+          position: "top-right",
+          autoClose: 5000,
+        });
+        dispatch(fetchClientDetails(id));
+  
+        // Dispatch fetchClientDetails action
+  
+        // Optionally close the modal and reset form
+        setFormData({
+          first_name: "",
+          last_name: "",
+          email: "",
+          password: "",
+        });
+      } else {
+        throw new Error("Failed to create user-client form.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create bank details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+  
+      // Show error notification
+      toast.error(
+        error.response?.data?.Message || "Failed to create user-client details. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
+  
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

@@ -9,7 +9,9 @@ import DatePicker from "react-datepicker";
 import { format } from "date-fns";
 import { useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 
 // Styles for modal
 const styleCreateModal = {
@@ -26,6 +28,7 @@ const styleCreateModal = {
 
 function SftCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [selectedYear, setSelectedYear] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -73,11 +76,11 @@ function SftCreation() {
       );
 
       if (response.status === 200) {
-        toast.success("Sft details created successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
-  
+        dispatch(fetchClientDetails(id));
         // Optionally close the modal and reset form
         handleCreateClose();
   
@@ -103,7 +106,7 @@ function SftCreation() {
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <Modal
         open={openCreateModal}
         onClose={handleCreateClose}
