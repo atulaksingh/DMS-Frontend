@@ -29,6 +29,9 @@ const clientSlice = createSlice({
     tdsPaymentData: null,
     salesInvoiceData: null,
     purchaseInvoiceData: null,
+    incomeInvoiceData: null,
+    expensesInvoiceData: null,
+    zipFileData: null,
     status: "idle", // "idle" | "loading" | "succeeded" | "failed"
     error: null,
   },
@@ -56,6 +59,9 @@ const clientSlice = createSlice({
         state.tdsPaymentData = action.payload.TDS_Payment;
         state.salesInvoiceData = action.payload.sales_invoice;
         state.purchaseInvoiceData = action.payload.purchase_invoice;
+        state.incomeInvoiceData = action.payload.income;
+        state.expensesInvoiceData = action.payload.expenses;
+        state.zipFileData = action.payload.zipupload;
       })
       .addCase(fetchClientDetails.rejected, (state, action) => {
         state.status = "failed";

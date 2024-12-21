@@ -1,6 +1,7 @@
 
 
 
+
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -47,7 +48,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
-import CreditNoteInvoice from "./CreditNoteInvoice";
+import ExpensesInvoice from "./ExpensesInvoice";
 // import PurchaseInvoice from "./PurchaseInvoice";
 //   import { useEffect } from "react";
 
@@ -80,8 +81,9 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function CreditNoteCard({ rowId, fileData }) {
-  const { id ,purchID} = useParams();
+export default function ExpensesCard({ rowId, fileData }) {
+  const { id } = useParams();
+  const expenseID = rowId;
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -110,7 +112,7 @@ export default function CreditNoteCard({ rowId, fileData }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-creditnote-invoice/${id}/${purchID}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-expenses/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -138,6 +140,20 @@ export default function CreditNoteCard({ rowId, fileData }) {
   const handleViewOpen = () => {
     setOpenViewModal(true);
     setAnchorEl(null);
+    const fetchBankDetails = async () => {
+        try {
+          const response = await axios.get(
+            `http://127.0.0.1:8000/api/expenses-view/${id}/${rowId}`
+          );
+          // console.log("purch",response)
+          setBankData(response.data);
+          setLoading(false);
+        } catch (error) {
+          setError(error);
+          setLoading(false);
+        }
+      };
+      fetchBankDetails();
   };
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
@@ -148,22 +164,22 @@ const helloworld = () => setOpenViewModal(false)
   const [bankData, setBankData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/creditnote-view/${id}/${purchID}/${rowId}`
-        );
-        // console.log("purch",response)
-        setBankData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-    fetchBankDetails();
-  }, [id, rowId]);
+//   useEffect(() => {
+//     const fetchBankDetails = async () => {
+//       try {
+//         const response = await axios.get(
+//           `http://127.0.0.1:8000/api/expenses-view/${id}/${rowId}`
+//         );
+//         // console.log("purch",response)
+//         setBankData(response.data);
+//         setLoading(false);
+//       } catch (error) {
+//         setError(error);
+//         setLoading(false);
+//       }
+//     };
+//     fetchBankDetails();
+//   }, [id, rowId]);
   // console.log("gggggggg", bankData);
 
   ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
@@ -256,10 +272,10 @@ const helloworld = () => setOpenViewModal(false)
       utilise_edit: false,
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -267,17 +283,17 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}/${rowId}`
+        `http://127.0.0.1:8000/api/get-expenses/${id}/${rowId}`
       );
       console.log("dd123", response.data);          
       setFormData(response.data.client_location);
       setVendorData(response.data.vendor);
       setRows(response.data.product_summaries);
-      if (response.data.credit_note) {
+      if (response.data.expenses) {
         setInvoiceData([
           {
-            ...response.data.credit_note,
-            invoice_type: response.data.credit_note.invoice_type || "", // Ensure the field is populated
+            ...response.data.expenses,
+            invoice_type: response.data.expenses.invoice_type || "", // Ensure the field is populated
           },
         ]);
       }
@@ -354,7 +370,7 @@ const helloworld = () => setOpenViewModal(false)
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}`
+          `http://127.0.0.1:8000/api/get-expenses/${id}`
         );
         // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
@@ -390,7 +406,7 @@ const helloworld = () => setOpenViewModal(false)
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `http://127.0.0.1:8000/api/get-expenses/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -505,7 +521,7 @@ const helloworld = () => setOpenViewModal(false)
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `http://127.0.0.1:8000/api/get-expenses/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -771,7 +787,7 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/update-creditnote-post/${id}/${purchID}/${rowId}`,
+        `http://127.0.0.1:8000/api/update-expenses-post/${id}/${rowId}`,
         payload,
         {
           headers: {
@@ -995,8 +1011,7 @@ const helloworld = () => setOpenViewModal(false)
                 <div>
                   <form className=" my-5 w-full ">
                    {/* <PurchaseInvoice invoiceData={bankData} />  */}
-                   {/* <DebitNoteInvoice /> */}
-                   <CreditNoteInvoice rowId={rowId} />
+                   <ExpensesInvoice invoiceData={bankData}/>
                   </form>
                 </div>
                 <DialogFooter className="">
@@ -1040,7 +1055,7 @@ const helloworld = () => setOpenViewModal(false)
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Update Sales Invoice Details
+              Update Expenses Invoice Details
             </Typography>
 
             <form
@@ -1577,14 +1592,14 @@ const helloworld = () => setOpenViewModal(false)
                         />
 
                         <a
-                          href={`http://127.0.0.1:8000${bankData?.attach_invoice}`}
+                          href={`http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
-                            {bankData?.attach_invoice
+                            {invoiceData[0]?.attach_invoice
                               ? truncateFileName(
-                                  bankData.attach_invoice.split("/").pop()
+                                invoiceData[0].attach_invoice.split("/").pop()
                                 )
                               : "No file uploaded"}
                           </p>
@@ -1620,15 +1635,15 @@ const helloworld = () => setOpenViewModal(false)
                         />
 
                         <a
-                          href={`http://127.0.0.1:8000${bankData?.attach_e_way_bill}`}
+                          href={`http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
                             {/* {bankData?.attach_e_way_bill?.split("/").pop()} */}
-                            {bankData?.attach_e_way_bill
+                            {invoiceData[0]?.attach_e_way_bill
                               ? truncateFileName(
-                                  bankData.attach_e_way_bill.split("/").pop()
+                                invoiceData[0].attach_e_way_bill.split("/").pop()
                                 )
                               : "No file uploaded"}
                           </p>
@@ -1645,9 +1660,9 @@ const helloworld = () => setOpenViewModal(false)
                         <Typography
                           variant="small"
                           color="blue-gray"
-                          className="block font-semibold mb-1"
+                          className="block font-semibold mb-1 hidden"
                         >
-                          {/* Utilise Edit */}
+                          Utilise Edit
                         </Typography>
                       </label>
                     </div>
@@ -2913,12 +2928,12 @@ const helloworld = () => setOpenViewModal(false)
         >
           {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
 
-          <Link to={`/purchaseInvoice/${id}/${rowId}`}>
-            <MenuItem>View</MenuItem>
-          </Link>
+            <MenuItem onClick={handleViewOpen}>View</MenuItem>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-        
+          <Link to={`/expenses/creditNote/${id}/${expenseID}`}>
+            <MenuItem>Credit Note</MenuItem>
+          </Link>
         </Menu>
       </div>
     </>

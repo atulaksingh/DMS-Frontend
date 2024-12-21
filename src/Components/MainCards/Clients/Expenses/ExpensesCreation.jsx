@@ -51,8 +51,8 @@ import {
     paddingInline: "40px",
     borderRadius: "10px",
   };
-  function CreditNoteCreation() {
-    const { id ,purchID} = useParams();
+  function ExpensesCreation() {
+    const { id } = useParams();
     const dispatch = useDispatch();
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [offData, setOffData] = useState([]);
@@ -69,7 +69,7 @@ import {
     const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
     const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
       useState("");
-    // console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+    console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
     const [shouldShowIGST, setShouldShowIGST] = useState(false);
     const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
     const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -146,11 +146,23 @@ import {
         utilise_edit: false,
       },
     ]);
-    console.log("formData", formData);
-    console.log("vendor", vendorData);
-    console.log("rowsData", rows);
-    console.log("invoiceData", invoiceData);
-   
+    // console.log("formData", formData);
+    // console.log("vendor", vendorData);
+    // console.log("rowsData", rows);
+    // console.log("invoiceData", invoiceData);
+    // const handleInputChangeInvoiceData = (e) => {
+    //   const { name, value, type } = e.target;
+    //   const fieldValue = type === "file" ? e.target.files[0] : value;
+  
+    //   setInvoiceData((prevData) => {
+    //     const updatedData = [...prevData];
+    //     updatedData[0] = {
+    //       ...updatedData[0],
+    //       [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
+    //     };
+    //     return updatedData;
+    //   });
+    // };
   
     const handleInputChangeInvoiceData = (e) => {
       const { name, value, type, checked } = e.target; // Include `checked`
@@ -216,7 +228,7 @@ import {
       const fetchBankDetails = async () => {
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-creditnote/${id}`
+            `http://127.0.0.1:8000/api/get-expenses/${id}`
           );
           // console.log("ggggggg->", response.data);
           setOffData(response.data.serializer);
@@ -252,7 +264,7 @@ import {
         // Fetch additional data if needed
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+            `http://127.0.0.1:8000/api/get-expenses/${id}/?newValue=${newValue.id}&productID=${productID}`
           );
           // console.log("Location Data:---->", response.data.branch_gst);
           setBranchNoGst(response.data.branch_gst);
@@ -381,7 +393,7 @@ import {
         setProductID(newValue.id); // Assuming setProductID is defined elsewhere
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+            `http://127.0.0.1:8000/api/get-expenses/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
           );
   
           const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -684,7 +696,7 @@ import {
   
       try {
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/create-creditnote-post2/${id}/${purchID}`,
+          `http://127.0.0.1:8000/api/create-expenses-post2/${id}`,
           payload,
           {
             headers: {
@@ -694,7 +706,7 @@ import {
         );
         console.log("Data submitted successfully:", response);
         // Handle successful response
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
           // Handle success response
           console.log(response.data);
           toast.success(`${response.data.message}`, {
@@ -872,7 +884,7 @@ import {
                 component="h2"
                 className="text-center border-b-2 border-[#366FA1] pb-3 overflow-auto"
               >
-                Create Sales Details
+                Create Expenses Details
               </Typography>
               <form
                 className=" my-5 w-full h-[700px] overflow-auto "
@@ -1015,9 +1027,9 @@ import {
                               className: "hidden",
                             }}
                             style={{
-                              height: "28px", // Match this to your Autocomplete's root height
-                              padding: "4px 6px", // Match this padding
-                              fontSize: "0.875rem", // Ensure font size is consistent
+                              height: "28px", 
+                              padding: "4px 6px", 
+                              fontSize: "0.875rem", 
                               width: 300,
                             }}
                           />
@@ -1052,9 +1064,9 @@ import {
                               className: "hidden",
                             }}
                             style={{
-                              height: "28px", // Match this to your Autocomplete's root height
-                              padding: "4px 6px", // Match this padding
-                              fontSize: "0.875rem", // Ensure font size is consistent
+                              height: "28px", 
+                              padding: "4px 6px", 
+                              fontSize: "0.875rem", 
                               width: 300,
                             }}
                           />
@@ -1511,9 +1523,9 @@ import {
                           <Typography
                             variant="small"
                             color="blue-gray"
-                            className="block font-semibold mb-1"
+                            className=" font-semibold mb-1 hidden"
                           >
-                            {/* Utilise Edit */}
+                            Utilise Edit
                           </Typography>
                         </label>
                       </div>
@@ -2536,317 +2548,10 @@ import {
                                     <option value="tds">TDS</option>
                                   </select>
                                 </div>
-                                {/* <div className="text-sm my-2">
-                                    <select
-                                      id="option"
-                                      value={selectedTDSTCSRateOption}
-                                      onChange={(e) =>
-                                        setSelectedTDSTCSRateOption(e.target.value)
-                                      }
-                                      className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    >
-                                      <option value="" disabled>
-                                        Choose TDS/TCS Rate
-                                      </option>
-                                      <option value="TCS">TCS Rate</option>
-                                      <option value="TDS">TDS Rate</option>
-                                    </select>
-                                  </div> */}
-                                {/* <div className="text-sm my-2">
-                                    <select
-                                      id="option"
-                                      value={selectedTDSTCSectionOption}
-                                      onChange={(e) =>
-                                        setSelectedTDSTCSectionOption(
-                                          e.target.value
-                                        )
-                                      }
-                                      className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    >
-                                      <option value="" disabled>
-                                        Choose TDS/TCS Section
-                                      </option>
-                                      <option value="TCS">TCS Section</option>
-                                      <option value="TDS">TDS Section</option>
-                                    </select>
-                                  </div> */}
-                                {/* <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      TDS :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="tds"
-                                        value={invoiceData[0].tds}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div> */}
-                                {/* <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      TDS/TCS Rate :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="tds_tcs_rate"
-                                        value={invoiceData[0].tds_tcs_rate}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div> */}
-                                {/* <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      Taxable Amount :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="taxable_amount"
-                                        value={invoiceData[0].taxable_amount}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      Total Invoice Value :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="total_invoice_value"
-                                        value={invoiceData[0].total_invoice_value}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div> */}
+                              
                               </div>
                               <div className="col-span-1">
-                                {/* <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      SGST :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="sgst"
-                                        value={invoiceData[0].sgst}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      IGST :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="igst"
-                                        value={invoiceData[0].igst}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      CGST :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="cgst"
-                                        value={invoiceData[0].cgst}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div> */}
-  
-                                {/* {shouldShowCGSTSGST && (
-                                    <>
-                                      <div className="grid grid-cols-12 text-sm my-2">
-                                        <div className="col-span-6 font-bold">
-                                          SGST :
-                                        </div>
-                                        <div className="col-span-6">
-                                          <TextField
-                                            variant="outlined"
-                                            size="small"
-                                            name="sgst"
-                                            value={invoiceData[0].sgst}
-                                            onChange={handleInputChangeInvoiceData}
-                                            sx={{
-                                              "& .MuiOutlinedInput-root": {
-                                                padding: "1px",
-                                                fontSize: "0.875rem",
-                                                minHeight: "1px",
-                                              },
-                                              "& .MuiOutlinedInput-input": {
-                                                padding: "2px",
-                                              },
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="grid grid-cols-12 text-sm my-2">
-                                        <div className="col-span-6 font-bold">
-                                          CGST :
-                                        </div>
-                                        <div className="col-span-6">
-                                          <TextField
-                                            variant="outlined"
-                                            size="small"
-                                            name="cgst"
-                                            value={invoiceData[0].cgst}
-                                            onChange={handleInputChangeInvoiceData}
-                                            sx={{
-                                              "& .MuiOutlinedInput-root": {
-                                                padding: "1px",
-                                                fontSize: "0.875rem",
-                                                minHeight: "1px",
-                                              },
-                                              "& .MuiOutlinedInput-input": {
-                                                padding: "2px",
-                                              },
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
-    
-                                  {shouldShowIGST && (
-                                    <>
-                                      <div className="grid grid-cols-12 text-sm my-2">
-                                        <div className="col-span-6 font-bold">
-                                          IGST :
-                                        </div>
-                                        <div className="col-span-6">
-                                          <TextField
-                                            variant="outlined"
-                                            size="small"
-                                            name="igst"
-                                            value={invoiceData[0].igst}
-                                            onChange={handleInputChangeInvoiceData}
-                                            sx={{
-                                              "& .MuiOutlinedInput-root": {
-                                                padding: "1px",
-                                                fontSize: "0.875rem",
-                                                minHeight: "1px",
-                                              },
-                                              "& .MuiOutlinedInput-input": {
-                                                padding: "2px",
-                                              },
-                                            }}
-                                          />
-                                        </div>
-                                      </div>
-                                    </>
-                                  )} */}
-  
-                                {/* <div className="grid grid-cols-12 text-sm my-2">
-                                    <div className="col-span-6 font-bold">
-                                      TDS/TCS Section :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="tds_tcs_section"
-                                        value={invoiceData[0].tds_tcs_section}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div>
-                                  </div> */}
+                               
                                 <div className=" text-sm ">
                                   <div className="">
                                     {selectedTDSTCSOption === "tcs" && (
@@ -2915,66 +2620,7 @@ import {
                                     )}
                                   </div>
                                 </div>
-                                {/* <div className=" text-sm my-2">
-                                    <div className="">
-                                      {selectedTDSTCSRateOption === "TCS" && (
-                                        <div>
-                                          <label
-                                            htmlFor="tcs"
-                                            className="block text-sm font-medium text-gray-700"
-                                          >
-                                            TCS Input
-                                          </label>
-                                          <input
-                                            id="tcs"
-                                            type="text"
-                                            placeholder="Enter TCS Rate value"
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      )}
-                                      {selectedTDSTCSRateOption === "TDS" && (
-                                        <div>
-                                          <label
-                                            htmlFor="tds"
-                                            className="block text-sm font-medium text-gray-700"
-                                          >
-                                            TDS Input
-                                          </label>
-                                          <input
-                                            id="tds"
-                                            type="text"
-                                            placeholder="Enter TDS Rate value"
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div> */}
-                                {/* <div className=" text-sm my-2">
-                                    <div className="">
-                                      {selectedTDSTCSectionOption === "TCS" && (
-                                        <div>
-                                          <input
-                                            id="tcs"
-                                            type="text"
-                                            placeholder="Enter TCS Section value"
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      )}
-                                      {selectedTDSTCSectionOption === "TDS" && (
-                                        <div>
-                                          <input
-                                            id="tds"
-                                            type="text"
-                                            placeholder="Enter TDS Section value"
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div> */}
+                               
                                 <div className="grid grid-cols-12 text-sm my-2">
                                   <div className="col-span-6 font-bold">
                                     Amount Receivable :
@@ -3008,61 +2654,7 @@ import {
                     </div>
                   </div>
                 </div>
-                {/* <div className="p-4">
-                    <label
-                      htmlFor="option"
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Select an option
-                    </label>
-                    <select
-                      id="option"
-                      value={selectedTDSTCSOption}
-                      onChange={(e) => setSelectedTDSTCSOption(e.target.value)}
-                      className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                      <option value="" disabled>
-                        Choose an option
-                      </option>
-                      <option value="TCS">TCS</option>
-                      <option value="TDS">TDS</option>
-                    </select>
-    
-                    <div className="mt-4">
-                      {selectedTDSTCSOption === "TCS" && (
-                        <div>
-                          <label
-                            htmlFor="tcs"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            TCS Input
-                          </label>
-                          <input
-                            id="tcs"
-                            type="text"
-                            placeholder="Enter TCS value"
-                            className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          />
-                        </div>
-                      )}
-                      {selectedTDSTCSOption === "TDS" && (
-                        <div>
-                          <label
-                            htmlFor="tds"
-                            className="block text-sm font-medium text-gray-700"
-                          >
-                            TDS Input
-                          </label>
-                          <input
-                            id="tds"
-                            type="text"
-                            placeholder="Enter TDS value"
-                            className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </div> */}
+             
                 <DialogFooter className="p-0">
                   <Button
                     onClick={handleCreateClose}
@@ -3098,5 +2690,5 @@ import {
     );
   }
   
-  export default CreditNoteCreation;
+  export default ExpensesCreation;
   

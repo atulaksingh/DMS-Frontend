@@ -1,7 +1,3 @@
-
-
-
-
 import { Button, DialogFooter } from "@material-tailwind/react";
 import React from "react";
 import Modal from "@mui/material/Modal";
@@ -24,8 +20,8 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function CreditNoteFileCreation() {
-  const { id,purchID } = useParams();
+function ExpensesCreditNoteFileCreation({fetchInvoiceDetails}) {
+  const { id,expensesID } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -58,7 +54,7 @@ function CreditNoteFileCreation() {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-creditnote/${id}/${purchID}`,
+        `http://127.0.0.1:8000/api/create-expensescreditnote/${id}/${expensesID}`,
         formDataToSend,
         {
           headers: {
@@ -72,7 +68,7 @@ function CreditNoteFileCreation() {
         position: "top-right",
         autoClose: 2000,
       });
-
+      fetchInvoiceDetails();
       handleCreateClose();
       setFormData((prevData) => ({
         ...prevData,
@@ -187,4 +183,4 @@ function CreditNoteFileCreation() {
   );
 }
 
-export default CreditNoteFileCreation;
+export default ExpensesCreditNoteFileCreation;

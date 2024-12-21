@@ -67,7 +67,7 @@ function SalesCreation() {
   const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
   const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
     useState("");
-  console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+  // console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
   const [shouldShowIGST, setShouldShowIGST] = useState(false);
   const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
   const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -138,10 +138,10 @@ function SalesCreation() {
       amount_receivable: "",
     },
   ]);
-  console.log("formData", formData);
-  console.log("vendor", vendorData);
-  console.log("rowsData", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formData", formData);
+  // console.log("vendor", vendorData);
+  // console.log("rowsData", rows);
+  // console.log("invoiceData", invoiceData);
   // const handleInputChangeInvoiceData = (e) => {
   //   const { name, value, type } = e.target;
   //   const fieldValue = type === "file" ? e.target.files[0] : value;
@@ -284,6 +284,7 @@ function SalesCreation() {
       setFormData({
         ...formData,
         location: newInputValue,
+        offLocID: "",
       });
 
       const matchingLocation = offData.find(

@@ -1,19 +1,22 @@
+
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-function PurchaseInvoice() {
-  const { id, rowId } = useParams();
+function CreditNoteInvoice({rowId}) {
+  const { id, purchID } = useParams();
   //   console.log("res", useParams());
   const [invoiceData, setInvoiceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log("gggggggg",invoiceData)
+  // console.log("gggggggg",invoiceData)
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/purchase-view/${id}/${rowId}`
+          `http://127.0.0.1:8000/api/creditnote-view/${id}/${purchID}/${rowId}`
         );
         setInvoiceData(response.data);
         setLoading(false);
@@ -24,7 +27,7 @@ function PurchaseInvoice() {
     };
     fetchBankDetails();
   }, [id, rowId]);
-  // console.log("res", invoiceData);
+  console.log("res", invoiceData);
   const handlePrint = () => {
     window.print();
   };
@@ -295,4 +298,4 @@ function PurchaseInvoice() {
   );
 }
 
-export default PurchaseInvoice;
+export default CreditNoteInvoice;

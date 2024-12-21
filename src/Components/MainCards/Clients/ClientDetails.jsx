@@ -1,8 +1,3 @@
-
-
-
-
-
 import React, { useState, useEffect } from "react";
 
 import Box from "@mui/material/Box";
@@ -12,7 +7,6 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
 
 import { useDispatch, useSelector } from "react-redux";
 import Owner from "./OwnerDetails/Owner";
@@ -25,6 +19,9 @@ import Documents from "../Documents/Documents";
 import Purchase from "./Purchase/Purchase";
 import Sales from "./Sales/Sales";
 import { fetchClientDetails } from "../../Redux/clientSlice";
+import Income from "./Income/Income";
+import Expenses from "./Expenses/Expenses";
+import ZipFile from "./ZipFile/ZipFile";
 function ClientDetails() {
   const id = 1;
 
@@ -54,6 +51,9 @@ function ClientDetails() {
     tdsPaymentData,
     salesInvoiceData,
     purchaseInvoiceData,
+    incomeInvoiceData,
+    expensesInvoiceData,
+    zipFileData,
     status,
     error,
   } = useSelector((state) => state.client);
@@ -320,6 +320,51 @@ function ClientDetails() {
                       },
                     }}
                   />
+                  <Tab
+                    label="Income"
+                    value="10"
+                    fontWeight="bold"
+                    sx={{
+                      "&.Mui-selected": {
+                        color: "primary",
+                        fontWeight: "bold",
+                        border: 2,
+                      },
+                      "&:hover": {
+                        color: "primary",
+                      },
+                    }}
+                  />
+                  <Tab
+                    label="Expenses"
+                    value="11"
+                    fontWeight="bold"
+                    sx={{
+                      "&.Mui-selected": {
+                        color: "primary",
+                        fontWeight: "bold",
+                        border: 2,
+                      },
+                      "&:hover": {
+                        color: "primary",
+                      },
+                    }}
+                  />
+                  <Tab
+                    label="ZipFile  Upload"
+                    value="12"
+                    fontWeight="bold"
+                    sx={{
+                      "&.Mui-selected": {
+                        color: "primary",
+                        fontWeight: "bold",
+                        border: 2,
+                      },
+                      "&:hover": {
+                        color: "primary",
+                      },
+                    }}
+                  />
                 </TabList>
               </Box>
               <TabPanel value="1">
@@ -345,7 +390,6 @@ function ClientDetails() {
                 <CV cvData={CVData} />
               </TabPanel>
               <TabPanel value="7">
-                
                 <Documents
                   PfData={PfData}
                   taxAuditData={taxAuditData}
@@ -354,13 +398,22 @@ function ClientDetails() {
                   tdsReturnData={tdsReturnData}
                   tdsPaymentData={tdsPaymentData}
                 />
-
               </TabPanel>
               <TabPanel value="8">
-                <Purchase purchaseInvoiceData={purchaseInvoiceData}/>
+                <Purchase purchaseInvoiceData={purchaseInvoiceData} />
               </TabPanel>
               <TabPanel value="9">
-                <Sales salesInvoiceData={salesInvoiceData}/>
+                <Sales salesInvoiceData={salesInvoiceData} />
+              </TabPanel>
+              <TabPanel value="10">
+                <Income incomeInvoiceData={incomeInvoiceData}/>
+                {/* <Sales salesInvoiceData={salesInvoiceData}/> */}
+              </TabPanel>
+              <TabPanel value="11">
+              <Expenses expensesInvoiceData={expensesInvoiceData} />
+              </TabPanel>
+              <TabPanel value="12">
+           <ZipFile zipFileData={zipFileData}/>
               </TabPanel>
             </TabContext>
           </Box>
@@ -371,4 +424,3 @@ function ClientDetails() {
 }
 
 export default ClientDetails;
-

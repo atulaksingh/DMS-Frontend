@@ -78,6 +78,8 @@ const ITEM_HEIGHT = 48;
 
 export default function SalesCard({ rowId, fileData }) {
   const { id } = useParams();
+  const salesID = rowId;
+  // console.log("use",useParams())
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -144,7 +146,7 @@ const helloworld = () => setOpenViewModal(false)
   const [bankData, setBankData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // console.log("gggggggg", bankData);
+  console.log("gggggggg", bankData);
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
@@ -249,10 +251,10 @@ const helloworld = () => setOpenViewModal(false)
       amount_receivable: "",
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -414,6 +416,7 @@ const helloworld = () => setOpenViewModal(false)
       setFormData((prev) => ({
         ...prev,
         location: newInputValue,
+        offLocID: "",
       }));
     }
   };
@@ -2802,7 +2805,7 @@ const helloworld = () => setOpenViewModal(false)
           </Link>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/debitNote/${id}/${rowId}`}>
+          <Link to={`/debitNote/${id}/${salesID}`}>
             <MenuItem>Debit Note</MenuItem>
           </Link>
         </Menu>

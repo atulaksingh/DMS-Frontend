@@ -14,8 +14,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
 
-// import SalesCard from "./SalesCard";
 import axios from "axios";
+import DebitNoteCreation from "./DebitNoteCreation";
+import DebitNoteFileCreation from "./DebitNoteFileCreation";
+import DebitNoteCard from "./DebitNoteCard";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -34,52 +36,39 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-const salesInvoiceData=[
-{
-    "id": 1,
-    "sales_invoice": 1,
-    "invoice_no": "7410",
-    "invoice_date": null,
-    "invoice_type": "bsc-o",
-    "entry_type": "debit_note",
-    "client_name": "zaco computers",
-    "customer_name": "Atul",
-    "customer_address": "Ganesh Chowk, Poisar,Kandivali East  ,Mumbai-400101",
-    "city": "Kamareddi",
-    "state": "Telangana",
-    "country": "India",
-    "product_summaries": [
-      {
-        "id": 1,
-        "hsn_code": "12",
-        "gst_rate": "12.00",
-        "product_name": "pen",
-        "product_amount": "144"
-      },
-      {
-        "id": 2,
-        "hsn_code": "13",
-        "gst_rate": "18.00",
-        "product_name": "notebook",
-        "product_amount": "200"
-      },
-      {
-        "id": 3,
-        "hsn_code": "14",
-        "gst_rate": "5.00",
-        "product_name": "eraser",
-        "product_amount": "50"
-      }
-    ]
-  }
-]
+
   
 function DebitNote() {
+
+    const { id, salesID } = useParams();
+    // console.log("res", useParams());
+  const [invoiceData, setInvoiceData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+ 
+  const fetchInvoiceDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/debitnote-list/${id}/${salesID}`
+      );
+      const apiData = response.data;
+      // console.log("gggggggg",response.data)
+
+      setInvoiceData(apiData);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchInvoiceDetails();
+  }, [id, salesID]);
     
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
-    const calculatedHeight = salesInvoiceData.length * rowHeight;
+    const calculatedHeight = invoiceData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -98,7 +87,7 @@ function DebitNote() {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [salesInvoiceData]);
+  }, [invoiceData]);
 
   const columns = [
     {
@@ -220,9 +209,9 @@ function DebitNote() {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = salesInvoiceData[dataIndex];
+          const rowData = invoiceData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
-          {/* <SalesCard rowId={rowData.id} fileData={salesInvoiceData.attach_e_way_bill}/>  */}
+          <DebitNoteCard rowId={rowData.id} fileData={invoiceData.attach_e_way_bill} salesID={salesID} fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -294,21 +283,22 @@ function DebitNote() {
     <>
       <ToastContainer />
 
-      <div>
+      <div className="p-20">
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Sales Details
+            DebitNote Details
           </div>
       
           <div className="flex align-middle items-center gap-2">
           
             {/* <SalesFileCreation /> */}
-            {/* <SalesCreation /> */}
+            <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={salesInvoiceData} columns={columns} options={options} />
+            <MUIDataTable data={invoiceData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>

@@ -144,10 +144,10 @@ function PurchaseCreation() {
       utilise_edit: false,
     },
   ]);
-  console.log("formData", formData);
-  console.log("vendor", vendorData);
-  console.log("rowsData", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formData", formData);
+  // console.log("vendor", vendorData);
+  // console.log("rowsData", rows);
+  // console.log("invoiceData", invoiceData);
   // const handleInputChangeInvoiceData = (e) => {
   //   const { name, value, type } = e.target;
   //   const fieldValue = type === "file" ? e.target.files[0] : value;
@@ -300,6 +300,7 @@ function PurchaseCreation() {
       setFormData({
         ...formData,
         location: newInputValue,
+        offLocID: "",
       });
 
       const matchingLocation = offData.find(

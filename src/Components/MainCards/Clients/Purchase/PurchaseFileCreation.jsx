@@ -10,6 +10,8 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -24,6 +26,7 @@ const styleCreateMOdal = {
 };
 function PurchaseFileCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -70,7 +73,7 @@ function PurchaseFileCreation() {
         position: "top-right",
         autoClose: 2000,
       });
-
+ dispatch(fetchClientDetails(id));
       handleCreateClose();
       setFormData((prevData) => ({
         ...prevData,

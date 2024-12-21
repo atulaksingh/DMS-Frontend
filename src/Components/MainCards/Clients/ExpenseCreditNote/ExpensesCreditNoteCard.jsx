@@ -1,3 +1,12 @@
+// import React from 'react'
+
+// function ExpensesCreditNoteCard() {
+//   return (
+//     <div>ExpensesCreditNoteCard</div>
+//   )
+// }
+
+// export default ExpensesCreditNoteCard
 
 
 
@@ -47,7 +56,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
-import CreditNoteInvoice from "./CreditNoteInvoice";
+import ExpensesCreditNoteInvoice from "./ExpensesCreditNoteInvoice";
+// import CreditNoteInvoice from "./CreditNoteInvoice";
 // import PurchaseInvoice from "./PurchaseInvoice";
 //   import { useEffect } from "react";
 
@@ -80,8 +90,8 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function CreditNoteCard({ rowId, fileData }) {
-  const { id ,purchID} = useParams();
+export default function ExpensesCreditNoteCard({ rowId, fileData,  fetchInvoiceDetails }) {
+  const { id ,expensesID} = useParams();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -110,7 +120,7 @@ export default function CreditNoteCard({ rowId, fileData }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-creditnote-invoice/${id}/${purchID}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-expensescreditnote/${id}/${expensesID}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -119,7 +129,7 @@ export default function CreditNoteCard({ rowId, fileData }) {
           position: "top-right",
           autoClose: 2000,
         });
-        dispatch(fetchClientDetails(id));
+        fetchInvoiceDetails();
       } else {
         toast.error("Failed to delete Sales Invoice. Please try again.", {
           position: "top-right",
@@ -152,7 +162,7 @@ const helloworld = () => setOpenViewModal(false)
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/creditnote-view/${id}/${purchID}/${rowId}`
+          `http://127.0.0.1:8000/api/expensescreditnote-view/${id}/${expensesID}/${rowId}`
         );
         // console.log("purch",response)
         setBankData(response.data);
@@ -267,7 +277,7 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}/${rowId}`
+        `http://127.0.0.1:8000/api/get-expensescreditnote/${id}/${expensesID}/${rowId}`
       );
       console.log("dd123", response.data);          
       setFormData(response.data.client_location);
@@ -771,7 +781,7 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/update-creditnote-post/${id}/${purchID}/${rowId}`,
+        `http://127.0.0.1:8000/api/update-expensescreditnote/${id}/${expensesID}/${rowId}`,
         payload,
         {
           headers: {
@@ -786,7 +796,7 @@ const helloworld = () => setOpenViewModal(false)
           position: "top-right",
           autoClose: 2000,
         });
-        dispatch(fetchClientDetails(id));
+        fetchInvoiceDetails();
         handleCreateClose();
       } else {
         toast.error("Failed to Update Sales Invoice. Please try again.", {
@@ -996,7 +1006,8 @@ const helloworld = () => setOpenViewModal(false)
                   <form className=" my-5 w-full ">
                    {/* <PurchaseInvoice invoiceData={bankData} />  */}
                    {/* <DebitNoteInvoice /> */}
-                   <CreditNoteInvoice rowId={rowId} />
+                   {/* <CreditNoteInvoice rowId={rowId} /> */}
+                   <ExpensesCreditNoteInvoice rowId={rowId}/>
                   </form>
                 </div>
                 <DialogFooter className="">
@@ -2913,9 +2924,9 @@ const helloworld = () => setOpenViewModal(false)
         >
           {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
 
-          <Link to={`/purchaseInvoice/${id}/${rowId}`}>
-            <MenuItem>View</MenuItem>
-          </Link>
+          {/* <Link to={`/purchaseInvoice/${id}/${rowId}`}> */}
+            <MenuItem onClick={handleViewOpen}>View</MenuItem>
+          {/* </Link> */}
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
         

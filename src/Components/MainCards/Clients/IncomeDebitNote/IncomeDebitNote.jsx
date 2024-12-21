@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -13,16 +14,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
+
 import axios from "axios";
-import CreditNoteCreation from "./CreditNoteCreation";
-import CreditNoteFileCreation from "./CreditNoteFileCreation";
-import CreditNoteCard from "./CreditNoteCard";
-// import PurchaseCreation from "./PurchaseCreation";
-// import PurchaseFileCreation from "./PurchaseFileCreation";
-// import PurchaseCard from "./PurchaseCard";
-// import SalesCreation from "./SalesCreation";
-// import SalesFileCreation from "./SalesFileCreation";
-// import SalesCard from "./SalesCard";
+import IncomeDebitNoteFileCreation from "./IncomeDebitNoteFileCreation";
+import IncomeDebitNoteCreation from "./IncomeDebitNoteCreation";
+import IncomeDebitNoteCard from "./IncomeDebitNoteCard";
+// import DebitNoteCreation from "./DebitNoteCreation";
+// import DebitNoteFileCreation from "./DebitNoteFileCreation";
+// import DebitNoteCard from "./DebitNoteCard";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -41,42 +40,39 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function CreditNote() {
 
-  const { id, purchID } = useParams();
-  // console.log("res", useParams());
-const [creditNoteData, setCreditNoteData] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-// console.log("res", creditNoteData);
-const fetchInvoiceDetails = async () => {
-  try {
-    const response = await axios.get(
-      `http://127.0.0.1:8000/api/creditnote-list/${id}/${purchID}`
-    );
-    // console.log("gggggggg",response)
-    const apiData = response.data;
+  
+function IncomeDebitNote() {
 
-    setCreditNoteData(apiData);
-    setLoading(false);
-  } catch (error) {
-    setError(error.message);
-    setLoading(false);
-  }
-};
-useEffect(() => {
-  fetchInvoiceDetails();
-}, [id, purchID]);
+    const { id, incomeID } = useParams();
+    // console.log("res", useParams());
+  const [invoiceData, setInvoiceData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+ 
+  const fetchInvoiceDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/incomedebitnote-list/${id}/${incomeID}`
+      );
+      const apiData = response.data;
+      // console.log("gggggggg",response.data)
 
-
-
-
-
-
+      setInvoiceData(apiData);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchInvoiceDetails();
+  }, [id, incomeID]);
+    
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
-    const calculatedHeight = creditNoteData.length * rowHeight;
+    const calculatedHeight = invoiceData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -95,7 +91,7 @@ useEffect(() => {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [creditNoteData]);
+  }, [invoiceData]);
 
   const columns = [
     {
@@ -110,18 +106,7 @@ useEffect(() => {
         }),
       },
     },
-    // {
-    //   name: "attach_e_way_bill",
-    //   label: "Attachments",
-    //   options: {
-    //     setCellHeaderProps: () => ({
-    //       style: {
-    //         backgroundColor: "#366FA1",
-    //         color: "#ffffff",
-    //       },
-    //     }),
-    //   },
-    // },
+   
     {
       name: "attach_e_way_bill",
       label: "Attachments",
@@ -217,10 +202,10 @@ useEffect(() => {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = creditNoteData[dataIndex];
+          const rowData = invoiceData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
-          {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
-          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>
+          {/* <DebitNoteCard rowId={rowData.id} fileData={invoiceData.attach_e_way_bill} incomeID={incomeID} fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+          <IncomeDebitNoteCard rowId={rowData.id} fileData={invoiceData.attach_e_way_bill} incomeID={incomeID} fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -283,6 +268,11 @@ useEffect(() => {
     },
   });
 
+
+
+
+
+
   return (
     <>
       <ToastContainer />
@@ -290,20 +280,21 @@ useEffect(() => {
       <div className="p-20">
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Credit Note Details
+            DebitNote Details
           </div>
       
           <div className="flex align-middle items-center gap-2">
           
-           
-         
-            <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <SalesFileCreation /> */}
+            {/* <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+            {/* <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+            <IncomeDebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            <IncomeDebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={creditNoteData} columns={columns} options={options} />
+            <MUIDataTable data={invoiceData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -311,9 +302,7 @@ useEffect(() => {
   );
 }
 
-export default CreditNote;
-
-
+export default IncomeDebitNote;
 
 
 

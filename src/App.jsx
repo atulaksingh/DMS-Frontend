@@ -22,6 +22,8 @@ import PurchaseInvoice from "./pages/PurchaseInvoice";
 import SalesInvoice from "./pages/SalesInvoice";
 import CreditNote from "./Components/MainCards/Clients/Credit Note/CreditNote";
 import DebitNote from "./Components/MainCards/Clients/DebitNote/DebitNote";
+import IncomeDebitNote from "./Components/MainCards/Clients/IncomeDebitNote/IncomeDebitNote";
+import ExpenseCreditNote from "./Components/MainCards/Clients/ExpenseCreditNote/ExpenseCreditNote";
 function App() {
   const [count, setCount] = useState(0);
 
@@ -41,8 +43,10 @@ function App() {
           <Route path="/branchDetails/:clientID/:branchID" element={<BranchDetails />} />
           <Route path="/purchaseInvoice/:id/:rowId" element={<PurchaseInvoice />} />
           <Route path="/salesInvoice/:id/:rowId" element={<SalesInvoice />} />
-          <Route path="/creditNote/:id/:rowId" element={<CreditNote />} />
-          <Route path="/debitNote/:id/:rowId" element={<DebitNote />} />
+          <Route path="/creditNote/:id/:purchID" element={<CreditNote />} />
+          <Route path="/debitNote/:id/:salesID" element={<DebitNote />} />
+          <Route path="/expenses/creditNote/:id/:expensesID" element={<ExpenseCreditNote />} />
+          <Route path="/income/debitNote/:id/:incomeID" element={<IncomeDebitNote />} />
         </Routes>
       </Router>
     </>

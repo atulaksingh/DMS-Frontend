@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -14,9 +11,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import CreditNoteCreation from "./CreditNoteCreation";
-import CreditNoteFileCreation from "./CreditNoteFileCreation";
-import CreditNoteCard from "./CreditNoteCard";
+// import CreditNoteCreation from "./CreditNoteCreation";
+
+// import CreditNoteFileCreation from "./CreditNoteFileCreation";
+import ExpensesCreditNoteFileCreation from "./ExpensesCreditNoteFileCreation";
+import ExpensesCreditNoteCard from "./ExpensesCreditNoteCard";
+import ExpensesCreditNoteCreation from "./ExpensesCreditNoteCreation";
+// import CreditNoteCard from "./CreditNoteCard";
 // import PurchaseCreation from "./PurchaseCreation";
 // import PurchaseFileCreation from "./PurchaseFileCreation";
 // import PurchaseCard from "./PurchaseCard";
@@ -41,9 +42,9 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function CreditNote() {
+function ExpenseCreditNote() {
 
-  const { id, purchID } = useParams();
+  const { id, expensesID } = useParams();
   // console.log("res", useParams());
 const [creditNoteData, setCreditNoteData] = useState([]);
 const [loading, setLoading] = useState(true);
@@ -52,9 +53,9 @@ const [error, setError] = useState(null);
 const fetchInvoiceDetails = async () => {
   try {
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/creditnote-list/${id}/${purchID}`
+      `http://127.0.0.1:8000/api/expensescreditnote-list/${id}/${expensesID}`
     );
-    // console.log("gggggggg",response)
+    console.log("gggggggg",response)
     const apiData = response.data;
 
     setCreditNoteData(apiData);
@@ -66,7 +67,7 @@ const fetchInvoiceDetails = async () => {
 };
 useEffect(() => {
   fetchInvoiceDetails();
-}, [id, purchID]);
+}, [id, expensesID]);
 
 
 
@@ -220,7 +221,8 @@ useEffect(() => {
           const rowData = creditNoteData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
           {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
-          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>
+          <ExpensesCreditNoteCard rowId={rowData.id}  fetchInvoiceDetails={ fetchInvoiceDetails} fileData={creditNoteData.attach_e_way_bill}/>
+          
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -297,8 +299,9 @@ useEffect(() => {
           
            
          
-            <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            <ExpensesCreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+            <ExpensesCreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>
@@ -311,7 +314,7 @@ useEffect(() => {
   );
 }
 
-export default CreditNote;
+export default ExpenseCreditNote;
 
 
 

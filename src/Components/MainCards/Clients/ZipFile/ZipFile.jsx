@@ -1,6 +1,5 @@
 
 
-
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -13,16 +12,13 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import CreditNoteCreation from "./CreditNoteCreation";
-import CreditNoteFileCreation from "./CreditNoteFileCreation";
-import CreditNoteCard from "./CreditNoteCard";
-// import PurchaseCreation from "./PurchaseCreation";
-// import PurchaseFileCreation from "./PurchaseFileCreation";
-// import PurchaseCard from "./PurchaseCard";
-// import SalesCreation from "./SalesCreation";
-// import SalesFileCreation from "./SalesFileCreation";
-// import SalesCard from "./SalesCard";
+import ZipFileCreation from "./ZipFileCreation";
+import ZipFileCard from "./ZipFileCard";
+
+// import IncomeFileCreation from "./IncomeFileCreation";
+// import IncomeCreation from "./IncomeCreation";
+// import IncomeCard from "./IncomeCard";
+
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -41,42 +37,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function CreditNote() {
-
-  const { id, purchID } = useParams();
-  // console.log("res", useParams());
-const [creditNoteData, setCreditNoteData] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-// console.log("res", creditNoteData);
-const fetchInvoiceDetails = async () => {
-  try {
-    const response = await axios.get(
-      `http://127.0.0.1:8000/api/creditnote-list/${id}/${purchID}`
-    );
-    // console.log("gggggggg",response)
-    const apiData = response.data;
-
-    setCreditNoteData(apiData);
-    setLoading(false);
-  } catch (error) {
-    setError(error.message);
-    setLoading(false);
-  }
-};
-useEffect(() => {
-  fetchInvoiceDetails();
-}, [id, purchID]);
-
-
-
-
-
-
+function ZipFile({zipFileData}) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
-    const calculatedHeight = creditNoteData.length * rowHeight;
+    const calculatedHeight = zipFileData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -95,7 +60,7 @@ useEffect(() => {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [creditNoteData]);
+  }, [zipFileData]);
 
   const columns = [
     {
@@ -110,20 +75,9 @@ useEffect(() => {
         }),
       },
     },
-    // {
-    //   name: "attach_e_way_bill",
-    //   label: "Attachments",
-    //   options: {
-    //     setCellHeaderProps: () => ({
-    //       style: {
-    //         backgroundColor: "#366FA1",
-    //         color: "#ffffff",
-    //       },
-    //     }),
-    //   },
-    // },
+   
     {
-      name: "attach_e_way_bill",
+      name: "files",
       label: "Attachments",
       options: {
         setCellHeaderProps: () => ({
@@ -132,18 +86,37 @@ useEffect(() => {
             color: "#ffffff",
           },
         }),
-        customBodyRender: (value) => (
-          value ? (
-            <a href={`http://127.0.0.1:8000${value}`} target="_blank" rel="noopener noreferrer">
-              <ImFilePicture size={20} color="#366FA1" />
-            </a>
-          ) : null
-        ),
+        customBodyRender: (value) => {
+          if (value) {
+            // Extracting the file name from the URL
+            const fileName = value.split('/').pop();
+    
+            return (
+             <>
+
+             <a
+                href={`http://127.0.0.1:8000${value}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "none", color: "#366FA1" }}
+              >
+               <div className="flex gap-2">
+               <ImFilePicture size={20} color="#366FA1" style={{ marginRight: 8 }} />
+               {fileName}
+               </div>
+              </a>
+             </>
+            );
+          }
+          return null;
+        },
       },
-    },
+    },    
+    
+    
     {
-      name: "invoice_no",
-      label: "Invoice Number",
+      name: "date",
+      label: "Date",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -151,76 +124,57 @@ useEffect(() => {
             color: "#ffffff",
           },
         }),
+        customBodyRender: (value) => {
+          if (value) {
+            const date = new Date(value);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+          }
+          return ""; // Return an empty string for null or invalid values
+        },
       },
-    },
-    {
-      name: "invoice_type",
-      label: "Invoice Type",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
+    }
+    
+,    
+{
+  name: "date",
+  label: " Time",
+  options: {
+    setCellHeaderProps: () => ({
+      style: {
+        backgroundColor: "#366FA1",
+        color: "#ffffff",
       },
+    }),
+    customBodyRender: (value) => {
+      if (value) {
+        const date = new Date(value);
+       
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return ` ${hours}:${minutes}:${seconds}`;
+      }
+      return ""; // Return an empty string for null or invalid values
     },
-    {
-      name: "invoice_date",
-      label: "Invoice Date",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    // {
-    //   name: "ifsc",
-    //   label: "IFSC Code",
-    //   options: {
-    //     setCellHeaderProps: () => ({
-    //       style: {
-    //         backgroundColor: "#366FA1",
-    //         color: "#ffffff",
-    //       },
-    //     }),
-    //   },
-    // },
-    // {
-    //   name: "branch",
-    //   label: "Branch",
-    //   options: {
-    //     setCellHeaderProps: () => ({
-    //       style: {
-    //         backgroundColor: "#366FA1",
-    //         color: "#ffffff",
-    //       },
-    //     }),
-    //   },
-    // },
-    {
-      name: "attachment",
-      label: "Document",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
+  },
+}
+,    
+
+   
+   
     {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = creditNoteData[dataIndex];
+          const rowData = zipFileData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
-          {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
-          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>
+          {/* <PurchaseCard rowId={rowData.id} fileData={purchaseInvoiceData.attach_e_way_bill}/>  */}
+          {/* <IncomeCard rowId={rowData.id} fileData={zipFileData.attach_e_way_bill} /> */}
+          <ZipFileCard rowId={rowData.id}/>
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -287,23 +241,21 @@ useEffect(() => {
     <>
       <ToastContainer />
 
-      <div className="p-20">
+      <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Credit Note Details
+            Income Details
           </div>
       
           <div className="flex align-middle items-center gap-2">
           
            
-         
-            <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            <ZipFileCreation />
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={creditNoteData} columns={columns} options={options} />
+            <MUIDataTable data={zipFileData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -311,12 +263,7 @@ useEffect(() => {
   );
 }
 
-export default CreditNote;
-
-
-
-
-
+export default ZipFile;
 
 
 

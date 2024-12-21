@@ -45,10 +45,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
+// import SalesInvoice from "./SalesInvoice";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
-import CreditNoteInvoice from "./CreditNoteInvoice";
-// import PurchaseInvoice from "./PurchaseInvoice";
+import DebitNoteInvoice from "./DebitNoteInvoice";
 //   import { useEffect } from "react";
 
 const style = {
@@ -80,8 +80,10 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function CreditNoteCard({ rowId, fileData }) {
-  const { id ,purchID} = useParams();
+export default function DebitNoteCard({ rowId, fileData ,fetchInvoiceDetails}) {
+  const { id ,salesID} = useParams();
+//   const salesID = rowId;
+//   console.log("use",useParams())
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -110,7 +112,7 @@ export default function CreditNoteCard({ rowId, fileData }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-creditnote-invoice/${id}/${purchID}/${deleteId}`
+        `http://127.0.0.1:8000/api/delete-debitnote-invoice/${id}/${salesID}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -119,7 +121,8 @@ export default function CreditNoteCard({ rowId, fileData }) {
           position: "top-right",
           autoClose: 2000,
         });
-        dispatch(fetchClientDetails(id));
+        // dispatch(fetchClientDetails(id));
+        fetchInvoiceDetails()
       } else {
         toast.error("Failed to delete Sales Invoice. Please try again.", {
           position: "top-right",
@@ -148,13 +151,13 @@ const helloworld = () => setOpenViewModal(false)
   const [bankData, setBankData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // console.log("gggggggg", bankData);
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/creditnote-view/${id}/${purchID}/${rowId}`
+          `http://127.0.0.1:8000/api/debitnote-view/${id}/${salesID}/${rowId}`
         );
-        // console.log("purch",response)
         setBankData(response.data);
         setLoading(false);
       } catch (error) {
@@ -164,7 +167,6 @@ const helloworld = () => setOpenViewModal(false)
     };
     fetchBankDetails();
   }, [id, rowId]);
-  // console.log("gggggggg", bankData);
 
   ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
 
@@ -216,7 +218,7 @@ const helloworld = () => setOpenViewModal(false)
     gst_no: "",
     name: "",
     pan: "",
-    vendor_address: "",
+    customer_address: "",
     customer: false,
     vendor: false,
   });
@@ -252,14 +254,12 @@ const helloworld = () => setOpenViewModal(false)
       tcs: "",
       tds: "",
       amount_receivable: "",
-      utilise_month: "",
-      utilise_edit: false,
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+//   console.log("vendorData", vendorData);
+//   console.log("rows", rows);
+//   console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -267,17 +267,18 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}/${rowId}`
+        `http://127.0.0.1:8000/api/get-debitnote-invoice/${id}/${salesID}/${rowId}`
       );
-      console.log("dd123", response.data);          
+    //   console.log("dd123", response.data);
       setFormData(response.data.client_location);
-      setVendorData(response.data.vendor);
+      setVendorData(response.data.customer);
       setRows(response.data.product_summaries);
-      if (response.data.credit_note) {
+      // setInvoiceData(response.data.sales_invoice);
+      if (response.data.debit_note) {
         setInvoiceData([
           {
-            ...response.data.credit_note,
-            invoice_type: response.data.credit_note.invoice_type || "", // Ensure the field is populated
+            ...response.data.debit_note,
+            invoice_type: response.data.debit_note.invoice_type || "", // Ensure the field is populated
           },
         ]);
       }
@@ -291,27 +292,16 @@ const helloworld = () => setOpenViewModal(false)
   };
 
   const handleInputChangeInvoiceData = (e) => {
-    const { name, value, type, checked } = e.target; // Include `checked`
-    const fieldValue =
-      type === "checkbox"
-        ? checked
-        : type === "file"
-        ? e.target.files[0]
-        : value; // Handle checkbox, file, and others
+    const { name, value, type } = e.target;
+    const fieldValue = type === "file" ? e.target.files[0] : value;
 
     setInvoiceData((prevData) => {
-      const updatedData = Array.isArray(prevData) ? [...prevData] : [{}];
-
-      if (!updatedData[0]) {
-        updatedData[0] = {};
-      }
-
+      const updatedData = [...prevData];
       let updatedEntry = {
         ...updatedData[0],
-        [name]: fieldValue, // Use fieldValue directly
+        [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
       };
 
-      // Handle resetting related fields (if needed for TDS/TCS)
       if (name === "tcs") {
         updatedEntry.tds = "";
       } else if (name === "tds") {
@@ -327,7 +317,6 @@ const helloworld = () => setOpenViewModal(false)
       }
 
       updatedData[0] = updatedEntry;
-
       return updatedData;
     });
   };
@@ -354,7 +343,7 @@ const helloworld = () => setOpenViewModal(false)
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}`
+          `http://127.0.0.1:8000/api/get-debitnote/${id}`
         );
         // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
@@ -390,7 +379,7 @@ const helloworld = () => setOpenViewModal(false)
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -447,7 +436,7 @@ const helloworld = () => setOpenViewModal(false)
         gst_no: "",
         name: "",
         pan: "",
-        vendor_address: "",
+        customer_address: "",
         customer: false,
         vendor: false,
       }));
@@ -467,7 +456,7 @@ const helloworld = () => setOpenViewModal(false)
           gst_no: matchedCustomer.gst_no,
           name: matchedCustomer.name,
           pan: matchedCustomer.pan,
-          vendor_address: matchedCustomer.address,
+          customer_address: matchedCustomer.address,
           customer: matchedCustomer.customer,
           vendor: matchedCustomer.vendor,
         }));
@@ -478,7 +467,7 @@ const helloworld = () => setOpenViewModal(false)
           gst_no: newValue1,
           name: "",
           pan: "",
-          vendor_address: "",
+          customer_address: "",
           customer: false,
           vendor: false,
         }));
@@ -493,7 +482,7 @@ const helloworld = () => setOpenViewModal(false)
         gst_no: newValue1.gst_no,
         name: newValue1.name || "",
         pan: newValue1.pan || "",
-        vendor_address: newValue1.address || "",
+        customer_address: newValue1.address || "",
         customer: newValue1.customer || false,
         vendor: newValue1.vendor || false,
       }));
@@ -505,7 +494,7 @@ const helloworld = () => setOpenViewModal(false)
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -771,7 +760,7 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/update-creditnote-post/${id}/${purchID}/${rowId}`,
+        `http://127.0.0.1:8000/api/update-debitnote-post/${id}/${salesID}/${rowId}`,
         payload,
         {
           headers: {
@@ -779,14 +768,15 @@ const helloworld = () => setOpenViewModal(false)
           },
         }
       );
-      // console.log("Data submitted successfully:", response.data);
+    //   console.log("Data submitted successfully:", response.data);
       // Handle successful response
       if (response.status === 200) {
         toast.success(response.data.message, {
           position: "top-right",
           autoClose: 2000,
         });
-        dispatch(fetchClientDetails(id));
+        // dispatch(fetchClientDetails(id));
+        fetchInvoiceDetails()
         handleCreateClose();
       } else {
         toast.error("Failed to Update Sales Invoice. Please try again.", {
@@ -994,9 +984,8 @@ const helloworld = () => setOpenViewModal(false)
               <>
                 <div>
                   <form className=" my-5 w-full ">
-                   {/* <PurchaseInvoice invoiceData={bankData} />  */}
-                   {/* <DebitNoteInvoice /> */}
-                   <CreditNoteInvoice rowId={rowId} />
+                    {/* <SalesInvoice invoiceData={bankData} /> */}
+                    <DebitNoteInvoice rowId={rowId}/>
                   </form>
                 </div>
                 <DialogFooter className="">
@@ -1636,101 +1625,6 @@ const helloworld = () => setOpenViewModal(false)
                       </div>
                     </div>
                   </div>
-
-
-
-  <div>
-                    <div>
-                      <label htmlFor="">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-1"
-                        >
-                          {/* Utilise Edit */}
-                        </Typography>
-                      </label>
-                    </div>
-                    <div className="">
-                      {/* <input
-                          type="file"
-                          size="md"
-                          name="attach_e_way_bill"
-                          placeholder="Eway Bill"
-                          onChange={handleInputChangeInvoiceData}
-                        /> */}
-                      {/* <Checkbox defaultChecked /> */}
-                    </div>
-                  </div>
-                  <div className="flex  align-middle items-center gap-5 mt-2">
-                    <div>
-                      <label htmlFor="utilise_edit">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-1"
-                        >
-                          Utilise Edit
-                        </Typography>
-                      </label>
-                    </div>
-                    <div className="">
-                      <Checkbox
-                        name="utilise_edit"
-                        ripple={false}
-                        checked={invoiceData[0]?.utilise_edit || false} // Access the first entry in the array
-                        className="h-5 w-5 rounded-md border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0"
-                        onChange={handleInputChangeInvoiceData} // Updated function
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <div>
-                        <label htmlFor="utilise_month">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="block font-semibold mb-1 mt-2"
-                          >
-                            Utilise Month
-                          </Typography>
-                        </label>
-                      </div>
-                      <div className="">
-                        <div className="">
-                       <Input
-                                              type="date"
-                                              size="md"
-                                              name="utilise_month"
-                                              placeholder="utilise_month"
-                                              value={invoiceData[0].utilise_month}
-                                              onChange={handleInputChangeInvoiceData}
-                                              className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                                              labelProps={{
-                                                className: "hidden",
-                                              }}
-                                              // containerProps={{ className: "min-w-full" }}
-                                              style={{
-                                                height: "28px", // Match this to your Autocomplete's root height
-                                                padding: "4px 6px", // Match this padding
-                                                fontSize: "0.875rem", // Ensure font size is consistent
-                                                width: 300,
-                                              }}
-                                            />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-
-
-
-
-
-
-
-
                 </div>
               </div>
 
@@ -1974,9 +1868,9 @@ const helloworld = () => setOpenViewModal(false)
                                     <Input
                                       type="text"
                                       size="lg"
-                                      name="vendor_address"
+                                      name="customer_address"
                                       placeholder="Customer Address"
-                                      value={vendorData.vendor_address}
+                                      value={vendorData.customer_address}
                                       onChange={handleInputChangeCL}
                                       className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                                       labelProps={{
@@ -2913,15 +2807,14 @@ const helloworld = () => setOpenViewModal(false)
         >
           {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
 
-          <Link to={`/purchaseInvoice/${id}/${rowId}`}>
-            <MenuItem>View</MenuItem>
-          </Link>
+            <MenuItem onClick={handleViewOpen}>View</MenuItem>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-        
+          {/* <Link to={`/debitNote/${id}/${rowId}`}>
+            <MenuItem>Debit Note</MenuItem>
+          </Link> */}
         </Menu>
       </div>
     </>
   );
 }
-

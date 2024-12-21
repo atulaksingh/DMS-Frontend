@@ -82,6 +82,7 @@ const ITEM_HEIGHT = 48;
 
 export default function PurchaseCard({ rowId, fileData }) {
   const { id } = useParams();
+  const purchID = rowId;
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -256,10 +257,10 @@ const helloworld = () => setOpenViewModal(false)
       utilise_edit: false,
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -432,6 +433,7 @@ const helloworld = () => setOpenViewModal(false)
       setFormData((prev) => ({
         ...prev,
         location: newInputValue,
+        offLocID: "",
       }));
     }
   };
@@ -2915,7 +2917,7 @@ const helloworld = () => setOpenViewModal(false)
           </Link>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/creditNote/${rowId}`}>
+          <Link to={`/creditNote/${id}/${purchID}`}>
             <MenuItem>Credit Note</MenuItem>
           </Link>
         </Menu>

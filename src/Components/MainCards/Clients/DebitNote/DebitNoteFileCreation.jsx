@@ -12,6 +12,8 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { useDispatch } from "react-redux";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -24,8 +26,9 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function CreditNoteFileCreation() {
-  const { id,purchID } = useParams();
+function DebitNoteFileCreation({fetchInvoiceDetails}) {
+  const { id,salesID } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -58,7 +61,7 @@ function CreditNoteFileCreation() {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-creditnote/${id}/${purchID}`,
+        `http://127.0.0.1:8000/api/create-debitnote/${id}/${salesID}`,
         formDataToSend,
         {
           headers: {
@@ -67,12 +70,13 @@ function CreditNoteFileCreation() {
         }
       );
 
-      // console.log(response.data); // Handle success response
+      console.log(response.data); // Handle success response
       toast.success(`${response.data.Message}`, {
         position: "top-right",
         autoClose: 2000,
       });
-
+    //   dispatch(fetchClientDetails(id));
+      fetchInvoiceDetails()
       handleCreateClose();
       setFormData((prevData) => ({
         ...prevData,
@@ -187,4 +191,4 @@ function CreditNoteFileCreation() {
   );
 }
 
-export default CreditNoteFileCreation;
+export default DebitNoteFileCreation;

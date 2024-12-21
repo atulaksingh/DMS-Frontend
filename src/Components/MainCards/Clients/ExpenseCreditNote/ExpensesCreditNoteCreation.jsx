@@ -1,5 +1,3 @@
-
-
 import {
     Button,
     Checkbox,
@@ -51,8 +49,8 @@ import {
     paddingInline: "40px",
     borderRadius: "10px",
   };
-  function CreditNoteCreation() {
-    const { id ,purchID} = useParams();
+  function ExpensesCreditNoteCreation() {
+    const { id ,expensesID} = useParams();
     const dispatch = useDispatch();
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [offData, setOffData] = useState([]);
@@ -684,7 +682,7 @@ import {
   
       try {
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/create-creditnote-post2/${id}/${purchID}`,
+          `http://127.0.0.1:8000/api/create-expensescreditnote-post2/${id}/${expensesID}`,
           payload,
           {
             headers: {
@@ -3098,5 +3096,5 @@ import {
     );
   }
   
-  export default CreditNoteCreation;
+  export default ExpensesCreditNoteCreation;
   

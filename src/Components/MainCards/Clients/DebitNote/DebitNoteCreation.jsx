@@ -51,8 +51,9 @@ import {
     paddingInline: "40px",
     borderRadius: "10px",
   };
-  function DebitNoteCreation() {
-    const { id } = useParams();
+  function DebitNoteCreation({fetchInvoiceDetails}) {
+    const { id ,salesID} = useParams();
+    // console.log("useee0",useParams())
     const dispatch = useDispatch();
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [offData, setOffData] = useState([]);
@@ -69,7 +70,7 @@ import {
     const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
     const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
       useState("");
-    console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+    // console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
     const [shouldShowIGST, setShouldShowIGST] = useState(false);
     const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
     const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -140,10 +141,10 @@ import {
         amount_receivable: "",
       },
     ]);
-    console.log("formData", formData);
-    console.log("vendor", vendorData);
-    console.log("rowsData", rows);
-    console.log("invoiceData", invoiceData);
+    // console.log("formData", formData);
+    // console.log("vendor", vendorData);
+    // console.log("rowsData", rows);
+    // console.log("invoiceData", invoiceData);
     // const handleInputChangeInvoiceData = (e) => {
     //   const { name, value, type } = e.target;
     //   const fieldValue = type === "file" ? e.target.files[0] : value;
@@ -212,7 +213,7 @@ import {
       const fetchBankDetails = async () => {
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-sales/${id}`
+            `http://127.0.0.1:8000/api/get-debitnote/${id}`
           );
           // console.log("ggggggg->", response.data);
           setOffData(response.data.serializer);
@@ -230,6 +231,7 @@ import {
         setFormData({
           ...formData,
           branchID: newValue.id, // Store branchID when branch is selected
+          
         });
       } else if (newValue && newValue.location) {
         setFormData({
@@ -248,7 +250,7 @@ import {
         // Fetch additional data if needed
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${newValue.id}&productID=${productID}`
+            `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${newValue.id}&productID=${productID}`
           );
           // console.log("Location Data:---->", response.data.branch_gst);
           setBranchNoGst(response.data.branch_gst);
@@ -259,6 +261,7 @@ import {
     };
     // console.log("123",branchNoGst)
     const handleInputChangeLocation = async (event, newInputValue) => {
+       console.log("123",newInputValue)
       if (newInputValue === "") {
         setFormData({
           offLocID: "",
@@ -279,12 +282,14 @@ import {
   
         if (!isLocationFound) {
           setShowBranchInput(true);
+          
         } else {
           setShowBranchInput(false);
         }
   
         setFormData({
           ...formData,
+          offLocID: "",
           location: newInputValue,
         });
   
@@ -376,7 +381,7 @@ import {
         setProductID(newValue.id); // Assuming setProductID is defined elsewhere
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+            `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
           );
     
           const { hsn_code: hsnCode, gst_rate: gstRate } = response.data.hsn || {};
@@ -677,7 +682,7 @@ import {
   
       try {
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/create-sales-post2/${id}`,
+          `http://127.0.0.1:8000/api/create-debitnote-post2/${id}/${salesID}`,
           payload,
           {
             headers: {
@@ -696,8 +701,8 @@ import {
           });
     
           // Dispatch fetchClientDetails action
-          dispatch(fetchClientDetails(id));
-    
+          // dispatch(fetchClientDetails(id));
+          fetchInvoiceDetails()
           // Optionally close the modal and reset form
           handleCreateClose();
          

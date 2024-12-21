@@ -1,7 +1,6 @@
 
 
 
-
 import { Button, DialogFooter } from "@material-tailwind/react";
 import React from "react";
 import Modal from "@mui/material/Modal";
@@ -12,6 +11,8 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -24,8 +25,9 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function CreditNoteFileCreation() {
-  const { id,purchID } = useParams();
+function IncomeFileCreation() {
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -48,17 +50,17 @@ function CreditNoteFileCreation() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
-
+    e.preventDefault();
+  
     try {
       const formDataToSend = new FormData();
-
+  
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("attach_e_way_bill", formData.files[i]);
       }
-
+  
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-creditnote/${id}/${purchID}`,
+        `http://127.0.0.1:8000/api/create-income/${id}`,
         formDataToSend,
         {
           headers: {
@@ -66,26 +68,32 @@ function CreditNoteFileCreation() {
           },
         }
       );
-
-      // console.log(response.data); // Handle success response
-      toast.success(`${response.data.Message}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      handleCreateClose();
-      setFormData((prevData) => ({
-        ...prevData,
-        files: [], 
-      }));
+  
+      // Check if the response status is success (2xx)
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+   dispatch(fetchClientDetails(id));
+        handleCreateClose();
+        setFormData((prevData) => ({
+          ...prevData,
+          files: [],
+        }));
+      } else {
+        throw new Error("Unexpected response");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
+  
       toast.error("Failed to create bank details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
 
   return (
     <>
@@ -187,4 +195,4 @@ function CreditNoteFileCreation() {
   );
 }
 
-export default CreditNoteFileCreation;
+export default IncomeFileCreation;

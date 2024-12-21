@@ -35,12 +35,16 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
 
 
   const calculateTableBodyHeight = () => {
-    const rowHeight = 80; // Approximate height for one row
-    const maxHeight = 525; // Maximum table body height
+    const minHeight = 80; 
+    const maxHeight = 525; 
+      const rowHeight = 50; 
+      const headerHeight = 50; 
     const calculatedHeight = officeLocationData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
+
+
   };
   const [errorMessage, setErrorMessage] = useState("");
   const [responsive, setResponsive] = useState("vertical");
@@ -161,6 +165,7 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
     viewColumns: viewColumnBtn,
     filter: filterBtn,
     filterType: "dropdown",
+
     responsive,
     tableBodyHeight,
     tableBodyMaxHeight,

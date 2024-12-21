@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -13,13 +14,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import CreditNoteCreation from "./CreditNoteCreation";
-import CreditNoteFileCreation from "./CreditNoteFileCreation";
-import CreditNoteCard from "./CreditNoteCard";
-// import PurchaseCreation from "./PurchaseCreation";
-// import PurchaseFileCreation from "./PurchaseFileCreation";
-// import PurchaseCard from "./PurchaseCard";
+import ExpensesCreation from "./ExpensesCreation";
+import ExpensesFileCreation from "./ExpensesFileCreation";
+import ExpensesCard from "./ExpensesCard";
+// import ExpensesCreation from "./ExpensesCreation";
+// import ExpensesFileCreation from "./ExpensesFileCreation";
+// import ExpensesCard from "./PurchaseCard";
 // import SalesCreation from "./SalesCreation";
 // import SalesFileCreation from "./SalesFileCreation";
 // import SalesCard from "./SalesCard";
@@ -41,42 +41,11 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function CreditNote() {
-
-  const { id, purchID } = useParams();
-  // console.log("res", useParams());
-const [creditNoteData, setCreditNoteData] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-// console.log("res", creditNoteData);
-const fetchInvoiceDetails = async () => {
-  try {
-    const response = await axios.get(
-      `http://127.0.0.1:8000/api/creditnote-list/${id}/${purchID}`
-    );
-    // console.log("gggggggg",response)
-    const apiData = response.data;
-
-    setCreditNoteData(apiData);
-    setLoading(false);
-  } catch (error) {
-    setError(error.message);
-    setLoading(false);
-  }
-};
-useEffect(() => {
-  fetchInvoiceDetails();
-}, [id, purchID]);
-
-
-
-
-
-
+function Expenses({ expensesInvoiceData }) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
-    const calculatedHeight = creditNoteData.length * rowHeight;
+    const calculatedHeight = expensesInvoiceData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
       : `${calculatedHeight}px`;
@@ -95,7 +64,7 @@ useEffect(() => {
 
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
-  }, [creditNoteData]);
+  }, [expensesInvoiceData]);
 
   const columns = [
     {
@@ -217,10 +186,10 @@ useEffect(() => {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
-          const rowData = creditNoteData[dataIndex];
+          const rowData = expensesInvoiceData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
-          {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
-          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>
+          {/* <PurchaseCard rowId={rowData.id} fileData={expensesInvoiceData.attach_e_way_bill}/>  */}
+          <ExpensesCard rowId={rowData.id} fileData={expensesInvoiceData.attach_e_way_bill} />
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -287,23 +256,25 @@ useEffect(() => {
     <>
       <ToastContainer />
 
-      <div className="p-20">
+      <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Credit Note Details
+          Expenses Details
           </div>
       
           <div className="flex align-middle items-center gap-2">
           
            
-         
-            <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <PurchaseFileCreation /> */}
+            {/* <PurchaseCreation /> */}
+            <ExpensesFileCreation />
+            <ExpensesCreation />
+        
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={creditNoteData} columns={columns} options={options} />
+            <MUIDataTable data={expensesInvoiceData} columns={columns} options={options} />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -311,14 +282,5 @@ useEffect(() => {
   );
 }
 
-export default CreditNote;
-
-
-
-
-
-
-
-
-
+export default Expenses;
 
