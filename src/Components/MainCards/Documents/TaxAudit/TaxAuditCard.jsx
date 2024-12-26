@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { format } from "date-fns";
-
+import { FaFileAlt } from "react-icons/fa";
 import "react-datepicker/dist/react-datepicker.css";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -287,44 +287,41 @@ export default function TaxAuditCard({ rowId }) {
 
                   
 
-                        <div className="flex gap-6  p-2">
-                   
-                          <div className="w-full flex gap-3 align-middle items-center">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              Attachment :
-                            </Typography>
-                              <div className="text-gray-700 text-[15px] ">
-                                <div className="mb-1">
-                                  {taxAuditData.files &&
-                                    taxAuditData.files.length > 0 && (
-                                      <div className="flex gap-5">
-                                        {taxAuditData.files.map((file, index) => (
-                                          <p
-                                            className="text-sm text-gray-500 mt-2 "
-                                            key={index}
-                                          >
-                                        
-                                            <a
-                                              href={`http://127.0.0.1:8000${file.files}`}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="text-blue-500 underline ml-3"
-                                            >
-                                              {file.files.split("/").pop()}
-                                            </a>
-                                          </p>
-                                        ))}
-                                      </div>
-                                    )}
-                                </div>
+                    
+                        <div className="p-2">
+                              <Typography
+                                variant="h6"
+                                color="blue-gray"
+                                className="mb-1"
+                                size="sm"
+                              >
+                                Attachments :
+                              </Typography>
+                              <div className="flex justify-center">
+                                {taxAuditData.files &&
+                                  taxAuditData.files.length > 0 && (
+                                    <div className="">
+                                      {taxAuditData.files.map((file, index) => (
+                                        <div className=" bg-primary text-white px-4 py-1 rounded-lg shadow-md w-80 my-1">
+                                          <div className="flex items-center justify-between">
+                                            <div className=" ">
+                                              <a
+                                                href={`http://127.0.0.1:8000${file.files}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="font-medium"
+                                              >
+                                                {file.files.split("/").pop()}
+                                              </a>
+                                            </div>
+                                            <FaFileAlt className="text-xl " />
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                               </div>
-                          </div>
-                        </div>
+                            </div>
                       </div>
                     </form>
                   </div>

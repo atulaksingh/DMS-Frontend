@@ -8,6 +8,7 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -106,20 +107,24 @@ function BranchDocCreation({fetchBranchDetails}) {
         });
       } else {
         // Handle error response (if not 200)
-        toast.error("Failed to create bank details. Please try again.", {
+        toast.error("Failed to create Branch details. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create bank details. Please try again.", {
+      toast.error("Failed to create Branch details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+    const [showPassword, setShowPassword] = useState(false);
   
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+    };
   return (
     <>
       {/* <ToastContainer /> */}
@@ -137,7 +142,7 @@ function BranchDocCreation({fetchBranchDetails}) {
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Create Bank Details
+              Create Branch Documents Details
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
               <div>
@@ -194,7 +199,7 @@ function BranchDocCreation({fetchBranchDetails}) {
                         color="blue-gray"
                         className="block font-semibold mb-1"
                       >
-                        Log In
+                        UserName
                       </Typography>
                       <Input
                         type="text"
@@ -202,7 +207,7 @@ function BranchDocCreation({fetchBranchDetails}) {
                         name="login"
                         value={formData.login}
                         onChange={handleInputChange}
-                        placeholder="Login"
+                        placeholder="UserName"
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
                         labelProps={{ className: "hidden" }}
                         containerProps={{ className: "min-w-[100px]" }}
@@ -218,17 +223,38 @@ function BranchDocCreation({fetchBranchDetails}) {
                       >
                         Password
                       </Typography>
-                      <Input
-                        type="password"
-                        size="lg"
-                        name="password"
-                        placeholder="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
-                        labelProps={{ className: "hidden" }}
-                        containerProps={{ className: "min-w-[100px]" }}
-                      />
+                   
+
+<div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        size="lg"
+        name="password"
+        placeholder="password"
+        value={formData.password}
+        onChange={handleInputChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
+
+
+
                     </div>
                   </div>
 

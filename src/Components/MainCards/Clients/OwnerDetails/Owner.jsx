@@ -18,6 +18,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 // import { DialogFooter, Button } from "@material-tailwind/react";
 const muiCache = createCache({
   key: "mui-datatables",
@@ -38,6 +39,14 @@ const styleCreateMOdal = {
 };
 function Owner({ ownerData }) {
   if (!ownerData) return <div>No owner data available</div>;
+  const [ownerShare, setOwnerShare] = useState("")
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -67,7 +76,52 @@ function Owner({ ownerData }) {
       isadmin: e.target.checked,  // Update isadmin based on checkbox state
     }));
   };
-  // console.log("formmmowner", formData);
+  // console.log("formmmowner", ownerShare);
+
+
+
+  const createOwnerShare = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/create-owner/${id}`,
+        formData
+      );
+      setOwnerShare(response?.data?.remaining_shares)
+      // console.log("formmmowner", response?.data?.remaining_shares);
+      // if (response.status === 200 || response.status === 201) {
+      //   toast.success("Owner created successfully!", {
+      //     position: "top-right",
+      //     autoClose: 2000,
+      //   });
+      // } else {
+      //   toast.error(`Failed to create owner: ${response.statusText}`, {
+      //     position: "top-right",
+      //     autoClose: 2000,
+      //   });
+      // }
+    } catch (error) {
+      console.error("Error creating owner:", error);
+      toast.error("An error occurred. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    }
+  };
+  useEffect(() => {
+
+    if (id) {
+      createOwnerShare();
+    }
+  }, [id,]); // Re-run if `id` or `formData` changes
+
+
+
+
+
+
+
+
+
   const handleSubmit = async (e) => {
     // console.log("enter");
     e.preventDefault(); // Prevent default form submission
@@ -79,27 +133,47 @@ function Owner({ ownerData }) {
         formData
       );
       // console.log(response.data); // Handle success response
-      toast.success("Owner created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      // toast.success("Owner created successfully!", {
+      //   position: "top-right",
+      //   autoClose: 2000,
+      // });
       // Optionally close the modal and reset form
-      dispatch(fetchClientDetails(id)); 
-      handleCreateClose();
-      // setErrorMessage("");
-      setFormData({
-        owner_name: "",
-        share: "",
-        pan: "",
-        aadhar: "",
-        email: "",
-        it_password: "",
-        mobile: "",
-      });
+      // setOwnerShare(response.data.remaining_shares)
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        createOwnerShare()
+        dispatch(fetchClientDetails(id)); 
+        handleCreateClose();
+        // setErrorMessage("");
+        setFormData({
+          owner_name: "",
+          share: "",
+          pan: "",
+          aadhar: "",
+          email: "",
+          it_password: "",
+          mobile: "",
+        });
+  
+      } else {
+        toast.error(`Failed to create owner. ${response.statusText}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+
+
+
+
+
     } catch (error) {
       setErrorMessage("Error submitting data. Please try again.");
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Owner. Please try again.", {
+      toast.error(`Failed to create Owner. ${error.response.data.error}`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -231,7 +305,7 @@ function Owner({ ownerData }) {
           const rowData = ownerData[dataIndex];
           return (
             <div>
-              <OwnerCard rowId={rowData.id} />
+              <OwnerCard rowId={rowData.id} createOwnerShare={createOwnerShare} ownerShare={ownerShare}/>
             </div>
           );
         },
@@ -299,7 +373,7 @@ function Owner({ ownerData }) {
     <>
       <ToastContainer />
       {/* //////////////////////////Create Data Modal open//////// */}
-
+{/* {console.log("hhhhhhhh",ownerShare)} */}
       <div>
         <Modal
           open={openCreateModal}
@@ -351,9 +425,9 @@ function Owner({ ownerData }) {
                       <Typography
                         variant="small"
                         color="blue-gray"
-                        className="block font-semibold mb-2"
+                        className="font-semibold mb-2 flex gap-2 "
                       >
-                        Share
+                        Share    <div className="text-green-400 text-sm">{ownerShare}% left</div>
                       </Typography>
                     </label>
 
@@ -435,7 +509,7 @@ function Owner({ ownerData }) {
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Email
+                        UserName
                       </Typography>
                     </label>
 
@@ -444,7 +518,7 @@ function Owner({ ownerData }) {
                         type="email"
                         size="lg"
                         name="email"
-                        placeholder="Email"
+                        placeholder="UserName"
                         value={formData.email}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
@@ -462,12 +536,12 @@ function Owner({ ownerData }) {
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Password
+                       IT Password
                       </Typography>
                     </label>
 
                     <div className="">
-                      <Input
+                      {/* <Input
                         type="password"
                         size="lg"
                         name="it_password"
@@ -479,7 +553,34 @@ function Owner({ ownerData }) {
                           className: "hidden",
                         }}
                         containerProps={{ className: "min-w-full" }}
-                      />
+                      /> */}
+                       <div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        size="lg"
+        name="it_password"
+        placeholder="Password"
+        value={formData.it_password}
+        onChange={handleInputChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
                     </div>
                   </div>
                   <div className="col-span-2">

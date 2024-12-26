@@ -6,7 +6,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Box from "@mui/material/Box";
 import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";
 import Modal from "@mui/material/Modal";
 import { DialogFooter, Button } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
@@ -39,7 +39,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function Card({ rowId }) {
+export default function Card({ rowId ,fetchClients}) {
   // console.log("rowId", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
@@ -65,15 +65,20 @@ export default function Card({ rowId }) {
       const response = await axios.delete(
         `http://127.0.0.1:8000/api/delete-client/${deleteId}`
       );
-      console.log("res-----owner---->", response);
+  
       setOpenCreateModal(false);
-      if (response.status === 200) {
-        toast.success("Owner deleted successfully!", {
+      if (response.status === 200 || response.status === 201) {
+        const toastId = toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+  
+        // Manually close as a fallback
+        setTimeout(() => toast.dismiss(toastId), 2000);
+  
+        fetchClients();
       } else {
-        toast.error("Failed to delete owner. Please try again.", {
+        toast.error(`Failed to delete owner. ${response.statusText}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -86,10 +91,11 @@ export default function Card({ rowId }) {
       });
     }
   };
+  
   return (
     <>
       {/* //////////////////////////Create Data Modal open//////// */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}

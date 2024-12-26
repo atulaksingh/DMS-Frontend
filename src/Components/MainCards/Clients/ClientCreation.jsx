@@ -18,7 +18,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 function ClientCreation() {
+  const navigate = useNavigate();
   const [filesList, setFilesList] = useState([]);
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -124,7 +127,7 @@ function ClientCreation() {
         });
       });
   
-      console.log("data to send:", data);
+      // console.log("data to send:", data);
       const response = await axios.post(
         "http://127.0.0.1:8000/api/create-client",
         data,
@@ -135,27 +138,48 @@ function ClientCreation() {
         }
       );
   
-      console.log("response", response);
-      toast.success("Client created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+
+
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.Message }`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
   
-      // Reset form and file list
-      setFormData({
-        client_name: "",
-        entity_type: "",
-        date_of_incorporation: "",
-        contact_person: "",
-        designation: "",
-        contact_no_1: "",
-        contact_no_2: "",
-        email: "",
-        business_detail: "",
-        status: "active",
-        fileinfos: [],
-      });
-      setFilesList([]);
+        // Reset form and file list
+        setFormData({
+          client_name: "",
+          entity_type: "",
+          date_of_incorporation: "",
+          contact_person: "",
+          designation: "",
+          contact_no_1: "",
+          contact_no_2: "",
+          email: "",
+          business_detail: "",
+          status: "active",
+          fileinfos: [],
+        });
+        setFilesList([]);
+        setTimeout(() => {
+          navigate(-1); // Go back to the previous page
+        }, 1000);
+      } else {
+        // Handle unexpected status codes
+        toast.error(`Failed to create client: ${response.statusText}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+
+
+
+
+
+
+
+
     } catch (error) {
       console.error("Error creating client:", error);
       toast.error("Failed to create client. Please try again.", {
@@ -166,6 +190,11 @@ function ClientCreation() {
   };
   
   
+    const [showPassword, setShowPassword] = useState(false);
+  
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+    };
   
   return (
     <>
@@ -236,7 +265,7 @@ function ClientCreation() {
                 color="blue-gray"
                 className="block font-semibold mb-1"
               >
-                Log In
+              UserName
               </Typography>
               <Input
                 type="text"
@@ -244,7 +273,7 @@ function ClientCreation() {
                 name="login"
                 value={login}
                 onChange={handleLoginChange}
-                placeholder="Login"
+                placeholder="UserName"
                 className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
                 labelProps={{ className: "hidden" }}
                 containerProps={{ className: "min-w-[100px]" }}
@@ -258,7 +287,7 @@ function ClientCreation() {
               >
                 Password
               </Typography>
-              <Input
+              {/* <Input
                 type="password"
                 size="lg"
                 name="password"
@@ -268,7 +297,35 @@ function ClientCreation() {
                 className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
                 labelProps={{ className: "hidden" }}
                 containerProps={{ className: "min-w-[100px]" }}
-              />
+              /> */}
+                 <div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        // type="password"
+        size="lg"
+        name="password"
+        value={password}
+    placeholder="Password"
+        onChange={handlePasswordChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
             </div>
             <div>
               <label htmlFor="remarks">
@@ -665,7 +722,7 @@ function ClientCreation() {
                     color="blue-gray"
                     className="block  font-semibold  pb-1"
                   >
-                    Attchments
+                    Attachments
                   </Typography>
                 </label>
                 {filesList.length === 0 ? (
@@ -693,7 +750,7 @@ function ClientCreation() {
                     <ul className="list-disc mr-5 w-full">
                       {filesList.map((file, index) => (
                         <>
-                        {console.log("dj",file)}
+                        {/* {console.log("dj",file)} */}
                         <li
                           key={index} // Use index since file.id is not defined
                           className="flex items-center justify-between mb-2 bg-[#366FA1] p-2 rounded-md text-white"

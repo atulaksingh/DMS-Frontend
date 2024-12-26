@@ -14,6 +14,7 @@ import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FaFileAlt } from "react-icons/fa";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -221,6 +222,14 @@ export default function CompanyDocumentCard({ rowId }) {
   // if (error) {
   //   return <div>Error loading client details: {error.message}</div>;
   // }
+  const shortenFilename = (filename, maxLength = 20) => {
+    if (filename.length <= maxLength) {
+      return filename;
+    }
+    const extension = filename.split('.').pop();
+    const baseName = filename.slice(0, maxLength - extension.length - 3);
+    return `${baseName}...${extension}`;
+  };
   return (
     <>
       <ToastContainer />
@@ -287,7 +296,7 @@ export default function CompanyDocumentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Oassword :
+                              Password :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {bankData.password}
@@ -308,40 +317,52 @@ export default function CompanyDocumentCard({ rowId }) {
                           </div>
                         </div>
 
-                        <div className="w-full flex gap-3 align-middle items-center">
-                          <Typography
-                            variant="h6"
-                            color="blue-gray"
-                            className=""
-                            size="sm"
-                          >
-                            Attachment :
-                          </Typography>
-                          <div className="text-gray-700 text-[15px] mb-2">
-                            <div className="">
-                              {bankData.files && bankData.files.length > 0 && (
-                                <div className="flex gap-5">
-                                  {bankData.files.map((file, index) => (
-                                    <p
-                                      className="text-sm text-gray-500 mt-2 "
-                                      key={index}
-                                    >
-                                      Selected file:
-                                      <a
-                                        href={`http://127.0.0.1:8000${file.files}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-blue-500 underline ml-3"
-                                      >
-                                        {file.files.split("/").pop()}
-                                      </a>
-                                    </p>
-                                  ))}
-                                </div>
-                              )}
+                        <div className="p-2">
+                              <Typography
+                                variant="h6"
+                                color="blue-gray"
+                                className="mb-1"
+                                size="sm"
+                              >
+                                Attachments :
+                              </Typography>
+                         
+                                    <div className="flex justify-center">
+                                                          {bankData.files &&
+                                                            bankData.files.length > 0 && (
+                                                              <div>
+                                                                {bankData.files.map((file, index) => {
+                                                                  const fullFilename = file.files
+                                                                    .split("/")
+                                                                    .pop();
+                                                                  const shortFilename =
+                                                                    shortenFilename(fullFilename);
+                              
+                                                                  return (
+                                                                    <div
+                                                                      key={index}
+                                                                      className="bg-primary text-white px-4 py-1 rounded-lg shadow-md w-80 my-1"
+                                                                    >
+                                                                      <div className="flex items-center justify-between">
+                                                                        <div>
+                                                                          <a
+                                                                            href={`http://127.0.0.1:8000${file.files}`}
+                                                                            target="_blank"
+                                                                            rel="noopener noreferrer"
+                                                                            className="font-medium"
+                                                                          >
+                                                                            {shortFilename}
+                                                                          </a>
+                                                                        </div>
+                                                                        <FaFileAlt className="text-xl" />
+                                                                      </div>
+                                                                    </div>
+                                                                  );
+                                                                })}
+                                                              </div>
+                                                            )}
+                                                        </div>
                             </div>
-                          </div>
-                        </div>
                       </div>
                     </form>
                   </div>

@@ -334,7 +334,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Tds Rate:
+                              TDS Rate :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.tds_rate}
@@ -347,7 +347,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                             Tds Amount:
+                             TDS Amount :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.tds_amount}
@@ -362,7 +362,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              CGST:
+                              CGST :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.cgst}
@@ -375,7 +375,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                             SGST:
+                             SGST :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.sgst}
@@ -390,7 +390,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              IGST:
+                              IGST :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.igst}
@@ -403,7 +403,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                             Total Amount:
+                             Total Amount :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.total_amt}
@@ -418,7 +418,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                              Tds SEction:
+                              TDS Section :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.tds_section}
@@ -431,7 +431,7 @@ export default function TdsPaymentCard({ rowId }) {
                               className=""
                               size="sm"
                             >
-                             Net Amount:
+                             Net Amount :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {tdsPaymentData.net_amount}

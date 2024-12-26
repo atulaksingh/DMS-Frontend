@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -21,6 +19,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { FaFileAlt } from "react-icons/fa";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -70,13 +69,13 @@ export default function SftCard({ rowId }) {
     files: [],
   });
 
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({
-//       ...prev,
-//       [name]: value,
-//     }));
-//   };
+  //   const handleInputChange = (e) => {
+  //     const { name, value } = e.target;
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [name]: value,
+  //     }));
+  //   };
   // Handle file input change
   const handleFileChange = (e) => {
     setFormData((prev) => ({
@@ -286,44 +285,37 @@ export default function SftCard({ rowId }) {
                           </div>
                         </div>
 
-                  
-
-                        <div className="flex gap-6  p-2">
-                   
-                          <div className="w-full flex gap-3 align-middle items-center">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              Attachment :
-                            </Typography>
-                              <div className="text-gray-700 text-[15px] ">
-                                <div className="mb-1">
-                                  {sftData.files &&
-                                    sftData.files.length > 0 && (
-                                      <div className="flex gap-5">
-                                        {sftData.files.map((file, index) => (
-                                          <p
-                                            className="text-sm text-gray-500 mt-2 "
-                                            key={index}
-                                          >
-                                        
-                                            <a
-                                              href={`http://127.0.0.1:8000${file.files}`}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className="text-blue-500 underline ml-3"
-                                            >
-                                              {file.files.split("/").pop()}
-                                            </a>
-                                          </p>
-                                        ))}
+                        <div className="p-2">
+                          <Typography
+                            variant="h6"
+                            color="blue-gray"
+                            className="mb-1"
+                            size="sm"
+                          >
+                            Attachments :
+                          </Typography>
+                          <div className="flex justify-center">
+                            {sftData.files && sftData.files.length > 0 && (
+                              <div className="">
+                                {sftData.files.map((file, index) => (
+                                  <div className=" bg-primary text-white px-4 py-1 rounded-lg shadow-md w-80 my-1">
+                                    <div className="flex items-center justify-between">
+                                      <div className=" ">
+                                        <a
+                                          href={`http://127.0.0.1:8000${file.files}`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="font-medium"
+                                        >
+                                          {file.files.split("/").pop()}
+                                        </a>
                                       </div>
-                                    )}
-                                </div>
+                                      <FaFileAlt className="text-xl " />
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
+                            )}
                           </div>
                         </div>
                       </div>

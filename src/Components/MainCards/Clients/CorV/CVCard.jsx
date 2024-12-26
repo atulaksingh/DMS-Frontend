@@ -22,7 +22,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 800,
+  width: 1000,
   bgcolor: "background.paper",
   boxShadow: 24,
   paddingTop: "17px", 
@@ -286,7 +286,7 @@ export default function CVCard({ rowId }) {
                           </div>
                         </div>
 
-                        <div className="flex gap-6   p-2">
+                        <div className="grid grid-cols-2 gap-6   p-2">
                           <div className="w-full flex gap-3">
                             <Typography
                               variant="h6"
@@ -300,17 +300,17 @@ export default function CVCard({ rowId }) {
                               {CVData.pan}
                             </div>
                           </div>
-                          <div className="w-full flex gap-3">
+                          <div className="w-full flex gap-2 ">
                             <Typography
                               variant="h6"
                               color="blue-gray"
                               className=""
                               size="sm"
                             >
-                              Address :
+                              Address:
                             </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {CVData.address}
+                            <div className="text-gray-700 text-[15px] my-auto ml-2">
+                                   {CVData.address} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis nulla laudantium dignissimos inventore debitis, tempora amet natus a quidem. Dignissimos velit est natus debitis vitae temporibus iusto eaque neque quibusdam!
                             </div>
                           </div>
                         </div>

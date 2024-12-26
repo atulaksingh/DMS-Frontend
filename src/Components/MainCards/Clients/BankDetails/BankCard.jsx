@@ -12,6 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
+import { FaFileAlt } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
@@ -49,7 +50,7 @@ const ITEM_HEIGHT = 48;
 export default function BankCard({ rowId }) {
   const { id } = useParams();
   // console.log("rowIdbank", rowId);
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
@@ -74,7 +75,7 @@ export default function BankCard({ rowId }) {
   const handleFileChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      files: e.target.files, // Handles multiple files
+      files: Array.from(e.target.files), // Convert FileList to an array
     }));
   };
 
@@ -92,11 +93,13 @@ export default function BankCard({ rowId }) {
       formDataToSend.append("account_type", formData.account_type);
       formDataToSend.append("branch", formData.branch);
 
-      // Append file field to FormData
-      // Append multiple files if selected
-      for (let i = 0; i < formData.files.length; i++) {
-        formDataToSend.append("files", formData.files[i]);
-      }
+      // Append files
+      formData.files.forEach((file) => {
+        formDataToSend.append("files", file);
+      });
+
+      // Debug FormData
+
       // console.log("form", formDataToSend);
       // Make a POST request to your API
       const response = await axios.post(
@@ -228,6 +231,15 @@ export default function BankCard({ rowId }) {
   // if (error) {
   //   return <div>Error loading client details: {error.message}</div>;
   // }
+
+  const shortenFilename = (filename, maxLength = 20) => {
+    if (filename.length <= maxLength) {
+      return filename;
+    }
+    const extension = filename.split('.').pop();
+    const baseName = filename.slice(0, maxLength - extension.length - 3);
+    return `${baseName}...${extension}`;
+  };
   return (
     <>
       {/* <ToastContainer /> */}
@@ -329,19 +341,49 @@ export default function BankCard({ rowId }) {
                               {bankData.ifsc}
                             </div>
                           </div>
-                          <div className="w-full flex gap-3 align-middle items-center">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className="mb-1"
-                              size="sm"
-                            >
-                              Attachment :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.attachment}
-                            </div>
-                          </div>
+                          
+                        </div>
+
+                        <div className="p-2">
+                          <Typography
+                            variant="h6"
+                            color="blue-gray"
+                            className="mb-1"
+                            size="sm"
+                          >
+                            Attachments :
+                          </Typography>
+                          <div className="flex justify-center">
+  {bankData.files && bankData.files.length > 0 && (
+    <div>
+      {bankData.files.map((file, index) => {
+        const fullFilename = file.files.split("/").pop();
+        const shortFilename = shortenFilename(fullFilename);
+
+        return (
+          <div
+            key={index}
+            className="bg-primary text-white px-4 py-1 rounded-lg shadow-md w-80 my-1"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <a
+                  href={`http://127.0.0.1:8000${file.files}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium"
+                >
+                  {shortFilename}
+                </a>
+              </div>
+              <FaFileAlt className="text-xl" />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  )}
+</div>;
                         </div>
                       </div>
                     </form>
@@ -530,7 +572,7 @@ export default function BankCard({ rowId }) {
                     </div>
                   </div>
                   <div className="col-span-2">
-                    <label htmlFor="attachment">
+                    <label htmlFor="files">
                       <Typography
                         variant="small"
                         color="blue-gray"
@@ -568,14 +610,20 @@ export default function BankCard({ rowId }) {
                           <p>Selected files:</p>
                           {formData.files.map((file, index) => (
                             <p key={index}>
-                              <a
-                                href={`http://127.0.0.1:8000${file.files}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-500 underline"
-                              >
-                                {file.files.split("/").pop()}
-                              </a>
+                              {file.files ? (
+                                <a
+                                  href={`http://127.0.0.1:8000${file.files}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-500 underline"
+                                >
+                                  {file.files.split("/").pop()}
+                                </a>
+                              ) : (
+                                <span>
+                                  {file.name || "No file link available"}
+                                </span>
+                              )}
                             </p>
                           ))}
                         </div>

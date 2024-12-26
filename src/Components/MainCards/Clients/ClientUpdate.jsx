@@ -12,16 +12,17 @@ import {
   Switch,
   Option,
 } from "@material-tailwind/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import axios from "axios";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 function ClientUpdate() {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [filesList, setFilesList] = useState([]);
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -221,11 +222,34 @@ function ClientUpdate() {
         }
       );
 
-      console.log("response", response);
-      toast.success("Client updated successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      // console.log("response", response);
+      // toast.success("Client updated successfully!", {
+      //   position: "top-right",
+      //   autoClose: 2000,
+      // });
+
+
+      if (response.status === 200 || response.status === 201) {
+        const toastId = toast.success(`${response.data.Message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Manually close as a fallback
+        // setTimeout(() => toast.dismiss(toastId), 2000);
+        setTimeout(() => {
+          navigate(-1); // Go back to the previous page
+        }, 1000);
+     
+      } else {
+        toast.error(`Failed to Update Client. ${response.statusText}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
+
+
+
 
     } catch (error) {
       console.error("Error updating client:", error);
@@ -235,7 +259,11 @@ function ClientUpdate() {
       });
     }
   };
-
+    const [showPassword, setShowPassword] = useState(false);
+  
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+    };
   return (
     <>
       <Dialog open={open} size="sm" handler={handleOpen}>
@@ -305,7 +333,7 @@ function ClientUpdate() {
                 color="blue-gray"
                 className="block font-semibold mb-1"
               >
-                Log In
+               UserName
               </Typography>
               <Input
                 type="text"
@@ -313,7 +341,7 @@ function ClientUpdate() {
                 name="login"
                 value={login}
                 onChange={handleLoginChange}
-                placeholder="Login"
+                placeholder="UserName"
                 className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
                 labelProps={{ className: "hidden" }}
                 containerProps={{ className: "min-w-[100px]" }}
@@ -327,17 +355,35 @@ function ClientUpdate() {
               >
                 Password
               </Typography>
-              <Input
-                type="password"
-                size="lg"
-                name="password"
-                value={password}
-                onChange={handlePasswordChange}
-                placeholder="password"
-                className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
-                labelProps={{ className: "hidden" }}
-                containerProps={{ className: "min-w-[100px]" }}
-              />
+              <div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        // type="password"
+        size="lg"
+        name="password"
+        value={password}
+        placeholder="Password"
+        onChange={handlePasswordChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
+              
             </div>
             <div>
               <label htmlFor="remarks">

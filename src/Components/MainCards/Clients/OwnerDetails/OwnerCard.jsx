@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -46,7 +47,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function OwnerCard({ rowId }) {
+export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
   const { id } = useParams();
   const dispatch = useDispatch();
   // console.log("rowIdowner", rowId);
@@ -54,6 +55,7 @@ export default function OwnerCard({ rowId }) {
   const [openViewModal, setOpenViewModal] = React.useState(false);
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
+  // const [ownerShare, setOwnerShare] = useState("")             
   const [deleteId, setDeleteId] = useState(null);
   const [formData, setFormData] = useState({
     owner_name: "",
@@ -80,14 +82,14 @@ export default function OwnerCard({ rowId }) {
         `http://127.0.0.1:8000/api/edit-owner/${id}/${rowId}`,
         formData
       );
-      
+      // console.log("111",response.data)
       // Check if response is successful (you can adjust this depending on the response structure)
       if (response.status === 200) {
-        toast.success("Owner updated successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
-  
+        createOwnerShare()
         // Dispatch fetchClientDetails to update the client data in Redux
         dispatch(fetchClientDetails(id));
   
@@ -106,7 +108,7 @@ export default function OwnerCard({ rowId }) {
         });
       }
     } catch (error) {
-      toast.error("Failed to update Owner. Please try again.", {
+      toast.error(`Failed to update Owner.${error.response.data.error}`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -126,16 +128,19 @@ export default function OwnerCard({ rowId }) {
     setOpenDeleteModal(true);
     setAnchorEl(null);
   };
+  
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
         `http://127.0.0.1:8000/api/delete-owner/${id}/${deleteId}`
       );
       // console.log("res-----owner---->", response);
+      // setOwnerShare(response.remaining_shares)
+      createOwnerShare()
       dispatch(fetchClientDetails(id)); 
       setOpenDeleteModal(false)
       if (response.status === 200) {
-        toast.success("Owner deleted successfully!", {
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -157,6 +162,22 @@ export default function OwnerCard({ rowId }) {
   const handleViewOpen = () => {
     setOpenViewModal(true);
     setAnchorEl(null);
+    const fetchClientDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/single-owner/${id}/${rowId}`
+        );
+        // console.log("ss", response.data);
+        setOwnerData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+
+    fetchClientDetails();
+    
   };
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
@@ -184,31 +205,11 @@ export default function OwnerCard({ rowId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchClientDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-owner/${id}/${rowId}`
-        );
-        // console.log("ss", response.data);
-        setOwnerData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
+  const [showPassword, setShowPassword] = useState(false);
 
-    fetchClientDetails();
-  }, [id]);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error loading client details: {error.message}</div>;
-  // }
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <>
       {/* <ToastContainer /> */}
@@ -316,7 +317,7 @@ export default function OwnerCard({ rowId }) {
                             className="mb-1"
                             size="sm"
                           >
-                            Email :
+                            User Name :
                           </Typography>
                           <div className="text-gray-700 text-[15px] my-auto">
                             {ownertData.email}
@@ -414,13 +415,13 @@ export default function OwnerCard({ rowId }) {
                   </div>
                   <div className="col-span-1">
                     <label htmlFor="share">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Share
-                      </Typography>
+                        <Typography
+                                              variant="small"
+                                              color="blue-gray"
+                                              className="font-semibold mb-2 flex gap-2 "
+                                            >
+                                              Share    <div className="text-green-400 text-sm">{ownerShare}% left</div>
+                                            </Typography>
                     </label>
 
                     <div className="">
@@ -501,7 +502,7 @@ export default function OwnerCard({ rowId }) {
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                        Email
+                        UserName
                       </Typography>
                     </label>
 
@@ -510,7 +511,7 @@ export default function OwnerCard({ rowId }) {
                         type="email"
                         size="lg"
                         name="email"
-                        placeholder="Email"
+                        placeholder="UserName"
                         value={formData.email}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
@@ -532,21 +533,34 @@ export default function OwnerCard({ rowId }) {
                       </Typography>
                     </label>
 
-                    <div className="">
-                      <Input
-                        type="password"
-                        size="lg"
-                        name="it_password"
-                        placeholder="Password"
-                        value={formData.it_password}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
+              
+                    <div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        size="lg"
+        name="it_password"
+        placeholder="Password"
+        value={formData.it_password}
+        onChange={handleInputChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
                   </div>
                   <div className="col-span-2">
                     <label htmlFor="aadhar">
@@ -644,10 +658,10 @@ export default function OwnerCard({ rowId }) {
                   <h4 className="text-gray-800 text-lg font-semibold mt-4">
                     Are you sure you want to delete it?
                   </h4>
-                  <p className="text-sm text-gray-600 mt-4">
+                  <div className="text-sm text-gray-600 mt-4">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
                     auctor auctor arcu, at fermentum dui. Maecenas
-                  </p>
+                  </div>
                 </div>
 
                 <div className="flex flex-col space-y-2">

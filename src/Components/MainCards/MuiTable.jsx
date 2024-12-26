@@ -12,9 +12,9 @@ const muiCache = createCache({
   key: "mui-datatables",
   prepend: true,
 });
-
-
-function MuiTable({ tableData }) {
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from "react-toastify";
+function MuiTable({ tableData ,fetchClients}) {
   // console.log("tableData", tableData);
   const [responsive, setResponsive] = useState("vertical");
   const [tableBodyHeight, setTableBodyHeight] = useState("525px");
@@ -127,7 +127,7 @@ function MuiTable({ tableData }) {
           return (
             <div>
      
-              <Card rowId={rowData.id}/>
+              <Card rowId={rowData.id} fetchClients={fetchClients}/>
               
             </div>
           );
@@ -195,6 +195,7 @@ function MuiTable({ tableData }) {
 
   return (
     <>
+        <ToastContainer />
       {/* <div style={{ padding: "40px 80px" }}> */}
       <div >
         <div className="flex justify-between align-middle items-center mb-5">

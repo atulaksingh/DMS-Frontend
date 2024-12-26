@@ -13,6 +13,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import { FaFileAlt } from "react-icons/fa";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -44,7 +46,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
+export default function BranchDocCard({ rowId, fetchBranchDetails }) {
   const { branchID } = useParams();
   // console.log("rowIdbranchDoc", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -75,24 +77,33 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
       files: e.target.files, // Handles multiple files
     }));
   };
+
+  const shortenFilename = (filename, maxLength = 20) => {
+    if (filename.length <= maxLength) {
+      return filename;
+    }
+    const extension = filename.split(".").pop();
+    const baseName = filename.slice(0, maxLength - extension.length - 3);
+    return `${baseName}...${extension}`;
+  };
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-  
+
     try {
       const formDataToSend = new FormData();
-  
+
       // Append each form field to FormData
       formDataToSend.append("document_type", formData.document_type);
       formDataToSend.append("login", formData.login);
       formDataToSend.append("password", formData.password);
       formDataToSend.append("remark", formData.remark);
-  
+
       // Append multiple files if selected
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-  
+
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-branchdoc/${branchID}/${rowId}`,
@@ -103,7 +114,7 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
           },
         }
       );
-  
+
       // Handle success response and show toast
       toast.success("branchDoc details created successfully!", {
         position: "top-right",
@@ -113,7 +124,6 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
         fetchBranchDetails();
         handleCreateClose();
       }, 500); // Delay to ensure the toast stays for a while
-      
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error("Failed to create branchDoc details. Please try again.", {
@@ -122,7 +132,6 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
       });
     }
   };
-  
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -149,7 +158,7 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
           position: "top-right",
           autoClose: 2000,
         });
-          fetchBranchDetails();
+        fetchBranchDetails();
       } else {
         toast.error("Failed to delete branchDoc. Please try again.", {
           position: "top-right",
@@ -213,13 +222,11 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
     fetchBranchDocDetails();
   }, [branchID, rowId]);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
+  const [showPassword, setShowPassword] = useState(false);
 
-  // if (error) {
-  //   return <div>Error loading client details: {error.message}</div>;
-  // }
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <>
       {/* <ToastContainer /> */}
@@ -270,7 +277,7 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
                               color="blue-gray"
                               className=""
                             >
-                              Login :
+                              UserName :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {branchDocData.login}
@@ -307,41 +314,49 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
                           </div>
                         </div>
 
-                        <div className="flex gap-6  p-2">
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className="mb-1"
-                              size="sm"
-                            >
-                              Attachments
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              <div className="">
-                                {branchDocData.files &&
-                                  branchDocData.files.length > 0 && (
-                                    <div className="flex gap-5">
-                                      {branchDocData.files.map((file, index) => (
-                                        <p
-                                          className="text-sm text-gray-500 mt-2 "
-                                          key={index}
-                                        >
-                                          Selected file:
-                                          <a
-                                            href={`http://127.0.0.1:8000${file.files}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-blue-500 underline ml-3"
-                                          >
-                                            {file.files.split("/").pop()}
-                                          </a>
-                                        </p>
-                                      ))}
-                                    </div>
-                                  )}
-                              </div>
-                            </div>
+                        <div className="p-2">
+                          <Typography
+                            variant="h6"
+                            color="blue-gray"
+                            className="mb-1"
+                            size="sm"
+                          >
+                            Attachments :
+                          </Typography>
+                          <div className="flex justify-center">
+                            {branchDocData.files &&
+                              branchDocData.files.length > 0 && (
+                                <div>
+                                  {branchDocData.files.map((file, index) => {
+                                    const fullFilename = file.files
+                                      .split("/")
+                                      .pop();
+                                    const shortFilename =
+                                      shortenFilename(fullFilename);
+
+                                    return (
+                                      <div
+                                        key={index}
+                                        className="bg-primary text-white px-4 py-1 rounded-lg shadow-md w-80 my-1"
+                                      >
+                                        <div className="flex items-center justify-between">
+                                          <div>
+                                            <a
+                                              href={`http://127.0.0.1:8000${file.files}`}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="font-medium"
+                                            >
+                                              {shortFilename}
+                                            </a>
+                                          </div>
+                                          <FaFileAlt className="text-xl" />
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
                           </div>
                         </div>
                       </div>
@@ -445,7 +460,7 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
                         color="blue-gray"
                         className="block font-semibold mb-1"
                       >
-                        Log In
+                        UserName
                       </Typography>
                       <Input
                         type="text"
@@ -469,17 +484,34 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
                       >
                         Password
                       </Typography>
-                      <Input
-                        type="password"
-                        size="lg"
-                        name="password"
-                        placeholder="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
-                        labelProps={{ className: "hidden" }}
-                        containerProps={{ className: "min-w-[100px]" }}
-                      />
+
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          size="lg"
+                          name="password"
+                          placeholder="password"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          containerProps={{ className: "min-w-full" }}
+                        />
+                        {/* Toggle visibility button */}
+                        <button
+                          type="button"
+                          onClick={togglePasswordVisibility}
+                          className="absolute top-3 right-3"
+                        >
+                          {showPassword ? (
+                            <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+                          ) : (
+                            <EyeIcon className="h-5 w-5 text-gray-500" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -512,8 +544,9 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
                       </div>
                     </div>
                   </div>
-
-                  <div className="col-span-4">
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-1">
                     <label htmlFor="files">
                       <Typography
                         variant="small"
@@ -532,6 +565,43 @@ export default function BranchDocCard({ rowId ,fetchBranchDetails}) {
                         multiple
                         className="file-input file-input-bordered file-input-success w-full max-w-sm"
                       />
+                    </div>
+                  </div>
+                  <div className="col-span-1">
+                    <label htmlFor="attachment">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Attachments
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      {formData.files && formData.files.length > 0 && (
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p>Selected files:</p>
+                          {formData.files.map((file, index) => (
+                            <p key={index}>
+                              {file.files ? (
+                                <a
+                                  href={`http://127.0.0.1:8000${file.files}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-500 underline"
+                                >
+                                  {file.files.split("/").pop()}
+                                </a>
+                              ) : (
+                                <span>
+                                  {file.name || "No file link available"}
+                                </span>
+                              )}
+                            </p>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

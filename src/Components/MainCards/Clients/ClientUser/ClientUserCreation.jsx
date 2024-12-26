@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -105,7 +106,11 @@ function ClientUserCreation() {
       );
     }
   };
+   const [showPassword, setShowPassword] = useState(false);
   
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+    };
 
   return (
     <>
@@ -227,21 +232,34 @@ function ClientUserCreation() {
                       </Typography>
                     </label>
 
-                    <div className="">
-                      <Input
-                        type="password"
-                        size="lg"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
+                    
+                    <div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        size="lg"
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleInputChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
                   </div>
           
                 </div>

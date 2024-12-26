@@ -245,7 +245,7 @@ function BranchCreation() {
 
                     <div className="">
                       <Input
-                        type="number"
+                        type="text"
                         size="lg"
                         name="gst_no"
                         placeholder="Gst No"

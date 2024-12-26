@@ -122,7 +122,7 @@ export default function PurchaseCard({ rowId, fileData }) {
         });
         dispatch(fetchClientDetails(id));
       } else {
-        toast.error("Failed to delete Sales Invoice. Please try again.", {
+        toast.error("Failed to delete PurchaseInvoice. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
@@ -167,7 +167,7 @@ const helloworld = () => setOpenViewModal(false)
   }, [id, rowId]);
   // console.log("gggggggg", bankData);
 
-  ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
+  ///////////////////////////////////////////////////////  PurchaseUpdate ////////////////////////////////////
 
   const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
@@ -790,7 +790,7 @@ const helloworld = () => setOpenViewModal(false)
         dispatch(fetchClientDetails(id));
         handleCreateClose();
       } else {
-        toast.error("Failed to Update Sales Invoice. Please try again.", {
+        toast.error("Failed to Update PurchaseInvoice. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
@@ -1039,7 +1039,7 @@ const helloworld = () => setOpenViewModal(false)
               component="h2"
               className="text-center border-b-2 border-[#366FA1] pb-3"
             >
-              Update Sales Invoice Details
+              Update PurchaseInvoice Details
             </Typography>
 
             <form
@@ -1842,7 +1842,7 @@ const helloworld = () => setOpenViewModal(false)
                                       value={vendorData.gst_no || ""} // Bind value to formData.gst_no
                                       renderOption={(props, option) => (
                                         <li {...props} key={option.id}>
-                                          {option.gst_no}
+                                          {option.gst_no}  ({option.name})
                                         </li>
                                       )}
                                       renderInput={(params) => (

@@ -37,7 +37,7 @@ function OfficeLoc({ officeLocationData ,fetchBranchDetails}) {
   const calculateTableBodyHeight = () => {
     const minHeight = 80; 
     const maxHeight = 525; 
-      const rowHeight = 50; 
+      const rowHeight = 79; 
       const headerHeight = 50; 
     const calculatedHeight = officeLocationData.length * rowHeight;
     return calculatedHeight > maxHeight

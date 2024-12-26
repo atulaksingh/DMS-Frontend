@@ -206,7 +206,7 @@ function TdsPayment({ tdsPaymentData }) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Bank Details
+            TDS Payment Details
           </div>
           <div>
             <TdsPaymentCreation />

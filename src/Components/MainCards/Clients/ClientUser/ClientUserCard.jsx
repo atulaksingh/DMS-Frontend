@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -139,15 +140,18 @@ export default function ClientUserCard({ rowId }) {
       const response = await axios.delete(
         `http://127.0.0.1:8000/api/delete-clientuser/${id}/${deleteId}`
       );
-      // console.log("res-----ClientUser---->", response);
+      console.log("res-----ClientUser---->123", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success("ClientUser deleted successfully!", {
+        // Success notification
+        toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+        // Refresh client details
         dispatch(fetchClientDetails(id));
       } else {
+        // Failure notification
         toast.error("Failed to delete ClientUser. Please try again.", {
           position: "top-right",
           autoClose: 2000,
@@ -155,12 +159,14 @@ export default function ClientUserCard({ rowId }) {
       }
     } catch (error) {
       console.error("Error deleting ClientUser data:", error);
+      // Error notification
       toast.error("Failed to delete ClientUser. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
 
   const handleViewOpen = () => {
     setOpenViewModal(true);
@@ -209,13 +215,12 @@ export default function ClientUserCard({ rowId }) {
     fetchBankDetails();
   }, [id, rowId]);
 
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
-  // if (error) {
-  //   return <div>Error loading client details: {error.message}</div>;
-  // }
+     const [showPassword, setShowPassword] = useState(false);
+    
+      const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+      };
   return (
     <>
       {/* <ToastContainer /> */}
@@ -447,21 +452,33 @@ export default function ClientUserCard({ rowId }) {
                       </Typography>
                     </label>
 
-                    <div className="">
-                      <Input
-                        type="email"
-                        size="lg"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
+                    <div className="relative">
+      <Input
+        type={showPassword ? "text" : "password"}
+        size="lg"
+        name="password"
+        placeholder="Password"
+        value={formData.password}
+        onChange={handleInputChange}
+        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+        labelProps={{
+          className: "hidden",
+        }}
+        containerProps={{ className: "min-w-full" }}
+      />
+      {/* Toggle visibility button */}
+      <button
+        type="button"
+        onClick={togglePasswordVisibility}
+        className="absolute top-3 right-3"
+      >
+        {showPassword ? (
+          <EyeIcon className="h-5 w-5 text-gray-500" />
+        ) : (
+          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
+    </div>
                   </div>
 
                   <div className="col-span-2">

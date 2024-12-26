@@ -12,6 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import BranchDocCreation from "./BranchDocCreation";
 import BranchDocCard from "./BranchDocCard";
+import { ImFilePicture } from "react-icons/im";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -104,19 +105,8 @@ function BranchDoc({ branchDocumentsData ,fetchBranchDetails }) {
         }),
       },
     },
-    {
-      name: "file",
-      label: "Attachments",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-
+ 
+   
     {
       name: "Actions",
       options: {

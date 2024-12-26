@@ -21,28 +21,28 @@ function Master() {
   const [productData, setProductData] = useState([]);
   const [productDescriptionData, setProductDescriptionData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const fetchClients = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/list-client"
+      );
+        console.log("response",response.data)
+      setHsnData(response.data.hsn); // Assuming the data is returned in the response body
+      setProductData(response.data.product); // Assuming the data is returned in the response body
+      setProductDescriptionData(response.data.product_description); // Assuming the data is returned in the response body
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching clients:", error);
+      toast.error("Failed to fetch client data.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/api/list-client"
-        );
-          console.log("response",response.data)
-        setHsnData(response.data.hsn); // Assuming the data is returned in the response body
-        setProductData(response.data.product); // Assuming the data is returned in the response body
-        setProductDescriptionData(response.data.product_description); // Assuming the data is returned in the response body
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching clients:", error);
-        toast.error("Failed to fetch client data.", {
-          position: "top-right",
-          autoClose: 2000,
-        });
-        setLoading(false);
-      }
-    };
-
+  
     fetchClients();
   }, []);
 

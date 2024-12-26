@@ -472,7 +472,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="uan"
                               placeholder="UAN Number"
@@ -499,7 +499,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="pf_number"
                               placeholder="PF Number"

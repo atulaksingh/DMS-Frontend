@@ -245,7 +245,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                   <div>
                     <form className=" my-5 w-full ">
                       <div className="block px-4">
-                        <div className="flex gap-6  p-2">
+                        <div className="grid grid-cols-2 gap-6  p-2">
                           <div className="w-full flex gap-3">
                             <Typography
                               variant="h6"
@@ -265,7 +265,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                               color="blue-gray"
                               className=""
                             >
-                              Contact :
+                              Contact No. :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {locationData.contact}
@@ -273,7 +273,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                           </div>
                         </div>
 
-                        <div className="flex gap-6   p-2">
+                        <div className="grid grid-cols-2 gap-6   p-2">
                           <div className="w-full flex gap-3">
                             <Typography
                               variant="h6"
@@ -281,7 +281,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                               className=""
                               size="sm"
                             >
-                              Address :
+                              Address:
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
                               {locationData.address}
@@ -294,15 +294,15 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                               className=""
                               size="sm"
                             >
-                              City :
+                              City:
                             </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
+                            <div className="text-gray-700 text-[15px] mt-0.5">
                               {locationData.city}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex gap-6  p-2">
+                        <div className="grid grid-cols-2 gap-6  p-2">
                           <div className="w-full flex gap-3">
                             <Typography
                               variant="h6"
@@ -325,7 +325,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                             >
                               Country :
                             </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
+                            <div className="text-gray-700 text-[15px] ">
                               {locationData.country}
                             </div>
                           </div>
@@ -414,16 +414,16 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                           color="blue-gray"
                           className="block font-semibold mb-2"
                         >
-                          Contact
+                          Contact No.
                         </Typography>
                       </label>
 
                       <div className="">
                         <Input
-                          type="text"
+                          type="number"
                           size="lg"
                           name="contact"
-                          placeholder="Contact"
+                          placeholder="Contact Number"
                           value={formData.contact}
                           onChange={handleInputChange}
                           className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "

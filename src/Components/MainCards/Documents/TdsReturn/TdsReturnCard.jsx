@@ -15,6 +15,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
+import { FaFileAlt } from "react-icons/fa";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -83,11 +84,11 @@ export default function TdsReturnCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-  
+
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-  
+
       // Append text fields to FormData
       formDataToSend.append("challan_date", formData.challan_date);
       formDataToSend.append("challan_no", formData.challan_no);
@@ -102,12 +103,12 @@ export default function TdsReturnCard({ rowId }) {
         "last_filed_return_ack_no",
         formData.last_filed_return_ack_no
       );
-  
+
       // Append file field to FormData
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-  
+
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`,
@@ -118,7 +119,7 @@ export default function TdsReturnCard({ rowId }) {
           },
         }
       );
-  
+
       if (response.status === 200) {
         // Handle success response
         console.log(response.data);
@@ -126,10 +127,10 @@ export default function TdsReturnCard({ rowId }) {
           position: "top-right",
           autoClose: 2000,
         });
-  
+
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-  
+
         // Optionally close the modal and reset form
         handleCreateClose();
         setFormData({
@@ -153,7 +154,7 @@ export default function TdsReturnCard({ rowId }) {
       });
     }
   };
-  
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -235,7 +236,6 @@ export default function TdsReturnCard({ rowId }) {
   const [tdsReturnData, setTdsReturnData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -373,45 +373,40 @@ export default function TdsReturnCard({ rowId }) {
                               {tdsReturnData.tds_section}
                             </div>
                           </div>
-                       
                         </div>
-                        <div className="flex gap-6  px-2">
-                   
-                          <div className="w-full flex gap-3 align-middle items-center">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className="mb-1"
-                              size="sm"
-                            >
-                              Attachment :
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              <div className="">
-                            
-                                {tdsReturnData.files &&
-                                  tdsReturnData.files.length > 0 && (
-                                    <div className="flex gap-5">
-                                      {tdsReturnData.files.map((file, index) => (
-                                        <p
-                                          className="text-sm text-gray-500  "
-                                          key={index}
-                                        >
-                                          
+
+                        <div className="p-2">
+                          <Typography
+                            variant="h6"
+                            color="blue-gray"
+                            className="mb-1"
+                            size="sm"
+                          >
+                            Attachments :
+                          </Typography>
+                          <div className="flex justify-center">
+                            {tdsReturnData.files &&
+                              tdsReturnData.files.length > 0 && (
+                                <div className="">
+                                  {tdsReturnData.files.map((file, index) => (
+                                    <div className=" bg-primary text-white px-4 py-1 rounded-lg shadow-md w-80 my-1">
+                                      <div className="flex items-center justify-between">
+                                        <div className=" ">
                                           <a
                                             href={`http://127.0.0.1:8000${file.files}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-blue-500 underline ml-3"
+                                            className="font-medium"
                                           >
                                             {file.files.split("/").pop()}
                                           </a>
-                                        </p>
-                                      ))}
+                                        </div>
+                                        <FaFileAlt className="text-xl " />
+                                      </div>
                                     </div>
-                                  )}
-                              </div>
-                            </div>
+                                  ))}
+                                </div>
+                              )}
                           </div>
                         </div>
                       </div>
