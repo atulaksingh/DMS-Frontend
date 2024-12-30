@@ -66,7 +66,7 @@ function SalesFileCreation() {
         }
       );
 
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success("Sales E-way bill uploaded  successfully!", {
         position: "top-right",
         autoClose: 2000,

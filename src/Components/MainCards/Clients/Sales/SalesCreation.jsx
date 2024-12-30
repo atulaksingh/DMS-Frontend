@@ -684,11 +684,11 @@ function SalesCreation() {
           },
         }
       );
-      console.log("Data submitted successfully:", response.data);
+      // console.log("Data submitted successfully:", response.data);
       // Handle successful response
       if (response.status === 200) {
         // Handle success response
-        console.log(response.data);
+        // console.log(response.data);
         toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,

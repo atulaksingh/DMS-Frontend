@@ -146,7 +146,7 @@ const helloworld = () => setOpenViewModal(false)
   const [bankData, setBankData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log("gggggggg", bankData);
+  // console.log("gggggggg", bankData);
   useEffect(() => {
     const fetchBankDetails = async () => {
       try {

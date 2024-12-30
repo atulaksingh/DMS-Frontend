@@ -18,6 +18,7 @@ import axios from "axios";
 import DebitNoteCreation from "./DebitNoteCreation";
 import DebitNoteFileCreation from "./DebitNoteFileCreation";
 import DebitNoteCard from "./DebitNoteCard";
+import NewDCreation from "./NewDCreation";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -293,7 +294,8 @@ function DebitNote() {
           
             {/* <SalesFileCreation /> */}
             <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+            <NewDCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>

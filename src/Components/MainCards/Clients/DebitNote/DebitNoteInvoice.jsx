@@ -26,7 +26,7 @@ function DebitNoteInvoice({rowId}) {
     };
     fetchBankDetails();
   }, [id, rowId]);
-  console.log("res", invoiceData);
+  // console.log("res", invoiceData);
   const handlePrint = () => {
     window.print();
   };
