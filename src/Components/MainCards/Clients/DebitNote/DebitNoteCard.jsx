@@ -2808,7 +2808,7 @@ const helloworld = () => setOpenViewModal(false)
           {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
 
             <MenuItem onClick={handleViewOpen}>View</MenuItem>
-          <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
+          {/* <MenuItem onClick={handleCreateOpen}>Update</MenuItem> */}
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
           {/* <Link to={`/debitNote/${id}/${rowId}`}>
             <MenuItem>Debit Note</MenuItem>

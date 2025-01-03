@@ -1,3 +1,6 @@
+
+
+
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -12,8 +15,8 @@ import { useState } from "react";
 import axios from "axios";
 import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
-const options = ["None", "Atria", "Callisto"];
 import { RxSlash } from "react-icons/rx";
+const options = ["None", "Atria", "Callisto"];
 
 import {
   Button,
@@ -43,10 +46,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
-// import SalesInvoice from "./SalesInvoice";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
-import DebitNoteInvoice from "./DebitNoteInvoice";
+import CreditNoteInvoice from "./CreditNoteInvoice";
+// import PurchaseInvoice from "./PurchaseInvoice";
 //   import { useEffect } from "react";
 
 const style = {
@@ -78,755 +81,754 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-function NewDCreation({ fetchInvoiceDetails }) {
-  const { id, salesID } = useParams();
-  //   const salesID = rowId;
-  //   console.log("use",useParams())
-  const dispatch = useDispatch();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [openViewModal, setOpenViewModal] = React.useState(false);
-  const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
-  const [openCreateModal, setOpenCreateModal] = React.useState(false);
-  const [deleteId, setDeleteId] = useState(null);
+function NewCreditNoteCreation({ fetchInvoiceDetails }) {
 
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      files: e.target.files, // Handles multiple files
-    }));
-  };
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const handleDeleteOpen = () => {
-    setDeleteId(rowId);
-    setOpenDeleteModal(true);
-    setAnchorEl(null);
-  };
-
-  const handleViewOpen = () => {
-    setOpenViewModal(true);
-    setAnchorEl(null);
-  };
-
-  const handleDeleteClose = () => setOpenDeleteModal(false);
-  const handleViewClose = () => setOpenViewModal(false);
-  const helloworld = () => setOpenViewModal(false);
-  // dj = new t
-  //   const handleCreateClose = () => setOpenCreateModal(false);
-  const [bankData, setBankData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  // console.log("gggggggg", bankData);
-
-  ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
-
-  const [offData, setOffData] = useState([]);
-  const [value, setValue] = React.useState("1");
-  const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
-  const [customerData, setCustomerData] = useState([]);
-  const [product_ser_Data, setProduct_ser_Data] = useState([]);
-  const [branch_ser_name, setBranch_ser_name] = useState([]);
-  const [showBranchInput, setShowBranchInput] = useState(false);
-  const [branchNoGst, setBranchNoGst] = useState("");
-  //   const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const [units, setUnits] = useState("");
-  const [selectedTDSTCSOption, setSelectedTDSTCSOption] = useState("");
-  const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
-  const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
-    useState("");
-  console.log("123456", units);
-  const [shouldShowIGST, setShouldShowIGST] = useState(false);
-  const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
-  const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
-  const [filteredInvoiceTypes, setFilteredInvoiceTypes] = useState([
-    "Unregistered Local",
-    "Unregistered Non-Local",
-  ]);
-  // const handleCreateOpen = () => {
-
-  //   setOpenCreateModal(true);
-  //   setAnchorEl(null);
-  // };
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleCreateClose = () => setOpenCreateModal(false);
-  const [formData, setFormData] = useState({
-    offLocID: "",
-    location: "",
-    contact: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    branchID: "",
-  });
-
-  const [vendorData, setVendorData] = useState({
-    vendorID: "",
-    gst_no: "",
-    name: "",
-    pan: "",
-    customer_address: "",
-    customer: false,
-    vendor: false,
-  });
-  const [rows, setRows] = useState([
-    {
-      product: "",
-      hsnCode: "",
-      gstRate: "",
-      description: "",
-      unit: "",
-      rate: "",
-      product_amount: "",
-      cgst: "",
-      sgst: "",
-      igst: "",
-      total_invoice: 0,
-    },
-  ]);
-  const [invoiceData, setInvoiceData] = useState([
-    {
-      month: "",
-      invoice_no: "",
-      invoice_date: "",
-      invoice_type: "",
-      entry_type: "",
-      attach_e_way_bill: "",
-      attach_invoice: "",
-      taxable_amount: "",
-      totalall_gst: "",
-      total_invoice_value: "",
-      tds_tcs_rate: "",
-      // tds_tcs_section: "",
-      tcs: "",
-      tds: "",
-      amount_receivable: "",
-    },
-  ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
-  // console.log("offfff", offData);
-  const handleCreateOpen = async () => {
-    setOpenCreateModal(true);
-    setAnchorEl(null);
-
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-debitnote-invoice/${id}/${salesID}`
-      );
-      //   console.log("dd123", response.data);
-      setFormData(response.data.client_location);
-      setVendorData(response.data.customer);
-      setRows(response.data.product_summaries);
-      setUnits(response.data.product_summaries);
-      // setInvoiceData(response.data.sales_invoice);
-      if (response.data.debit_note) {
-        setInvoiceData([
-          {
-            ...response.data.debit_note,
-            invoice_type: response.data.debit_note.invoice_type || "", // Ensure the field is populated
-          },
-        ]);
-      }
-    } catch (error) {
-      console.error("Error fetching bank data:", error);
-      toast.error("Failed to load bank data. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    }
-  };
-
-  const handleInputChangeInvoiceData = (e) => {
-    const { name, value, type } = e.target;
-    const fieldValue = type === "file" ? e.target.files[0] : value;
-
-    setInvoiceData((prevData) => {
-      const updatedData = [...prevData];
-      let updatedEntry = {
-        ...updatedData[0],
-        [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
-      };
-
-      if (name === "tcs") {
-        updatedEntry.tds = "";
-      } else if (name === "tds") {
-        updatedEntry.tcs = "";
-      }
-
-      if (name === "tds_tcs_rate") {
-        if (updatedEntry.tcs > 0) {
-          updatedEntry.tds = "";
-        } else if (updatedEntry.tds > 0) {
-          updatedEntry.tcs = "";
-        }
-      }
-
-      updatedData[0] = updatedEntry;
-      return updatedData;
-    });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  const handleInputChangeCL = (e) => {
-    const { name, value } = e.target;
-    setVendorData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [productID, setProductID] = useState("");
-  const [selectedGstNo, setSelectedGstNo] = useState("");
-  useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-debitnote/${id}`
-        );
-        // console.log("ggggggg->", response.data);
-        setOffData(response.data.serializer);
-        setCustomerData(response.data.serializer_customer);
-        setProduct_ser_Data(response.data.product_serializer);
-        setBranch_ser_name(response.data.branch_serializer);
-      } catch (error) {}
+    const { id ,purchID} = useParams();
+    const dispatch = useDispatch();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [openViewModal, setOpenViewModal] = React.useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
+    const [openCreateModal, setOpenCreateModal] = React.useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [units, setUnits] = useState("");
+    const handleFileChange = (e) => {
+      setFormData((prev) => ({
+        ...prev,
+        files: e.target.files, // Handles multiple files
+      }));
     };
-    fetchBankDetails();
-  }, [id]);
-
-  const handleLocationChange = async (newValue, isBranch = false) => {
-    if (!newValue) return;
-
-    try {
-      if (isBranch && newValue.branch_name) {
-        setFormData((prev) => ({
-          ...prev,
-          branchID: newValue.id, // Store branch ID
-        }));
-      } else if (newValue.location) {
-        const updatedFormData = {
-          offLocID: newValue.id,
-          location: newValue.location,
-          contact: newValue.contact || "",
-          address: newValue.address || "",
-          city: newValue.city || "",
-          state: newValue.state || "",
-          country: newValue.country || "",
-          branchID: newValue.branch || "",
-        };
-        setFormData(updatedFormData);
-        setShowBranchInput(false);
-
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${newValue.id}&productID=${productID}`
-        );
-        setBranchNoGst(response.data.branch_gst || "N/A");
-      }
-    } catch (error) {
-      console.error("Error fetching branch/location data:", error);
-      toast.error("Failed to fetch location data. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    }
-  };
-
-  // console.log("123",branchNoGst)
-  const handleInputChangeLocation = async (event, newInputValue) => {
-    if (!newInputValue) {
-      setFormData((prev) => ({
-        ...prev,
-        offLocID: "",
-        location: "",
-        contact: "",
-        address: "",
-        city: "",
-        state: "",
-        country: "",
-        branchID: "",
-      }));
-      setShowBranchInput(false);
-      return;
-    }
-
-    const matchingLocation = offData.find(
-      (option) => option.location.toLowerCase() === newInputValue.toLowerCase()
-    );
-
-    if (matchingLocation) {
-      handleLocationChange(matchingLocation);
-    } else {
-      setShowBranchInput(true);
-      setFormData((prev) => ({
-        ...prev,
-        location: newInputValue,
-        offLocID: "",
-      }));
-    }
-  };
-
-  const handleGstNoChange = (event, newValue1) => {
-    // If user clears the input
-    setIsGstNoEmpty(!newValue1);
-    if (!newValue1) {
-      setVendorData((prevVendorData) => ({
-        ...prevVendorData,
-        vendorID: "",
-        gst_no: "",
-        name: "",
-        pan: "",
-        customer_address: "",
-        customer: false,
-        vendor: false,
-      }));
-      return;
-    }
-
-    if (typeof newValue1 === "string") {
-      const matchedCustomer = customerData.find(
-        (customer) => customer.gst_no === newValue1
-      );
-
-      if (matchedCustomer) {
-        setVendorData((prevVendorData) => ({
-          ...prevVendorData,
-
-          vendorID: matchedCustomer.id,
-          gst_no: matchedCustomer.gst_no,
-          name: matchedCustomer.name,
-          pan: matchedCustomer.pan,
-          customer_address: matchedCustomer.address,
-          customer: matchedCustomer.customer,
-          vendor: matchedCustomer.vendor,
-        }));
-      } else {
-        setVendorData((prevVendorData) => ({
-          ...prevVendorData,
-          vendorID: "",
-          gst_no: newValue1,
-          name: "",
-          pan: "",
-          customer_address: "",
-          customer: false,
-          vendor: false,
-        }));
-      }
-      return;
-    }
-
-    if (newValue1 && newValue1.gst_no) {
-      setVendorData((prevVendorData) => ({
-        ...prevVendorData,
-        vendorID: newValue1.id,
-        gst_no: newValue1.gst_no,
-        name: newValue1.name || "",
-        pan: newValue1.pan || "",
-        customer_address: newValue1.address || "",
-        customer: newValue1.customer || false,
-        vendor: newValue1.vendor || false,
-      }));
-    }
-  };
-
-  const handleProductChange = async (index, newValue) => {
-    if (newValue) {
-      setProductID(newValue.id); // Assuming setProductID is defined elsewhere
+  
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    const handleDeleteOpen = () => {
+      setDeleteId(rowId);
+      setOpenDeleteModal(true);
+      setAnchorEl(null);
+    };
+    const handleDeleteID = async () => {
       try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+        const response = await axios.delete(
+          `http://127.0.0.1:8000/api/delete-creditnote-invoice/${id}/${purchID}/${deleteId}`
         );
-
-        const { hsn_code: hsnCode, gst_rate: gstRate } =
-          response.data.hsn || {};
-
-        setRows((prevRows) =>
-          prevRows.map((row, rowIndex) =>
-            rowIndex === index
-              ? { ...row, product: newValue.product_name, hsnCode, gstRate }
-              : row
-          )
-        );
-      } catch (error) {
-        console.error("Error fetching HSN code and GST rate:", error);
-      }
-    } else {
-      // Clear the product field if the value is cleared
-      setRows((prevRows) =>
-        prevRows.map((row, rowIndex) =>
-          rowIndex === index ? { ...row, product: "" } : row
-        )
-      );
-    }
-  };
-
-  const handleInputChangeProductField = (index, value) => {
-    setRows((prevRows) =>
-      prevRows.map((row, rowIndex) =>
-        rowIndex === index ? { ...row, product: value } : row
-      )
-    );
-  };
-
-  const handleInputChangeProduct = (index, field, value) => {
-    setRows((prevRows) =>
-      prevRows.map((row, rowIndex) => {
-        if (rowIndex === index) {
-          const updatedRow = { ...row, [field]: value };
-
-          // If invoice type is "Nil Rated", reset GST and total_invoice values
-          if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
-            updatedRow.cgst = "0.00";
-            updatedRow.sgst = "0.00";
-            updatedRow.igst = "0.00";
-            updatedRow.product_amount =
-              (parseFloat(updatedRow.unit) || 0) *
-              (parseFloat(updatedRow.rate) || 0).toFixed(2);
-            updatedRow.total_invoice = updatedRow.product_amount; // Just product amount as total_invoice
+        // console.log("res-----bank---->", response);
+        setOpenDeleteModal(false);
+      if (response.status === 200) {
+            toast.success(response.data.message, {
+              position: "top-right",
+              autoClose: 2000,
+            });
+            // dispatch(fetchClientDetails(id));
+            fetchInvoiceDetails();
+            handleCreateClose();
           } else {
-            // Recalculate product_amount if unit or rate changes
-            if (field === "unit" || field === "rate") {
-              const unit = parseFloat(updatedRow.unit) || 0;
-              const rate = parseFloat(updatedRow.rate) || 0;
-              updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
-            }
-
-            // Recalculate GST values when gstRate changes
-            if (updatedRow.gstRate) {
-              const gstValue = (
-                (parseFloat(updatedRow.gstRate) *
-                  parseFloat(updatedRow.product_amount)) /
-                100
-              ).toFixed(2);
-
-              if (shouldShowCGSTSGST) {
-                const cgstValue = (gstValue / 2).toFixed(2);
-                const sgstValue = (gstValue / 2).toFixed(2);
-                updatedRow.cgst = cgstValue;
-                updatedRow.sgst = sgstValue;
-                updatedRow.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
-              } else if (shouldShowIGST) {
-                updatedRow.cgst = "0.00"; // Reset CGST
-                updatedRow.sgst = "0.00"; // Reset SGST
-                updatedRow.igst = gstValue;
-              }
-            }
-
-            // Calculate GST value for total invoice calculation
-            const gstValueRow = shouldShowCGSTSGST
-              ? (parseFloat(updatedRow.cgst) || 0) +
-                (parseFloat(updatedRow.sgst) || 0)
-              : parseFloat(updatedRow.igst) || 0;
-
-            // Ensure total_invoice is calculated without NaN
-            updatedRow.total_invoice = (
-              (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
-            ).toFixed(2);
+            toast.error("Failed to Update Sales Invoice. Please try again.", {
+              position: "top-right",
+              autoClose: 2000,
+            });
           }
-
-          // Return the updated row
-          return updatedRow;
-        }
-        return row;
-      })
-    );
-  };
-
-  useEffect(() => {
-    setRows((prevRows) => {
-      const updatedRows = prevRows.map((row) => {
-        // Check if the invoice type is "Nil Rated"
-        if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
-          // Set all GST values to 0 when Nil Rated is selected
-          if (
-            row.cgst !== "0.00" ||
-            row.sgst !== "0.00" ||
-            row.igst !== "0.00"
-          ) {
-            row.cgst = "0.00";
-            row.sgst = "0.00";
-            row.igst = "0.00";
-          }
-
-          // Set total_invoice to product_amount since no GST applies
-          row.total_invoice = (parseFloat(row.product_amount) || 0).toFixed(2);
-        } else if (row.product_amount && row.gstRate) {
-          // Recalculate GST and total_invoice if not "Nil Rated"
-          const gstValue = (
-            (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
-            100
-          ).toFixed(2);
-
-          if (shouldShowCGSTSGST) {
-            const cgstValue = (gstValue / 2).toFixed(2);
-            const sgstValue = (gstValue / 2).toFixed(2);
-            row.cgst = cgstValue;
-            row.sgst = sgstValue;
-            row.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
-          } else if (shouldShowIGST) {
-            row.cgst = "0.00"; // Reset CGST
-            row.sgst = "0.00"; // Reset SGST
-            row.igst = gstValue;
-          }
-
-          // Calculate total_invoice for this row
-          const gstValueRow = shouldShowCGSTSGST
-            ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
-            : parseFloat(row.igst) || 0;
-
-          row.total_invoice = (
-            (parseFloat(row.product_amount) || 0) + gstValueRow
-          ).toFixed(2);
-        }
-
-        return row;
-      });
-
-      return updatedRows;
-    });
-  }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
-
-  useEffect(() => {
-    // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
-    let totalAmount = 0;
-    let totalGSTValue = 0;
-    let totalInvoiceValueSum = 0;
-
-    // Check if invoice_type is "Nil Rated"
-    const isNilRated =
-      invoiceData[0]?.invoice_type.toLowerCase() === "nil rated";
-
-    rows.forEach((row) => {
-      totalAmount += parseFloat(row.product_amount) || 0;
-
-      if (shouldShowCGSTSGST) {
-        totalGSTValue +=
-          (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
-      } else if (shouldShowIGST) {
-        totalGSTValue += parseFloat(row.igst) || 0;
-      }
-
-      // Sum up total_invoice values
-      totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
-    });
-
-    // If invoice_type is Nil Rated, set totalall_gst to 0
-    const updatedTotalGST = isNilRated ? "0.00" : totalGSTValue.toFixed(2);
-
-    // Avoid infinite loop by checking if the values have actually changed
-    const updatedInvoiceData = {
-      ...invoiceData[0],
-      taxable_amount: totalAmount.toFixed(2),
-      totalall_gst: updatedTotalGST,
-      total_invoice_value: totalInvoiceValueSum.toFixed(2),
+       } catch (error) {
+           console.error("Error submitting data:", error);
+           if (error.response) {
+             const errorMessage =
+               error.response.data.message || "An unexpected error occurred.";
+            
+             toast.error(` ${errorMessage}`);
+           } else if (error.request) {
+            
+             alert("No response received from the server. Please try again later.");
+           } else {
+             console.error("Error in request setup:", error.message);
+           }
+         }
     };
-
-    // Only update invoiceData if something has changed
-    if (
-      updatedInvoiceData.taxable_amount !== invoiceData[0]?.taxable_amount ||
-      updatedInvoiceData.totalall_gst !== invoiceData[0]?.totalall_gst ||
-      updatedInvoiceData.total_invoice_value !==
-        invoiceData[0]?.total_invoice_value
-    ) {
-      setInvoiceData([updatedInvoiceData]);
-    }
-  }, [rows, shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
-
-  useEffect(() => {
-    const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
-    const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
-    const TotalAllInvoice =
-      parseFloat(invoiceData[0]?.total_invoice_value) || 0;
-
-    const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
-
-    setInvoiceData((prevData) =>
-      prevData.map((data, index) =>
-        index === 0
-          ? {
-              ...data,
-              tcs: selectedTDSTCSOption === "tcs" ? amountToAddOrSubtract : 0,
-              tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
-              amount_receivable:
-                selectedTDSTCSOption === "tcs"
-                  ? (
-                      TotalAllInvoice + parseFloat(amountToAddOrSubtract)
-                    ).toFixed(2)
-                  : (
-                      TotalAllInvoice - parseFloat(amountToAddOrSubtract)
-                    ).toFixed(2),
-            }
-          : data
-      )
-    );
-  }, [
-    invoiceData[0]?.taxable_amount,
-    invoiceData[0]?.total_invoice_value,
-    invoiceData[0]?.tds_tcs_rate,
-    selectedTDSTCSOption,
-  ]);
-  // console.log("Amount Receivable:", amountReceivable);
-  const handleAddRow = () => {
-    setRows([
-      ...rows,
+  
+    const handleViewOpen = () => {
+      setOpenViewModal(true);
+      setAnchorEl(null);
+    };
+  
+    const handleDeleteClose = () => setOpenDeleteModal(false);
+    const handleViewClose = () => setOpenViewModal(false);
+  const helloworld = () => setOpenViewModal(false)
+  // dj = new t
+    //   const handleCreateClose = () => setOpenCreateModal(false);
+    const [bankData, setBankData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    // useEffect(() => {
+    //   const fetchBankDetails = async () => {
+    //     try {
+    //       const response = await axios.get(
+    //         `http://127.0.0.1:8000/api/creditnote-view/${id}/${purchID}`
+    //       );
+    //       // console.log("purch",response)
+    //       setBankData(response.data);
+    //       setLoading(false);
+    //     } catch (error) {
+    //       setError(error);
+    //       setLoading(false);
+    //     }
+    //   };
+    //   fetchBankDetails();
+    // }, [id]);
+    // console.log("gggggggg", bankData);
+  
+    ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
+  
+    const [offData, setOffData] = useState([]);
+    const [value, setValue] = React.useState("1");
+    const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
+    const [customerData, setCustomerData] = useState([]);
+    const [product_ser_Data, setProduct_ser_Data] = useState([]);
+    const [branch_ser_name, setBranch_ser_name] = useState([]);
+    const [showBranchInput, setShowBranchInput] = useState(false);
+    const [branchNoGst, setBranchNoGst] = useState("");
+    //   const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const [selectedTDSTCSOption, setSelectedTDSTCSOption] = useState("");
+    const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
+    const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
+      useState("");
+    // console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+    const [shouldShowIGST, setShouldShowIGST] = useState(false);
+    const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
+    const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
+    const [filteredInvoiceTypes, setFilteredInvoiceTypes] = useState([
+      "Unregistered Local",
+      "Unregistered Non-Local",
+    ]);
+    // const handleCreateOpen = () => {
+  
+    //   setOpenCreateModal(true);
+    //   setAnchorEl(null);
+    // };
+    const handleChange = (event, newValue) => {
+      setValue(newValue);
+    };
+  
+    const handleCreateClose = () => setOpenCreateModal(false);
+    const [formData, setFormData] = useState({
+      offLocID: "",
+      location: "",
+      contact: "",
+      address: "",
+      city: "",
+      state: "",
+      country: "",
+      branchID: "",
+    });
+  
+    const [vendorData, setVendorData] = useState({
+      vendorID: "",
+      gst_no: "",
+      name: "",
+      pan: "",
+      vendor_address: "",
+      customer: false,
+      vendor: false,
+    });
+    const [rows, setRows] = useState([
       {
         product: "",
         hsnCode: "",
         gstRate: "",
         description: "",
         unit: "",
-        cgst: "0.00",
-        sgst: "0.00",
-        igst: "0.00", // Set default GST values to 0 when new row is added
+        rate: "",
+        product_amount: "",
+        cgst: "",
+        sgst: "",
+        igst: "",
+        total_invoice: 0,
       },
     ]);
-  };
-
-  const handleDeleteRow = (index) => {
-    const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index);
-    setRows(updatedRows);
-  };
-  const [salesInvoice, setSalesInvoice] = useState("100");
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission behavior
-
-    const payload = {
-      // salesInvoice,
-      formData,
-      vendorData,
-      rows,
-      invoiceData,
-    };
-
-    try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-debitnote-post/${id}/${salesID}`,
-        payload,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    const [invoiceData, setInvoiceData] = useState([
+      {
+        month: "",
+        invoice_no: "",
+        invoice_date: "",
+        invoice_type: "",
+        entry_type: "",
+        attach_e_way_bill: "",
+        attach_invoice: "",
+        taxable_amount: "",
+        totalall_gst: "",
+        total_invoice_value: "",
+        tds_tcs_rate: "",
+        // tds_tcs_section: "",
+        tcs: "",
+        tds: "",
+        amount_receivable: "",
+        utilise_month: "",
+        utilise_edit: false,
+      },
+    ]);
+    console.log("formdata", formData);
+    console.log("vendorData", vendorData);
+    console.log("rows", rows);
+    console.log("invoiceData", invoiceData);
+    // console.log("offfff", offData);
+    const handleCreateOpen = async () => {
+      setOpenCreateModal(true);
+      setAnchorEl(null);
+  
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}`
+        );
+        console.log("dd123", response.data);          
+        setFormData(response.data.client_location);
+        setVendorData(response.data.vendor);
+        setRows(response.data.product_summaries);
+        setUnits(response.data.product_summaries);
+        if (response.data.credit_note) {
+          setInvoiceData([
+            {
+              ...response.data.credit_note,
+              invoice_type: response.data.credit_note.invoice_type || "", // Ensure the field is populated
+            },
+          ]);
         }
-      );
-      console.log("Data submitted successfully:", response.data);
-      // Handle successful response
-      if (response.status === 200) {
-        toast.success(response.data.message, {
-          position: "top-right",
-          autoClose: 2000,
-        });
-        // dispatch(fetchClientDetails(id));
-        fetchInvoiceDetails();
-        handleCreateClose();
-      } else {
-        toast.error("Failed to Update Sales Invoice. Please try again.", {
+      } catch (error) {
+        console.error("Error fetching bank data:", error);
+        toast.error("Failed to load bank data. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
       }
-    } catch (error) {
-      console.error("Error submitting data:", error);
-      if (error.response) {
-        const errorMessage =
-          error.response.data.message || "An unexpected error occurred.";
-       
-        toast.error(` ${errorMessage}`);
-      } else if (error.request) {
-       
-        alert("No response received from the server. Please try again later.");
-      } else {
-        console.error("Error in request setup:", error.message);
+    };
+  
+    const handleInputChangeInvoiceData = (e) => {
+      const { name, value, type, checked } = e.target; // Include `checked`
+      const fieldValue =
+        type === "checkbox"
+          ? checked
+          : type === "file"
+          ? e.target.files[0]
+          : value; // Handle checkbox, file, and others
+  
+      setInvoiceData((prevData) => {
+        const updatedData = Array.isArray(prevData) ? [...prevData] : [{}];
+  
+        if (!updatedData[0]) {
+          updatedData[0] = {};
+        }
+  
+        let updatedEntry = {
+          ...updatedData[0],
+          [name]: fieldValue, // Use fieldValue directly
+        };
+  
+        // Handle resetting related fields (if needed for TDS/TCS)
+        if (name === "tcs") {
+          updatedEntry.tds = "";
+        } else if (name === "tds") {
+          updatedEntry.tcs = "";
+        }
+  
+        if (name === "tds_tcs_rate") {
+          if (updatedEntry.tcs > 0) {
+            updatedEntry.tds = "";
+          } else if (updatedEntry.tds > 0) {
+            updatedEntry.tcs = "";
+          }
+        }
+  
+        updatedData[0] = updatedEntry;
+  
+        return updatedData;
+      });
+    };
+  
+    const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
+    const handleInputChangeCL = (e) => {
+      const { name, value } = e.target;
+      setVendorData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    };
+  
+    const [selectedLocation, setSelectedLocation] = useState("");
+    const [productID, setProductID] = useState("");
+    const [selectedGstNo, setSelectedGstNo] = useState("");
+    useEffect(() => {
+      const fetchBankDetails = async () => {
+        try {
+          const response = await axios.get(
+            `http://127.0.0.1:8000/api/get-creditnote/${id}`
+          );
+          // console.log("ggggggg->", response.data);
+          setOffData(response.data.serializer);
+          setCustomerData(response.data.serializer_customer);
+          setProduct_ser_Data(response.data.product_serializer);
+          setBranch_ser_name(response.data.branch_serializer);
+        } catch (error) {}
+      };
+      fetchBankDetails();
+    }, [id]);
+  
+    const handleLocationChange = async (newValue, isBranch = false) => {
+      if (!newValue) return;
+  
+      try {
+        if (isBranch && newValue.branch_name) {
+          setFormData((prev) => ({
+            ...prev,
+            branchID: newValue.id, // Store branch ID
+          }));
+        } else if (newValue.location) {
+          const updatedFormData = {
+            offLocID: newValue.id,
+            location: newValue.location,
+            contact: newValue.contact || "",
+            address: newValue.address || "",
+            city: newValue.city || "",
+            state: newValue.state || "",
+            country: newValue.country || "",
+            branchID: newValue.branch || "",
+          };
+          setFormData(updatedFormData);
+          setShowBranchInput(false);
+  
+          const response = await axios.get(
+            `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+          );
+          setBranchNoGst(response.data.branch_gst || "N/A");
+        }
+      } catch (error) {
+        console.error("Error fetching branch/location data:", error);
+        toast.error("Failed to fetch location data. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
       }
-    }
-  };
-
-  useEffect(() => {
-    const currentType = invoiceData[0]?.invoice_type.toLowerCase();
-
-    if (currentType === "nil rated") {
-      setRows((prevRows) =>
-        prevRows.map((row) => ({
-          ...row,
-          cgst: "0.00",
-          sgst: "0.00",
-          igst: "0.00",
-          total_invoice: parseFloat(row.product_amount || 0).toFixed(2),
-        }))
+    };
+  
+    // console.log("123",branchNoGst)
+    const handleInputChangeLocation = async (event, newInputValue) => {
+      if (!newInputValue) {
+        setFormData((prev) => ({
+          ...prev,
+          offLocID: "",
+          location: "",
+          contact: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+          branchID: "",
+        }));
+        setShowBranchInput(false);
+        return;
+      }
+  
+      const matchingLocation = offData.find(
+        (option) => option.location.toLowerCase() === newInputValue.toLowerCase()
       );
-      setShouldShowIGST(false);
-      setShouldShowCGSTSGST(false);
-    } else if (currentType === "sez") {
+  
+      if (matchingLocation) {
+        handleLocationChange(matchingLocation);
+      } else {
+        setShowBranchInput(true);
+        setFormData((prev) => ({
+          ...prev,
+          location: newInputValue,
+          offLocID: "",
+        }));
+      }
+    };
+  
+    const handleGstNoChange = (event, newValue1) => {
+      // If user clears the input
+      setIsGstNoEmpty(!newValue1);
+      if (!newValue1) {
+        setVendorData((prevVendorData) => ({
+          ...prevVendorData,
+          vendorID: "",
+          gst_no: "",
+          name: "",
+          pan: "",
+          vendor_address: "",
+          customer: false,
+          vendor: false,
+        }));
+        return;
+      }
+  
+      if (typeof newValue1 === "string") {
+        const matchedCustomer = customerData.find(
+          (customer) => customer.gst_no === newValue1
+        );
+  
+        if (matchedCustomer) {
+          setVendorData((prevVendorData) => ({
+            ...prevVendorData,
+  
+            vendorID: matchedCustomer.id,
+            gst_no: matchedCustomer.gst_no,
+            name: matchedCustomer.name,
+            pan: matchedCustomer.pan,
+            vendor_address: matchedCustomer.address,
+            customer: matchedCustomer.customer,
+            vendor: matchedCustomer.vendor,
+          }));
+        } else {
+          setVendorData((prevVendorData) => ({
+            ...prevVendorData,
+            vendorID: "",
+            gst_no: newValue1,
+            name: "",
+            pan: "",
+            vendor_address: "",
+            customer: false,
+            vendor: false,
+          }));
+        }
+        return;
+      }
+  
+      if (newValue1 && newValue1.gst_no) {
+        setVendorData((prevVendorData) => ({
+          ...prevVendorData,
+          vendorID: newValue1.id,
+          gst_no: newValue1.gst_no,
+          name: newValue1.name || "",
+          pan: newValue1.pan || "",
+          vendor_address: newValue1.address || "",
+          customer: newValue1.customer || false,
+          vendor: newValue1.vendor || false,
+        }));
+      }
+    };
+  
+    const handleProductChange = async (index, newValue) => {
+      if (newValue) {
+        setProductID(newValue.id); // Assuming setProductID is defined elsewhere
+        try {
+          const response = await axios.get(
+            `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          );
+  
+          const { hsn_code: hsnCode, gst_rate: gstRate } =
+            response.data.hsn || {};
+  
+          setRows((prevRows) =>
+            prevRows.map((row, rowIndex) =>
+              rowIndex === index
+                ? { ...row, product: newValue.product_name, hsnCode, gstRate }
+                : row
+            )
+          );
+        } catch (error) {
+          console.error("Error fetching HSN code and GST rate:", error);
+        }
+      } else {
+        // Clear the product field if the value is cleared
+        setRows((prevRows) =>
+          prevRows.map((row, rowIndex) =>
+            rowIndex === index ? { ...row, product: "" } : row
+          )
+        );
+      }
+    };
+  
+    const handleInputChangeProductField = (index, value) => {
       setRows((prevRows) =>
-        prevRows.map((row) => {
-          if (row.product_amount && row.gstRate) {
-            const gstValue = (
-              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
-              100
-            ).toFixed(2);
-            return {
-              ...row,
-              cgst: "0.00",
-              sgst: "0.00",
-              igst: gstValue,
-              total_invoice: (
-                parseFloat(row.product_amount) + parseFloat(gstValue)
-              ).toFixed(2),
-            };
+        prevRows.map((row, rowIndex) =>
+          rowIndex === index ? { ...row, product: value } : row
+        )
+      );
+    };
+  
+    const handleInputChangeProduct = (index, field, value) => {
+      setRows((prevRows) =>
+        prevRows.map((row, rowIndex) => {
+          if (rowIndex === index) {
+            const updatedRow = { ...row, [field]: value };
+  
+            // If invoice type is "Nil Rated", reset GST and total_invoice values
+            if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+              updatedRow.cgst = "0.00";
+              updatedRow.sgst = "0.00";
+              updatedRow.igst = "0.00";
+              updatedRow.product_amount =
+                (parseFloat(updatedRow.unit) || 0) *
+                (parseFloat(updatedRow.rate) || 0).toFixed(2);
+              updatedRow.total_invoice = updatedRow.product_amount; // Just product amount as total_invoice
+            } else {
+              // Recalculate product_amount if unit or rate changes
+              if (field === "unit" || field === "rate") {
+                const unit = parseFloat(updatedRow.unit) || 0;
+                const rate = parseFloat(updatedRow.rate) || 0;
+                updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
+              }
+  
+              // Recalculate GST values when gstRate changes
+              if (updatedRow.gstRate) {
+                const gstValue = (
+                  (parseFloat(updatedRow.gstRate) *
+                    parseFloat(updatedRow.product_amount)) /
+                  100
+                ).toFixed(2);
+  
+                if (shouldShowCGSTSGST) {
+                  const cgstValue = (gstValue / 2).toFixed(2);
+                  const sgstValue = (gstValue / 2).toFixed(2);
+                  updatedRow.cgst = cgstValue;
+                  updatedRow.sgst = sgstValue;
+                  updatedRow.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
+                } else if (shouldShowIGST) {
+                  updatedRow.cgst = "0.00"; // Reset CGST
+                  updatedRow.sgst = "0.00"; // Reset SGST
+                  updatedRow.igst = gstValue;
+                }
+              }
+  
+              // Calculate GST value for total invoice calculation
+              const gstValueRow = shouldShowCGSTSGST
+                ? (parseFloat(updatedRow.cgst) || 0) +
+                  (parseFloat(updatedRow.sgst) || 0)
+                : parseFloat(updatedRow.igst) || 0;
+  
+              // Ensure total_invoice is calculated without NaN
+              updatedRow.total_invoice = (
+                (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
+              ).toFixed(2);
+            }
+  
+            // Return the updated row
+            return updatedRow;
           }
           return row;
         })
       );
-      setShouldShowIGST(true);
-      setShouldShowCGSTSGST(false);
-    } else {
-      const vendorGstPrefix = vendorData.gst_no?.slice(0, 2);
-      const branchGstPrefix = branchNoGst?.slice(0, 2);
-
-      if (vendorGstPrefix === branchGstPrefix) {
-        setRows((prevRows) =>
-          prevRows.map((row) => {
-            if (row.product_amount && row.gstRate) {
-              const gstValue = (
-                (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
-                100
-              ).toFixed(2);
-              const halfGst = (gstValue / 2).toFixed(2);
-              return {
-                ...row,
-                cgst: halfGst,
-                sgst: halfGst,
-                igst: "0.00",
-                total_invoice: (
-                  parseFloat(row.product_amount) +
-                  parseFloat(halfGst) +
-                  parseFloat(halfGst)
-                ).toFixed(2),
-              };
+    };
+  
+    useEffect(() => {
+      setRows((prevRows) => {
+        const updatedRows = prevRows.map((row) => {
+          // Check if the invoice type is "Nil Rated"
+          if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
+            // Set all GST values to 0 when Nil Rated is selected
+            if (
+              row.cgst !== "0.00" ||
+              row.sgst !== "0.00" ||
+              row.igst !== "0.00"
+            ) {
+              row.cgst = "0.00";
+              row.sgst = "0.00";
+              row.igst = "0.00";
             }
-            return row;
-          })
+  
+            // Set total_invoice to product_amount since no GST applies
+            row.total_invoice = (parseFloat(row.product_amount) || 0).toFixed(2);
+          } else if (row.product_amount && row.gstRate) {
+            // Recalculate GST and total_invoice if not "Nil Rated"
+            const gstValue = (
+              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+              100
+            ).toFixed(2);
+  
+            if (shouldShowCGSTSGST) {
+              const cgstValue = (gstValue / 2).toFixed(2);
+              const sgstValue = (gstValue / 2).toFixed(2);
+              row.cgst = cgstValue;
+              row.sgst = sgstValue;
+              row.igst = "0.00"; // Reset IGST if CGST/SGST is enabled
+            } else if (shouldShowIGST) {
+              row.cgst = "0.00"; // Reset CGST
+              row.sgst = "0.00"; // Reset SGST
+              row.igst = gstValue;
+            }
+  
+            // Calculate total_invoice for this row
+            const gstValueRow = shouldShowCGSTSGST
+              ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
+              : parseFloat(row.igst) || 0;
+  
+            row.total_invoice = (
+              (parseFloat(row.product_amount) || 0) + gstValueRow
+            ).toFixed(2);
+          }
+  
+          return row;
+        });
+  
+        return updatedRows;
+      });
+    }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
+  
+    useEffect(() => {
+      // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
+      let totalAmount = 0;
+      let totalGSTValue = 0;
+      let totalInvoiceValueSum = 0;
+  
+      // Check if invoice_type is "Nil Rated"
+      const isNilRated =
+        invoiceData[0]?.invoice_type.toLowerCase() === "nil rated";
+  
+      rows.forEach((row) => {
+        totalAmount += parseFloat(row.product_amount) || 0;
+  
+        if (shouldShowCGSTSGST) {
+          totalGSTValue +=
+            (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
+        } else if (shouldShowIGST) {
+          totalGSTValue += parseFloat(row.igst) || 0;
+        }
+  
+        // Sum up total_invoice values
+        totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
+      });
+  
+      // If invoice_type is Nil Rated, set totalall_gst to 0
+      const updatedTotalGST = isNilRated ? "0.00" : totalGSTValue.toFixed(2);
+  
+      // Avoid infinite loop by checking if the values have actually changed
+      const updatedInvoiceData = {
+        ...invoiceData[0],
+        taxable_amount: totalAmount.toFixed(2),
+        totalall_gst: updatedTotalGST,
+        total_invoice_value: totalInvoiceValueSum.toFixed(2),
+      };
+  
+      // Only update invoiceData if something has changed
+      if (
+        updatedInvoiceData.taxable_amount !== invoiceData[0]?.taxable_amount ||
+        updatedInvoiceData.totalall_gst !== invoiceData[0]?.totalall_gst ||
+        updatedInvoiceData.total_invoice_value !==
+          invoiceData[0]?.total_invoice_value
+      ) {
+        setInvoiceData([updatedInvoiceData]);
+      }
+    }, [rows, shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
+  
+    useEffect(() => {
+      const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
+      const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
+      const TotalAllInvoice =
+        parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+  
+      const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
+  
+      setInvoiceData((prevData) =>
+        prevData.map((data, index) =>
+          index === 0
+            ? {
+                ...data,
+                tcs: selectedTDSTCSOption === "tcs" ? amountToAddOrSubtract : 0,
+                tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
+                amount_receivable:
+                  selectedTDSTCSOption === "tcs"
+                    ? (
+                        TotalAllInvoice + parseFloat(amountToAddOrSubtract)
+                      ).toFixed(2)
+                    : (
+                        TotalAllInvoice - parseFloat(amountToAddOrSubtract)
+                      ).toFixed(2),
+              }
+            : data
+        )
+      );
+    }, [
+      invoiceData[0]?.taxable_amount,
+      invoiceData[0]?.total_invoice_value,
+      invoiceData[0]?.tds_tcs_rate,
+      selectedTDSTCSOption,
+    ]);
+    // console.log("Amount Receivable:", amountReceivable);
+    const handleAddRow = () => {
+      setRows([
+        ...rows,
+        {
+          product: "",
+          hsnCode: "",
+          gstRate: "",
+          description: "",
+          unit: "",
+          cgst: "0.00",
+          sgst: "0.00",
+          igst: "0.00", // Set default GST values to 0 when new row is added
+        },
+      ]);
+    };
+  
+    const handleDeleteRow = (index) => {
+      const updatedRows = rows.filter((_, rowIndex) => rowIndex !== index);
+      setRows(updatedRows);
+    };
+    const [salesInvoice, setSalesInvoice] = useState("100");
+    const handleSubmit = async (event) => {
+      event.preventDefault(); // Prevent default form submission behavior
+  
+      const payload = {
+        // salesInvoice,
+        formData,
+        vendorData,
+        rows,
+        invoiceData,
+      };
+  
+      try {
+        const response = await axios.put(
+          `http://127.0.0.1:8000/api/update-creditnote-post/${id}/${purchID}`,
+          payload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        // console.log("Data submitted successfully:", response.data);
+        // Handle successful response
+        if (response.status === 200) {
+          toast.success(response.data.message, {
+            position: "top-right",
+            autoClose: 2000,
+          });
+          dispatch(fetchClientDetails(id));
+          handleCreateClose();
+        } else {
+          toast.error("Failed to Update Sales Invoice. Please try again.", {
+            position: "top-right",
+            autoClose: 2000,
+          });
+        }
+      } catch (error) {
+        console.error("Error submitting data:", error);
+        // Handle error response
+      }
+    };
+  
+    useEffect(() => {
+      const currentType = invoiceData[0]?.invoice_type.toLowerCase();
+  
+      if (currentType === "nil rated") {
+        setRows((prevRows) =>
+          prevRows.map((row) => ({
+            ...row,
+            cgst: "0.00",
+            sgst: "0.00",
+            igst: "0.00",
+            total_invoice: parseFloat(row.product_amount || 0).toFixed(2),
+          }))
         );
         setShouldShowIGST(false);
-        setShouldShowCGSTSGST(true);
-      } else {
-        // Different GST region: Show IGST
+        setShouldShowCGSTSGST(false);
+      } else if (currentType === "sez") {
         setRows((prevRows) =>
           prevRows.map((row) => {
             if (row.product_amount && row.gstRate) {
@@ -849,82 +851,136 @@ function NewDCreation({ fetchInvoiceDetails }) {
         );
         setShouldShowIGST(true);
         setShouldShowCGSTSGST(false);
-      }
-    }
-  }, [invoiceData[0]?.invoice_type, vendorData.gst_no, branchNoGst]);
-
-  // Auto-detect TCS or TDS on initial load based on prepopulated values
-
-  useEffect(() => {
-    if (invoiceData[0].tcs && parseFloat(invoiceData[0].tcs) > 0) {
-      setSelectedTDSTCSOption("tcs");
-    } else if (invoiceData[0].tds && parseFloat(invoiceData[0].tds) > 0) {
-      setSelectedTDSTCSOption("tds");
-    }
-  }, [invoiceData]);
-
-  useEffect(() => {
-    if (!vendorData.gst_no) {
-      setFilteredInvoiceTypes([
-        "Select Entity Type",
-        "Unregistered Local",
-        "Unregistered Non-Local",
-      ]);
-
-      if (invoiceData[0].invoice_type.toLowerCase() === "unregistered local") {
-        setShouldShowIGST(false);
-        setShouldShowCGSTSGST(true);
-      } else if (
-        invoiceData[0].invoice_type.toLowerCase() === "unregistered non-local"
-      ) {
-        setShouldShowIGST(true);
-        setShouldShowCGSTSGST(false);
       } else {
-        setShouldShowIGST(false);
-        setShouldShowCGSTSGST(false);
+        const vendorGstPrefix = vendorData.gst_no?.slice(0, 2);
+        const branchGstPrefix = branchNoGst?.slice(0, 2);
+  
+        if (vendorGstPrefix === branchGstPrefix) {
+          setRows((prevRows) =>
+            prevRows.map((row) => {
+              if (row.product_amount && row.gstRate) {
+                const gstValue = (
+                  (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+                  100
+                ).toFixed(2);
+                const halfGst = (gstValue / 2).toFixed(2);
+                return {
+                  ...row,
+                  cgst: halfGst,
+                  sgst: halfGst,
+                  igst: "0.00",
+                  total_invoice: (
+                    parseFloat(row.product_amount) +
+                    parseFloat(halfGst) +
+                    parseFloat(halfGst)
+                  ).toFixed(2),
+                };
+              }
+              return row;
+            })
+          );
+          setShouldShowIGST(false);
+          setShouldShowCGSTSGST(true);
+        } else {
+          // Different GST region: Show IGST
+          setRows((prevRows) =>
+            prevRows.map((row) => {
+              if (row.product_amount && row.gstRate) {
+                const gstValue = (
+                  (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+                  100
+                ).toFixed(2);
+                return {
+                  ...row,
+                  cgst: "0.00",
+                  sgst: "0.00",
+                  igst: gstValue,
+                  total_invoice: (
+                    parseFloat(row.product_amount) + parseFloat(gstValue)
+                  ).toFixed(2),
+                };
+              }
+              return row;
+            })
+          );
+          setShouldShowIGST(true);
+          setShouldShowCGSTSGST(false);
+        }
       }
-    } else {
-      setFilteredInvoiceTypes([
-        "Select Entity Type",
-        "B2B",
-        "B2C-L",
-        "BSC-O",
-        "Nil Rated",
-        "Advance Received",
-        "SEZ",
-        "Export",
-      ]);
-
-      const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
-      const branchGstPrefix = branchNoGst.slice(0, 2);
-
-      if (
-        vendorGstPrefix === branchGstPrefix &&
-        invoiceData[0].invoice_type.toLowerCase() === "sez"
-      ) {
-        setShouldShowIGST(true);
-        setShouldShowCGSTSGST(false);
-      } else if (vendorGstPrefix === branchGstPrefix) {
-        setShouldShowIGST(false);
-        setShouldShowCGSTSGST(true);
+    }, [invoiceData[0]?.invoice_type, vendorData.gst_no, branchNoGst]);
+  
+    // Auto-detect TCS or TDS on initial load based on prepopulated values
+    
+    useEffect(() => {
+      if (invoiceData[0].tcs && parseFloat(invoiceData[0].tcs) > 0) {
+        setSelectedTDSTCSOption("tcs");
+      } else if (invoiceData[0].tds && parseFloat(invoiceData[0].tds) > 0) {
+        setSelectedTDSTCSOption("tds");
+      }
+    }, [invoiceData]);
+  
+    useEffect(() => {
+      if (!vendorData.gst_no) {
+        setFilteredInvoiceTypes([
+          "Select Entity Type",
+          "Unregistered Local",
+          "Unregistered Non-Local",
+        ]);
+  
+        if (invoiceData[0].invoice_type.toLowerCase() === "unregistered local") {
+          setShouldShowIGST(false);
+          setShouldShowCGSTSGST(true);
+        } else if (
+          invoiceData[0].invoice_type.toLowerCase() === "unregistered non-local"
+        ) {
+          setShouldShowIGST(true);
+          setShouldShowCGSTSGST(false);
+        } else {
+          setShouldShowIGST(false);
+          setShouldShowCGSTSGST(false);
+        }
       } else {
-        setShouldShowIGST(true);
-        setShouldShowCGSTSGST(false);
+        setFilteredInvoiceTypes([
+          "Select Entity Type",
+          "B2B",
+          "B2C-L",
+          "BSC-O",
+          "Nil Rated",
+          "Advance Received",
+          "SEZ",
+          "Export",
+        ]);
+  
+        const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
+        const branchGstPrefix = branchNoGst.slice(0, 2);
+  
+        if (
+          vendorGstPrefix === branchGstPrefix &&
+          invoiceData[0].invoice_type.toLowerCase() === "sez"
+        ) {
+          setShouldShowIGST(true);
+          setShouldShowCGSTSGST(false);
+        } else if (vendorGstPrefix === branchGstPrefix) {
+          setShouldShowIGST(false);
+          setShouldShowCGSTSGST(true);
+        } else {
+          setShouldShowIGST(true);
+          setShouldShowCGSTSGST(false);
+        }
       }
-    }
-  }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
-
-  const truncateFileName = (fileName, maxLength = 20) => {
-    if (fileName.length <= maxLength) return fileName;
-    const start = fileName.slice(0, 10); // First 10 characters
-    const end = fileName.slice(-10); // Last 10 characters
-    return `${start}...${end}`;
-  };
-
+    }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
+  
+    const truncateFileName = (fileName, maxLength = 20) => {
+      if (fileName.length <= maxLength) return fileName;
+      const start = fileName.slice(0, 10); // First 10 characters
+      const end = fileName.slice(-10); // Last 10 characters
+      return `${start}...${end}`;
+    };
+  
   return (
     <>
-      {/* <ToastContainer /> */}
-      <div>
+    
+    <div>
         <div>
           <Modal
             open={openCreateModal}
@@ -2789,8 +2845,13 @@ function NewDCreation({ fetchInvoiceDetails }) {
       >
         Create
       </Button>
+    
     </>
-  );
+  )
 }
 
-export default NewDCreation;
+export default NewCreditNoteCreation
+
+
+
+

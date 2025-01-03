@@ -17,6 +17,7 @@ import axios from "axios";
 import CreditNoteCreation from "./CreditNoteCreation";
 import CreditNoteFileCreation from "./CreditNoteFileCreation";
 import CreditNoteCard from "./CreditNoteCard";
+import NewCreditNoteCreation from "./NewCreditNoteCreation";
 // import PurchaseCreation from "./PurchaseCreation";
 // import PurchaseFileCreation from "./PurchaseFileCreation";
 // import PurchaseCard from "./PurchaseCard";
@@ -298,7 +299,8 @@ useEffect(() => {
            
          
             <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+            <NewCreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>

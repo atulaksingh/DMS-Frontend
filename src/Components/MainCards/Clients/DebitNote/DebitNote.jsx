@@ -53,7 +53,7 @@ function DebitNote() {
         `http://127.0.0.1:8000/api/debitnote-list/${id}/${salesID}`
       );
       const apiData = response.data;
-      // console.log("gggggggg",response.data)
+      console.log("gggggggg",response.data)
 
       setInvoiceData(apiData);
       setLoading(false);
@@ -293,7 +293,7 @@ function DebitNote() {
           <div className="flex align-middle items-center gap-2">
           
             {/* <SalesFileCreation /> */}
-            <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             {/* <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             <NewDCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
