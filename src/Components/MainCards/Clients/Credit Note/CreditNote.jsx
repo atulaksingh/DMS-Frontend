@@ -55,7 +55,7 @@ const fetchInvoiceDetails = async () => {
     const response = await axios.get(
       `http://127.0.0.1:8000/api/creditnote-list/${id}/${purchID}`
     );
-    // console.log("gggggggg",response)
+    console.log("gggggggg",response)
     const apiData = response.data;
 
     setCreditNoteData(apiData);
@@ -221,7 +221,7 @@ useEffect(() => {
           const rowData = creditNoteData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
           {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
-          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>
+          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill} fetchInvoiceDetails ={fetchInvoiceDetails }/>
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -298,7 +298,7 @@ useEffect(() => {
           
            
          
-            <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             {/* <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             <NewCreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>

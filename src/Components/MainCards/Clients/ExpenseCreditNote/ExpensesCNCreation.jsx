@@ -1,3 +1,6 @@
+
+
+
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -45,7 +48,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import TabPanel from "@mui/lab/TabPanel";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
-import CreditNoteInvoice from "./CreditNoteInvoice";
+// import CreditNoteInvoice from "./CreditNoteInvoice";
 // import PurchaseInvoice from "./PurchaseInvoice";
 //   import { useEffect } from "react";
 
@@ -78,8 +81,8 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-function NewCreditNoteCreation({ fetchInvoiceDetails }) {
-  const { id, purchID } = useParams();
+function ExpensesCNCreation({ fetchInvoiceDetails }) {
+  const { id, expensesID } = useParams();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -273,7 +276,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}`
+        `http://127.0.0.1:8000/api/get-expensescreditnote/${id}/${expensesID}`
       );
       console.log("dd123", response.data);
       setFormData(response.data.client_location);
@@ -778,7 +781,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-creditnote-post/${id}/${purchID}`,
+        `http://127.0.0.1:8000/api/update-expensescreditnote/${id}/${expensesID}`,
         payload,
         {
           headers: {
@@ -2924,4 +2927,4 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
   );
 }
 
-export default NewCreditNoteCreation;
+export default ExpensesCNCreation;

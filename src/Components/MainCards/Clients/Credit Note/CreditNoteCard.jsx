@@ -1,6 +1,3 @@
-
-
-
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -80,8 +77,8 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function CreditNoteCard({ rowId, fileData }) {
-  const { id ,purchID} = useParams();
+export default function CreditNoteCard({ rowId, fileData ,fetchInvoiceDetails}) {
+  const { id, purchID } = useParams();
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -119,7 +116,8 @@ export default function CreditNoteCard({ rowId, fileData }) {
           position: "top-right",
           autoClose: 2000,
         });
-        dispatch(fetchClientDetails(id));
+        // dispatch(fetchClientDetails(id));
+        fetchInvoiceDetails()
       } else {
         toast.error("Failed to delete Sales Invoice. Please try again.", {
           position: "top-right",
@@ -142,8 +140,8 @@ export default function CreditNoteCard({ rowId, fileData }) {
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
   const handleViewClose = () => setOpenViewModal(false);
-const helloworld = () => setOpenViewModal(false)
-// dj = new t
+  const helloworld = () => setOpenViewModal(false);
+  // dj = new t
   //   const handleCreateClose = () => setOpenCreateModal(false);
   const [bankData, setBankData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -269,7 +267,7 @@ const helloworld = () => setOpenViewModal(false)
       const response = await axios.get(
         `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}/${rowId}`
       );
-      console.log("dd123", response.data);          
+      console.log("dd123", response.data);
       setFormData(response.data.client_location);
       setVendorData(response.data.vendor);
       setRows(response.data.product_summaries);
@@ -897,7 +895,7 @@ const helloworld = () => setOpenViewModal(false)
   }, [invoiceData[0]?.invoice_type, vendorData.gst_no, branchNoGst]);
 
   // Auto-detect TCS or TDS on initial load based on prepopulated values
-  
+
   useEffect(() => {
     if (invoiceData[0].tcs && parseFloat(invoiceData[0].tcs) > 0) {
       setSelectedTDSTCSOption("tcs");
@@ -994,9 +992,9 @@ const helloworld = () => setOpenViewModal(false)
               <>
                 <div>
                   <form className=" my-5 w-full ">
-                   {/* <PurchaseInvoice invoiceData={bankData} />  */}
-                   {/* <DebitNoteInvoice /> */}
-                   <CreditNoteInvoice rowId={rowId} />
+                    {/* <PurchaseInvoice invoiceData={bankData} />  */}
+                    {/* <DebitNoteInvoice /> */}
+                    <CreditNoteInvoice rowId={rowId} />
                   </form>
                 </div>
                 <DialogFooter className="">
@@ -1637,9 +1635,7 @@ const helloworld = () => setOpenViewModal(false)
                     </div>
                   </div>
 
-
-
-  <div>
+                  <div>
                     <div>
                       <label htmlFor="">
                         <Typography
@@ -1699,38 +1695,29 @@ const helloworld = () => setOpenViewModal(false)
                       </div>
                       <div className="">
                         <div className="">
-                       <Input
-                                              type="date"
-                                              size="md"
-                                              name="utilise_month"
-                                              placeholder="utilise_month"
-                                              value={invoiceData[0].utilise_month}
-                                              onChange={handleInputChangeInvoiceData}
-                                              className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                                              labelProps={{
-                                                className: "hidden",
-                                              }}
-                                              // containerProps={{ className: "min-w-full" }}
-                                              style={{
-                                                height: "28px", // Match this to your Autocomplete's root height
-                                                padding: "4px 6px", // Match this padding
-                                                fontSize: "0.875rem", // Ensure font size is consistent
-                                                width: 300,
-                                              }}
-                                            />
+                          <Input
+                            type="date"
+                            size="md"
+                            name="utilise_month"
+                            placeholder="utilise_month"
+                            value={invoiceData[0].utilise_month}
+                            onChange={handleInputChangeInvoiceData}
+                            className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                            labelProps={{
+                              className: "hidden",
+                            }}
+                            // containerProps={{ className: "min-w-full" }}
+                            style={{
+                              height: "28px", // Match this to your Autocomplete's root height
+                              padding: "4px 6px", // Match this padding
+                              fontSize: "0.875rem", // Ensure font size is consistent
+                              width: 300,
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
                   </div>
-
-
-
-
-
-
-
-
-
                 </div>
               </div>
 
@@ -2916,12 +2903,10 @@ const helloworld = () => setOpenViewModal(false)
           <Link to={`/purchaseInvoice/${id}/${rowId}`}>
             <MenuItem>View</MenuItem>
           </Link>
-          <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
+          {/* <MenuItem onClick={handleCreateOpen}>Update</MenuItem> */}
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-        
         </Menu>
       </div>
     </>
   );
 }
-

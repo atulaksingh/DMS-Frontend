@@ -19,6 +19,7 @@ import axios from "axios";
 import IncomeDebitNoteFileCreation from "./IncomeDebitNoteFileCreation";
 import IncomeDebitNoteCreation from "./IncomeDebitNoteCreation";
 import IncomeDebitNoteCard from "./IncomeDebitNoteCard";
+import IncomeDNCreation from "./IncomeDNCreation";
 // import DebitNoteCreation from "./DebitNoteCreation";
 // import DebitNoteFileCreation from "./DebitNoteFileCreation";
 // import DebitNoteCard from "./DebitNoteCard";
@@ -289,7 +290,8 @@ function IncomeDebitNote() {
             {/* <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             {/* <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             <IncomeDebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
-            <IncomeDebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <IncomeDebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
+            <IncomeDNCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>
