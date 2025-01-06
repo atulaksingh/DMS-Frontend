@@ -1466,42 +1466,8 @@ const helloworld = () => setOpenViewModal(false)
                       />
                     </div>
                   </div>
-                  <div>
-                    <div>
-                      <label htmlFor="invoice_type">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="block font-semibold mb-1"
-                        >
-                          Invoice Type
-                        </Typography>
-                      </label>
-                    </div>
-                    <div className="">
-                      <div className="">
-                        <select
-                          name="invoice_type"
-                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                          style={{
-                            height: "28px",
-                            padding: "4px 6px",
-                            fontSize: "0.875rem",
-                            width: 300,
-                          }}
-                          value={invoiceData[0].invoice_type || ""}
-                          onChange={handleInputChangeInvoiceData}
-                        >
-                          {filteredInvoiceTypes.map((option) => (
-                            <option key={option} value={option.toLowerCase()}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
+            
+                  {/* <div>
                     <div>
                       <label htmlFor="entry_type">
                         <Typography
@@ -1534,7 +1500,7 @@ const helloworld = () => setOpenViewModal(false)
                         </select>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div>
                     <div>
                       <label htmlFor="attach_invoice">
@@ -1627,7 +1593,7 @@ const helloworld = () => setOpenViewModal(false)
 
               <div>
                 <div className="py-5 px-0">
-                  <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                  <div className="bg-secondary px-0 py-3 rounded-md ">
                     <Box sx={{ width: "100%", typography: "body1" }}>
                       <TabContext value={value}>
                         <Box
@@ -1947,7 +1913,7 @@ const helloworld = () => setOpenViewModal(false)
                           <div>
                             <TableContainer
                               component={Paper}
-                              className="shadow-md rounded-lg mt-3"
+                              className=" rounded-lg mt-3"
                               style={{ maxHeight: "200px", overflowY: "auto" }}
                             >
                               <Table>
@@ -2396,7 +2362,7 @@ const helloworld = () => setOpenViewModal(false)
                                   <TableRow>
                                     <TableCell
                                       colSpan={12}
-                                      className="text-blue-500 space-x-5 text-sm"
+                                      className="text-blue-500 space-x-5 text-sm py-3"
                                     >
                                       <div className="flex justify-between">
                                         <div>
@@ -2502,8 +2468,55 @@ const helloworld = () => setOpenViewModal(false)
                         <div>
                           <div className="grid grid-cols-4 gap-4">
                             <div className="col-span-1"></div>
-                            <div className="col-span-1"></div>
                             <div className="col-span-1">
+                            <div>
+                    <div>
+                      <label htmlFor="invoice_type">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Invoice Type
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="">
+                      <div className="">
+                        <select
+                          name="invoice_type"
+                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                          style={{
+                            height: "28px",
+                            padding: "4px 6px",
+                            fontSize: "0.875rem",
+                            width: 300,
+                          }}
+                          value={invoiceData[0].invoice_type || ""}
+                          onChange={handleInputChangeInvoiceData}
+                        >
+                          {filteredInvoiceTypes.map((option) => (
+                            <option key={option} value={option.toLowerCase()}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                            </div>
+                            <div className="col-span-1">
+                            <div>
+                      <label htmlFor="invoice_type">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Invoice Type
+                        </Typography>
+                      </label>
+                    </div>
                               <div className="text-sm my-2">
                                 <select
                                   id="option"
@@ -2521,7 +2534,7 @@ const helloworld = () => setOpenViewModal(false)
                                 </select>
                               </div>
                             </div>
-                            <div className="col-span-1">
+                            <div className="col-span-1 mt-5">
                               <div className=" text-sm ">
                                 <div className="">
                                   {selectedTDSTCSOption === "tcs" && (
@@ -2537,7 +2550,7 @@ const helloworld = () => setOpenViewModal(false)
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                         <div>
@@ -2550,7 +2563,7 @@ const helloworld = () => setOpenViewModal(false)
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                       </div>
@@ -2569,7 +2582,7 @@ const helloworld = () => setOpenViewModal(false)
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds_tcs_rate}
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                         <div>
@@ -2582,7 +2595,7 @@ const helloworld = () => setOpenViewModal(false)
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds}
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                       </div>
@@ -2591,7 +2604,7 @@ const helloworld = () => setOpenViewModal(false)
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-12 text-sm my-2">
+                              <div className="grid grid-cols-12 text-sm my-2.5">
                                 <div className="col-span-6 font-bold">
                                   Amount Receivable :
                                 </div>

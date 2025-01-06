@@ -127,9 +127,9 @@ function SalesCreation() {
       invoice_type: "",
       entry_type: "",
       attach_invoice: "",
-      attach_e_way_bill:"",
+      attach_e_way_bill: "",
       taxable_amount: "",
-      totalall_gst:"",
+      totalall_gst: "",
       total_invoice_value: "",
       tds_tcs_rate: "",
       // tds_tcs_section: "",
@@ -159,21 +159,21 @@ function SalesCreation() {
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type } = e.target;
     const fieldValue = type === "file" ? e.target.files[0] : value;
-  
+
     setInvoiceData((prevData) => {
       const updatedData = [...prevData];
       let updatedEntry = {
         ...updatedData[0],
         [name]: name === "invoice_type" ? fieldValue.toLowerCase() : fieldValue,
       };
-  
+
       // Logic to reset the other field to blank
       if (name === "tcs") {
         updatedEntry.tds = ""; // Reset TDS to blank if TCS is filled
       } else if (name === "tds") {
         updatedEntry.tcs = ""; // Reset TCS to blank if TDS is filled
       }
-  
+
       if (name === "tds_tcs_rate") {
         if (updatedEntry.tcs > 0) {
           updatedEntry.tds = ""; // Reset TDS to blank if TCS rate is filled
@@ -181,12 +181,11 @@ function SalesCreation() {
           updatedEntry.tcs = ""; // Reset TCS to blank if TDS rate is filled
         }
       }
-  
+
       updatedData[0] = updatedEntry;
       return updatedData;
     });
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -239,7 +238,7 @@ function SalesCreation() {
         city: newValue.city || "",
         state: newValue.state || "",
         country: newValue.country || "",
-        branchID:newValue.branch || ""
+        branchID: newValue.branch || "",
       });
       setShowBranchInput(false); // Hide branch input when a location is selected
 
@@ -377,9 +376,10 @@ function SalesCreation() {
         const response = await axios.get(
           `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
-  
-        const { hsn_code: hsnCode, gst_rate: gstRate } = response.data.hsn || {};
-  
+
+        const { hsn_code: hsnCode, gst_rate: gstRate } =
+          response.data.hsn || {};
+
         setRows((prevRows) =>
           prevRows.map((row, rowIndex) =>
             rowIndex === index
@@ -408,22 +408,19 @@ function SalesCreation() {
     );
   };
 
-
-
-
   const handleInputChangeProduct = (index, field, value) => {
     setRows((prevRows) =>
       prevRows.map((row, rowIndex) => {
         if (rowIndex === index) {
           const updatedRow = { ...row, [field]: value };
-  
+
           // Recalculate product_amount if unit or rate changes
           if (field === "unit" || field === "rate") {
             const unit = parseFloat(updatedRow.unit) || 0;
             const rate = parseFloat(updatedRow.rate) || 0;
             updatedRow.product_amount = (unit * rate).toFixed(2); // Format to 2 decimal places
           }
-  
+
           // Check if invoice_type is "Nil Rated"
           if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
             updatedRow.cgst = "0";
@@ -432,10 +429,11 @@ function SalesCreation() {
           } else if (updatedRow.gstRate) {
             // Recalculate GST values when gstRate changes
             const gstValue = (
-              (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
+              (parseFloat(updatedRow.gstRate) *
+                parseFloat(updatedRow.product_amount)) /
               100
             ).toFixed(2);
-  
+
             if (shouldShowCGSTSGST) {
               const cgstValue = (gstValue / 2).toFixed(2);
               const sgstValue = (gstValue / 2).toFixed(2);
@@ -448,29 +446,30 @@ function SalesCreation() {
               updatedRow.igst = gstValue;
             }
           }
-  
+
           // Calculate GST value for total invoice calculation
           const gstValueRow = shouldShowCGSTSGST
-            ? (parseFloat(updatedRow.cgst) || 0) + (parseFloat(updatedRow.sgst) || 0)
+            ? (parseFloat(updatedRow.cgst) || 0) +
+              (parseFloat(updatedRow.sgst) || 0)
             : parseFloat(updatedRow.igst) || 0;
-  
+
           // Ensure total_invoice is calculated without NaN
           updatedRow.total_invoice = (
             (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
           ).toFixed(2);
-  
+
           return updatedRow;
         }
         return row;
       })
     );
   };
-  
+
   useEffect(() => {
     setRows((prevRows) => {
       const updatedRows = prevRows.map((row) => {
-        let updatedRow = { ...row };  // Create a copy to avoid direct mutation of state
-  
+        let updatedRow = { ...row }; // Create a copy to avoid direct mutation of state
+
         // Check if the invoice type is "Nil Rated"
         if (invoiceData[0]?.invoice_type.toLowerCase() === "nil rated") {
           // Set all GST values to 0 when Nil Rated is selected
@@ -483,16 +482,19 @@ function SalesCreation() {
             updatedRow.sgst = "0.00";
             updatedRow.igst = "0.00";
           }
-  
+
           // Set total_invoice to product_amount since no GST applies
-          updatedRow.total_invoice = (parseFloat(updatedRow.product_amount) || 0).toFixed(2);
+          updatedRow.total_invoice = (
+            parseFloat(updatedRow.product_amount) || 0
+          ).toFixed(2);
         } else if (updatedRow.product_amount && updatedRow.gstRate) {
           // Recalculate GST and total_invoice if not "Nil Rated"
           const gstValue = (
-            (parseFloat(updatedRow.gstRate) * parseFloat(updatedRow.product_amount)) /
+            (parseFloat(updatedRow.gstRate) *
+              parseFloat(updatedRow.product_amount)) /
             100
           ).toFixed(2);
-  
+
           if (shouldShowCGSTSGST) {
             const cgstValue = (gstValue / 2).toFixed(2);
             const sgstValue = (gstValue / 2).toFixed(2);
@@ -504,34 +506,32 @@ function SalesCreation() {
             updatedRow.sgst = "0.00"; // Reset SGST
             updatedRow.igst = gstValue;
           }
-  
+
           // Calculate total_invoice for this row
           const gstValueRow = shouldShowCGSTSGST
-            ? (parseFloat(updatedRow.cgst) || 0) + (parseFloat(updatedRow.sgst) || 0)
+            ? (parseFloat(updatedRow.cgst) || 0) +
+              (parseFloat(updatedRow.sgst) || 0)
             : parseFloat(updatedRow.igst) || 0;
-  
+
           updatedRow.total_invoice = (
             (parseFloat(updatedRow.product_amount) || 0) + gstValueRow
           ).toFixed(2);
         }
-  
+
         return updatedRow;
       });
-  
+
       // Only set the state if the rows have actually changed
       // If the updated rows are different from the previous ones, then set state
       if (JSON.stringify(updatedRows) !== JSON.stringify(prevRows)) {
         return updatedRows;
       }
-  
+
       // Otherwise, return the previous state (no change)
       return prevRows;
     });
   }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData]);
 
-  
-
-  
   useEffect(() => {
     setRows((prevRows) =>
       prevRows.map((row) => {
@@ -543,9 +543,10 @@ function SalesCreation() {
         } else {
           if (row.product_amount && row.gstRate) {
             const gstValue = (
-              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) / 100
+              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+              100
             ).toFixed(2);
-  
+
             if (shouldShowCGSTSGST) {
               const cgstValue = (gstValue / 2).toFixed(2);
               const sgstValue = (gstValue / 2).toFixed(2);
@@ -559,43 +560,41 @@ function SalesCreation() {
             }
           }
         }
-  
+
         // Calculate total_invoice for this row (product_amount + gstValue)
         const gstValueRow = shouldShowCGSTSGST
           ? (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0)
           : parseFloat(row.igst) || 0;
-  
+
         row.total_invoice = (
           (parseFloat(row.product_amount) || 0) + gstValueRow
         ).toFixed(2);
-  
+
         return row;
       })
     );
   }, [shouldShowCGSTSGST, shouldShowIGST, invoiceData[0]?.invoice_type]);
-  
-  
 
   useEffect(() => {
     // Calculate totals for taxable_amount, totalall_gst, and total_invoice_value
     let totalAmount = 0;
     let totalGSTValue = 0;
     let totalInvoiceValueSum = 0;
-  
+
     rows.forEach((row) => {
       totalAmount += parseFloat(row.product_amount) || 0;
-  
+
       if (shouldShowCGSTSGST) {
         totalGSTValue +=
           (parseFloat(row.cgst) || 0) + (parseFloat(row.sgst) || 0);
       } else if (shouldShowIGST) {
         totalGSTValue += parseFloat(row.igst) || 0;
       }
-  
+
       // Sum up total_invoice values
       totalInvoiceValueSum += parseFloat(row.total_invoice) || 0;
     });
-  
+
     // Update invoiceData with calculated values
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
@@ -610,15 +609,16 @@ function SalesCreation() {
       )
     );
   }, [rows, shouldShowCGSTSGST, shouldShowIGST]);
-  
+
   useEffect(() => {
     const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
     const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
-    const TotalAllInvoice = parseFloat(invoiceData[0]?.total_invoice_value) || 0;
-  
+    const TotalAllInvoice =
+      parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+
     // Calculate TCS or TDS amount and format to 2 decimal places
     const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
-  
+
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
         index === 0
@@ -628,10 +628,12 @@ function SalesCreation() {
               tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
               amount_receivable:
                 selectedTDSTCSOption === "tcs"
-                  ? (TotalAllInvoice + parseFloat(amountToAddOrSubtract)).toFixed(2)
-                  : (TotalAllInvoice - parseFloat(amountToAddOrSubtract)).toFixed(
-                      2
-                    ),
+                  ? (
+                      TotalAllInvoice + parseFloat(amountToAddOrSubtract)
+                    ).toFixed(2)
+                  : (
+                      TotalAllInvoice - parseFloat(amountToAddOrSubtract)
+                    ).toFixed(2),
             }
           : data
       )
@@ -642,7 +644,6 @@ function SalesCreation() {
     invoiceData[0]?.tds_tcs_rate,
     selectedTDSTCSOption,
   ]);
-  
 
   // console.log("Amount Receivable:", amountReceivable);
   const handleAddRow = () => {
@@ -671,7 +672,7 @@ function SalesCreation() {
       formData,
       vendorData,
       rows,
-      invoiceData
+      invoiceData,
     };
 
     try {
@@ -693,13 +694,12 @@ function SalesCreation() {
           position: "top-right",
           autoClose: 2000,
         });
-  
+
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-  
+
         // Optionally close the modal and reset form
         handleCreateClose();
-       
       } else {
         throw new Error("Unexpected response status.");
       }
@@ -712,11 +712,12 @@ function SalesCreation() {
   useEffect(() => {
     const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
     const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
-    const TotalAllInvoice = parseFloat(invoiceData[0]?.total_invoice_value) || 0;
-  
+    const TotalAllInvoice =
+      parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+
     // Calculate TCS or TDS amount and format to 2 decimal places
     const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
-  
+
     setInvoiceData((prevData) =>
       prevData.map((data, index) =>
         index === 0
@@ -726,8 +727,12 @@ function SalesCreation() {
               tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
               amount_receivable:
                 selectedTDSTCSOption === "tcs"
-                  ? (TotalAllInvoice + parseFloat(amountToAddOrSubtract)).toFixed(2)
-                  : (TotalAllInvoice - parseFloat(amountToAddOrSubtract)).toFixed(2),
+                  ? (
+                      TotalAllInvoice + parseFloat(amountToAddOrSubtract)
+                    ).toFixed(2)
+                  : (
+                      TotalAllInvoice - parseFloat(amountToAddOrSubtract)
+                    ).toFixed(2),
             }
           : data
       )
@@ -738,8 +743,6 @@ function SalesCreation() {
     invoiceData[0]?.tds_tcs_rate,
     selectedTDSTCSOption,
   ]);
-
-  
 
   useEffect(() => {
     if (vendorData.gst_no && branchNoGst) {
@@ -1250,7 +1253,7 @@ function SalesCreation() {
                       />
                     </div>
                   </div>
-                  <div>
+                  {/* <div>
                     <div>
                       <label htmlFor="invoice_type">
                         <Typography
@@ -1264,58 +1267,6 @@ function SalesCreation() {
                     </div>
                     <div className="">
                       <div className="">
-                        {/* <select
-                         name="invoice_type"
-                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                          style={{
-                            height: "28px", // Match this to your Autocomplete's root height
-                            padding: "4px 6px", // Match this padding
-                            fontSize: "0.875rem", // Ensure font size is consistent
-                            width: 300,
-                          }}
-                          value={invoiceData[0].invoice_type}
-                          onChange={handleInputChangeInvoiceData}
-                        >
-                          <option value="">Select Invoice Type</option>
-                          <option value="b2b">B2B</option>
-                          <option value="b2c-l">B2C-L</option>
-                          <option value="bsc-o">BSC-O</option>
-                          <option value="nil rated">Nil Rated</option>
-                          <option value="advance received">
-                            Advance Received
-                          </option>
-                          <option value="export">Export</option>
-                          <option value="unregistered local">
-                            Unregistered Local
-                          </option>
-                          <option value="unregistered non-local">
-                            Unregistered non-local
-                          </option>
-                          <option value="sez">SEZ</option>
-                        </select> */}
-                        {/* <select
-                          name="invoice_type"
-                          value={invoiceData[0].invoice_type}
-                          onChange={handleInputChangeInvoiceData}
-                        >
-                          {(vendorData.gst_no
-                            ? [
-                                "B2B",
-                                "B2C-L",
-                                "BSC-O",
-                                "Nil Rated",
-                                "Advance Received",
-                                "SEZ",
-                                "Export",
-                              ]
-                            : filteredInvoiceTypes
-                          ).map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select> */}
-
                         <select
                           name="invoice_type"
                           className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
@@ -1363,8 +1314,8 @@ function SalesCreation() {
                         </select>
                       </div>
                     </div>
-                  </div>
-                  <div>
+                  </div> */}
+                  {/* <div>
                     <div>
                       <label htmlFor="entry_type">
                         <Typography
@@ -1397,7 +1348,7 @@ function SalesCreation() {
                         </select>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div>
                     <div>
                       <label htmlFor="attach_invoice">
@@ -1447,7 +1398,7 @@ function SalesCreation() {
 
               <div>
                 <div className="py-5 px-0">
-                  <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                  <div className="bg-secondary px-0 py-3 rounded-md ">
                     <Box sx={{ width: "100%", typography: "body1" }}>
                       <TabContext value={value}>
                         <Box
@@ -1767,51 +1718,76 @@ function SalesCreation() {
                           <div>
                             <TableContainer
                               component={Paper}
-                              className="shadow-md rounded-lg mt-3"
+                              className="shadow-md rounded-lg mt-3 "
                               style={{ maxHeight: "200px", overflowY: "auto" }}
                             >
                               <Table>
-                                <TableHead>
-                                  <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
+                                <TableHead >
+                                  <TableRow  className="font-semibold bg-primary text-white"
+                                    //  sx={{
+                                    //   color: "white", // Text color
+                                    // }}
+                                  >
                                     <TableCell
-                                      className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      className="font-semibold "
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       Product
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       Description
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       HSN Code
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       Unit
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       Rate
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       Amount
                                     </TableCell>
                                     <TableCell
-                                      className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      className="font-semibold text-white"
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       GST Rate
                                     </TableCell>
@@ -1820,13 +1796,19 @@ function SalesCreation() {
                                       <>
                                         <TableCell
                                           className="font-semibold text-gray-600"
-                                          sx={{ padding: "4px" }}
+                                          sx={{
+                                            color: "white", // Text color
+                                            padding: "4px",
+                                          }}
                                         >
                                           SGST
                                         </TableCell>
                                         <TableCell
                                           className="font-semibold text-gray-600"
-                                          sx={{ padding: "4px" }}
+                                          sx={{
+                                            color: "white", // Text color
+                                            padding: "4px",
+                                          }}
                                         >
                                           CGST
                                         </TableCell>
@@ -1836,20 +1818,29 @@ function SalesCreation() {
                                     {shouldShowIGST && (
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                        sx={{
+                                          color: "white", // Text color
+                                          padding: "4px",
+                                        }}
                                       >
                                         Igst
                                       </TableCell>
                                     )}
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     >
                                       Total Invoice{" "}
                                     </TableCell>
                                     <TableCell
                                       className="font-semibold text-gray-600"
-                                      sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                     ></TableCell>
                                   </TableRow>
                                 </TableHead>
@@ -1858,44 +1849,55 @@ function SalesCreation() {
                                   {rows.map((row, index) => (
                                     <TableRow key={index} className="p-0 ">
                                       <TableCell sx={{ padding: "6px" }}>
-                                      <Autocomplete
-  freeSolo
-  id={`product-autocomplete-${index}`}
-  disableClearable
-  options={product_ser_Data}
-  getOptionLabel={(option) => option.product_name || ""}
-  onChange={(event, newValue) => handleProductChange(index, newValue)}
-  inputValue={row.product || ""} // Ensure inputValue is always a string
-  onInputChange={(event, value) => handleInputChangeProductField(index, value)}
-  value={
-    product_ser_Data.find((option) => option.product_name === row.product) ||
-    null
-  }
-  renderOption={(props, option) => (
-    <li {...props} key={option.id}>
-      {option.product_name}
-    </li>
-  )}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      size="small"
-      placeholder="select product"
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          padding: "2px",
-          fontSize: "0.875rem",
-          minHeight: "30px",
-          width: "100px",
-        },
-        "& .MuiOutlinedInput-input": {
-          padding: "4px",
-        },
-      }}
-    />
-  )}
-/>
-
+                                        <Autocomplete
+                                          freeSolo
+                                          id={`product-autocomplete-${index}`}
+                                          disableClearable
+                                          options={product_ser_Data}
+                                          getOptionLabel={(option) =>
+                                            option.product_name || ""
+                                          }
+                                          onChange={(event, newValue) =>
+                                            handleProductChange(index, newValue)
+                                          }
+                                          inputValue={row.product || ""} // Ensure inputValue is always a string
+                                          onInputChange={(event, value) =>
+                                            handleInputChangeProductField(
+                                              index,
+                                              value
+                                            )
+                                          }
+                                          value={
+                                            product_ser_Data.find(
+                                              (option) =>
+                                                option.product_name ===
+                                                row.product
+                                            ) || null
+                                          }
+                                          renderOption={(props, option) => (
+                                            <li {...props} key={option.id}>
+                                              {option.product_name}
+                                            </li>
+                                          )}
+                                          renderInput={(params) => (
+                                            <TextField
+                                              {...params}
+                                              size="small"
+                                              placeholder="select product"
+                                              sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                  padding: "2px",
+                                                  fontSize: "0.875rem",
+                                                  minHeight: "30px",
+                                                  width: "100px",
+                                                },
+                                                "& .MuiOutlinedInput-input": {
+                                                  padding: "4px",
+                                                },
+                                              }}
+                                            />
+                                          )}
+                                        />
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
@@ -2223,8 +2225,9 @@ function SalesCreation() {
                                               Taxable Amount :
                                             </div>
                                             <TextField
-                                              value={invoiceData[0].taxable_amount}
-                                           
+                                              value={
+                                                invoiceData[0].taxable_amount
+                                              }
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2244,7 +2247,9 @@ function SalesCreation() {
                                               Total Gst Rate :
                                             </div>
                                             <TextField
-                                              value={invoiceData[0].totalall_gst}
+                                              value={
+                                                invoiceData[0].totalall_gst
+                                              }
                                               // onChange={(e) =>
                                               //   handleInputChangeProduct(
                                               //     index,
@@ -2271,7 +2276,10 @@ function SalesCreation() {
                                               Total Invoice Value :
                                             </div>
                                             <TextField
-                                                value={invoiceData[0].total_invoice_value}
+                                              value={
+                                                invoiceData[0]
+                                                  .total_invoice_value
+                                              }
                                               // onChange={(e) =>
                                               //   handleInputChangeProduct(
                                               //     index,
@@ -2305,8 +2313,86 @@ function SalesCreation() {
                         <div>
                           <div className="grid grid-cols-4 gap-4">
                             <div className="col-span-1"></div>
-                            <div className="col-span-1"></div>
                             <div className="col-span-1">
+
+
+                            <div>
+                    <div>
+                      <label htmlFor="invoice_type">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                          Invoice Type
+                        </Typography>
+                      </label>
+                    </div>
+                    <div className="">
+                      <div className="">
+                        <select
+                          name="invoice_type"
+                          className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                          value={invoiceData[0].invoice_type} // Ensures the selected value matches the state
+                          onChange={handleInputChangeInvoiceData}
+                        >
+                          {vendorData.gst_no === "" // Check if gst_no is empty
+                            ? // Show only these options when gst_no is empty
+                              [
+                                "Select Entity Type",
+                                "Unregistered Local",
+                                "Unregistered Non-Local",
+                              ].map((option) => (
+                                <option
+                                  key={option}
+                                  value={option.toLowerCase()}
+                                >
+                                  {option}
+                                </option>
+                              ))
+                            : // Show other options when gst_no is not empty
+                              [
+                                "Select Entity Type",
+                                "B2B",
+                                "B2C-L",
+                                "BSC-O",
+                                "Nil Rated",
+                                "Advance Received",
+                                "SEZ",
+                                "Export",
+                              ].map((option) => (
+                                <option
+                                  key={option}
+                                  value={option.toLowerCase()}
+                                >
+                                  {option}
+                                </option>
+                              ))}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+
+                            </div>
+                            <div className="col-span-1">
+                            <div>
+                      <label htmlFor="invoice_type">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="block font-semibold mb-1"
+                        >
+                         Select TDS/TCS
+                        </Typography>
+                      </label>
+                    </div>
                               <div className="text-sm my-2">
                                 {/* <div className="col-span-6 font-bold">
                                   TCS :
@@ -2476,7 +2562,7 @@ function SalesCreation() {
                                 </div>
                               </div> */}
                             </div>
-                            <div className="col-span-1">
+                            <div className="col-span-1 mt-5">
                               {/* <div className="grid grid-cols-12 text-sm my-2">
                                 <div className="col-span-6 font-bold">
                                   SGST :
@@ -2671,7 +2757,7 @@ function SalesCreation() {
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                         <div>
@@ -2684,7 +2770,7 @@ function SalesCreation() {
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                       </div>
@@ -2703,7 +2789,7 @@ function SalesCreation() {
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds_tcs_rate}
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                         <div>
@@ -2716,7 +2802,7 @@ function SalesCreation() {
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds}
-                                            className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                       </div>
@@ -2784,7 +2870,7 @@ function SalesCreation() {
                                   )}
                                 </div>
                               </div> */}
-                              <div className="grid grid-cols-12 text-sm my-2">
+                              <div className="grid grid-cols-12 text-sm mt-3">
                                 <div className="col-span-6 font-bold">
                                   Amount Receivable :
                                 </div>
