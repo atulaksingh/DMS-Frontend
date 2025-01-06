@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -138,34 +136,33 @@ export default function IncomeCard({ rowId, fileData }) {
   };
 
   const handleViewOpen = () => {
-    setViewId(rowId)
+    setViewId(rowId);
     setOpenViewModal(true);
     setAnchorEl(null);
     const fetchBankDetails = async () => {
-        try {
-          const response = await axios.get(
-            `http://127.0.0.1:8000/api/income-view/${id}/${rowId}`
-          );
-          // console.log("eeeeeee",response.data)
-          setBankData(response.data);
-          setLoading(false);
-        } catch (error) {
-          setError(error);
-          setLoading(false);
-        }
-      };
-      fetchBankDetails();
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/income-view/${id}/${rowId}`
+        );
+        // console.log("eeeeeee",response.data)
+        setBankData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetchBankDetails();
   };
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
   const handleViewClose = () => setOpenViewModal(false);
-const helloworld = () => setOpenViewModal(false)
-// dj = new t
+  const helloworld = () => setOpenViewModal(false);
+  // dj = new t
   //   const handleCreateClose = () => setOpenCreateModal(false);
   const [bankData, setBankData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
 
   ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
 
@@ -885,7 +882,7 @@ const helloworld = () => setOpenViewModal(false)
   }, [invoiceData[0]?.invoice_type, vendorData.gst_no, branchNoGst]);
 
   // Auto-detect TCS or TDS on initial load based on prepopulated values
-  
+
   useEffect(() => {
     if (invoiceData[0].tcs && parseFloat(invoiceData[0].tcs) > 0) {
       setSelectedTDSTCSOption("tcs");
@@ -946,12 +943,12 @@ const helloworld = () => setOpenViewModal(false)
   }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
 
   const truncateFileName = (fileName, maxLength = 20) => {
+    if (typeof fileName !== "string") return "Invalid file name";
     if (fileName.length <= maxLength) return fileName;
     const start = fileName.slice(0, 10); // First 10 characters
     const end = fileName.slice(-10); // Last 10 characters
     return `${start}...${end}`;
   };
-
   return (
     <>
       {/* <ToastContainer /> */}
@@ -982,7 +979,7 @@ const helloworld = () => setOpenViewModal(false)
               <>
                 <div>
                   <form className=" my-5 w-full ">
-                    <IncomeInvoice  invoiceData={bankData}/>
+                    <IncomeInvoice invoiceData={bankData} />
                   </form>
                 </div>
                 <DialogFooter className="">
@@ -1336,6 +1333,10 @@ const helloworld = () => setOpenViewModal(false)
                                   value={formData.branchID || ""}
                                   className="border border-red-500"
                                   placeholder="Branch Select"
+                                  inputProps={{
+                                    ...params.inputProps,
+                                    readOnly: true, // Make the input field read-only
+                                  }}
                                   sx={{
                                     "& .MuiInputBase-root": {
                                       height: 28,
@@ -1563,15 +1564,24 @@ const helloworld = () => setOpenViewModal(false)
                         />
 
                         <a
-                          href={`http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`}
+                          href={
+                            typeof invoiceData[0]?.attach_invoice === "string"
+                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`
+                              : "#"
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
                             {invoiceData[0]?.attach_invoice
-                              ? truncateFileName(
-                                invoiceData[0].attach_invoice.split("/").pop()
-                                )
+                              ? typeof invoiceData[0]?.attach_invoice ===
+                                "string"
+                                ? truncateFileName(
+                                    invoiceData[0].attach_invoice
+                                      .split("/")
+                                      .pop()
+                                  )
+                                : invoiceData[0]?.attach_invoice.name // Show File name if it's a File object
                               : "No file uploaded"}
                           </p>
                         </a>
@@ -1605,17 +1615,40 @@ const helloworld = () => setOpenViewModal(false)
                           className="mb-1"
                         />
 
-                        <a
+                        {/* <a
                           href={`http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
-                            {/* {bankData?.attach_e_way_bill?.split("/").pop()} */}
                             {invoiceData[0]?.attach_e_way_bill
                               ? truncateFileName(
                                 invoiceData[0].attach_e_way_bill.split("/").pop()
                                 )
+                              : "No file uploaded"}
+                          </p>
+                        </a> */}
+
+                        <a
+                          href={
+                            typeof invoiceData[0]?.attach_e_way_bill ===
+                            "string"
+                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`
+                              : "#"
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <p className="text-blue-500">
+                            {invoiceData[0]?.attach_e_way_bill
+                              ? typeof invoiceData[0]?.attach_e_way_bill ===
+                                "string"
+                                ? truncateFileName(
+                                    invoiceData[0].attach_e_way_bill
+                                      .split("/")
+                                      .pop()
+                                  )
+                                : invoiceData[0]?.attach_e_way_bill.name // Show File name if it's a File object
                               : "No file uploaded"}
                           </p>
                         </a>
@@ -2804,16 +2837,14 @@ const helloworld = () => setOpenViewModal(false)
         >
           {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
 
-            <MenuItem onClick={handleViewOpen}>View</MenuItem>
+          <MenuItem onClick={handleViewOpen}>View</MenuItem>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
           <Link to={`/income/debitNote/${id}/${incomeID}`}>
             <MenuItem>Debit Note</MenuItem>
           </Link>
-         
         </Menu>
       </div>
     </>
   );
 }
-

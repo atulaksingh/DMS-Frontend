@@ -272,7 +272,7 @@ const helloworld = () => setOpenViewModal(false)
       utilise_edit: false,
     },
   ]);
-  // console.log("formdata", formData);
+  console.log("formdata", formData);
   // console.log("vendorData", vendorData);
   // console.log("rows", rows);
   // console.log("invoiceData", invoiceData);
@@ -974,6 +974,7 @@ const helloworld = () => setOpenViewModal(false)
   }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
 
   const truncateFileName = (fileName, maxLength = 20) => {
+    if (typeof fileName !== "string") return "Invalid file name";
     if (fileName.length <= maxLength) return fileName;
     const start = fileName.slice(0, 10); // First 10 characters
     const end = fileName.slice(-10); // Last 10 characters
@@ -1328,13 +1329,13 @@ const helloworld = () => setOpenViewModal(false)
                             color="blue-gray"
                             className="block font-semibold mb-2"
                           >
-                            Country
+                            Branch
                           </Typography>
                         </label>
                       </div>
                       <div className="col-span-8 h-7">
                         <div className="">
-                          <Stack spacing={1} sx={{ width: 300 }}>
+                          {/* <Stack spacing={1} sx={{ width: 300 }}>
                             <Autocomplete
                               freeSolo
                               id="branch-select"
@@ -1383,7 +1384,51 @@ const helloworld = () => setOpenViewModal(false)
                                 />
                               )}
                             />
-                          </Stack>
+                          </Stack> */}
+                          <Stack spacing={1} sx={{ width: 300 }}>
+  <Autocomplete
+    id="branch-select"
+    disableClearable
+    options={branch_ser_name}
+    getOptionLabel={(option) => option.branch_name || ""}
+    onChange={(event, newValue) => handleLocationChange(newValue, true)} // Handle branch selection
+    renderOption={(props, option) => (
+      <li
+        {...props}
+        key={option.id}
+        style={{
+          padding: "4px 8px",
+          fontSize: "0.875rem",
+        }}
+      >
+        {option.branch_name}
+      </li>
+    )}
+    renderInput={(params) => (
+      <TextField
+      {...params}
+      size="small"
+      value={formData.branchID || ""}
+      className="border border-red-500"
+      placeholder="Branch Select"
+      inputProps={{
+        ...params.inputProps,
+        readOnly: true, // Make the input field read-only
+      }}
+      sx={{
+        "& .MuiInputBase-root": {
+          height: 28,
+          padding: "4px 6px",
+        },
+        "& .MuiOutlinedInput-input": {
+          padding: "4px 6px",
+        },
+      }}
+    />
+    )}
+  />
+</Stack>
+
                         </div>
                       </div>
                     </div>
@@ -1591,16 +1636,25 @@ const helloworld = () => setOpenViewModal(false)
                           className="mb-1"
                         />
 
-                        <a
-                          href={`http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`}
+<a
+                          href={
+                            typeof invoiceData[0]?.attach_invoice === "string"
+                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`
+                              : "#"
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
                             {invoiceData[0]?.attach_invoice
-                              ? truncateFileName(
-                                invoiceData[0].attach_invoice.split("/").pop()
-                                )
+                              ? typeof invoiceData[0]?.attach_invoice ===
+                                "string"
+                                ? truncateFileName(
+                                    invoiceData[0].attach_invoice
+                                      .split("/")
+                                      .pop()
+                                  )
+                                : invoiceData[0]?.attach_invoice.name // Show File name if it's a File object
                               : "No file uploaded"}
                           </p>
                         </a>
@@ -1634,17 +1688,26 @@ const helloworld = () => setOpenViewModal(false)
                           className="mb-1"
                         />
 
-                        <a
-                          href={`http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`}
+<a
+                          href={
+                            typeof invoiceData[0]?.attach_e_way_bill ===
+                            "string"
+                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`
+                              : "#"
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
-                            {/* {bankData?.attach_e_way_bill?.split("/").pop()} */}
                             {invoiceData[0]?.attach_e_way_bill
-                              ? truncateFileName(
-                                invoiceData[0].attach_e_way_bill.split("/").pop()
-                                )
+                              ? typeof invoiceData[0]?.attach_e_way_bill ===
+                                "string"
+                                ? truncateFileName(
+                                    invoiceData[0].attach_e_way_bill
+                                      .split("/")
+                                      .pop()
+                                  )
+                                : invoiceData[0]?.attach_e_way_bill.name // Show File name if it's a File object
                               : "No file uploaded"}
                           </p>
                         </a>

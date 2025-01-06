@@ -1195,6 +1195,10 @@ import {
                                     value={formData.branchID || ""}
                                     className="border border-red-500"
                                     placeholder="Branch Select"
+                                    inputProps={{
+                                      ...params.inputProps,
+                                      readOnly: true, // Make the input field read-only
+                                    }}
                                     sx={{
                                       "& .MuiInputBase-root": {
                                         height: 28,
