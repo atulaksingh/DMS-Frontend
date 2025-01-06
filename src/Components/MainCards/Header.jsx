@@ -443,7 +443,7 @@ function NavListMenu() {
   return (
     <React.Fragment>
       <Menu allowHover open={isMenuOpen} handler={setIsMenuOpen}>
-        <MenuHandler>
+        {/* <MenuHandler>
           <Typography as="a" href="#" variant="small" className="font-normal">
             <MenuItem className="hidden items-center gap-2 font-medium text-blue-gray-900 lg:flex lg:rounded-full">
               <Square3Stack3DIcon className="h-[18px] w-[18px] text-blue-gray-500" />{" "}
@@ -456,7 +456,7 @@ function NavListMenu() {
               />
             </MenuItem>
           </Typography>
-        </MenuHandler>
+        </MenuHandler> */}
         <MenuList className="hidden w-[36rem] grid-cols-7 gap-3 overflow-visible lg:grid">
           <Card
             color="blue"
@@ -484,18 +484,18 @@ function NavListMenu() {
 
 // nav list component
 const navListItems = [
-  {
-    label: "Account",
-    icon: UserCircleIcon,
-  },
-  {
-    label: "Blocks",
-    icon: CubeTransparentIcon,
-  },
-  {
-    label: "Docs",
-    icon: CodeBracketSquareIcon,
-  },
+  // {
+  //   label: "Account",
+  //   icon: UserCircleIcon,
+  // },
+  // {
+  //   label: "Blocks",
+  //   icon: CubeTransparentIcon,
+  // },
+  // {
+  //   label: "Docs",
+  //   icon: CodeBracketSquareIcon,
+  // },
 ];
 
 function NavList() {
