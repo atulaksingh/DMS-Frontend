@@ -1331,119 +1331,69 @@ import {
                     </div>
                     <div>
                       <div>
-                        <label htmlFor="invoice_type">
+                        <div>
+                          <label htmlFor="utilise_month">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="block font-semibold mb-1 mt-2"
+                            >
+                              Utilise Month
+                            </Typography>
+                          </label>
+                        </div>
+                        <div className="">
+                          <div className="">
+                       
+  
+  
+                            <Input
+                          type="date"
+                          size="md"
+                          name="utilise_month"
+                          placeholder="utilise_month"
+                          value={invoiceData[0].utilise_month}
+                          onChange={handleInputChangeInvoiceData}
+                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                          labelProps={{
+                            className: "hidden",
+                          }}
+                          // containerProps={{ className: "min-w-full" }}
+                          style={{
+                            height: "28px", // Match this to your Autocomplete's root height
+                            padding: "4px 6px", // Match this padding
+                            fontSize: "0.875rem", // Ensure font size is consistent
+                            width: 300,
+                          }}
+                        />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex  align-middle items-center gap-5 mt-2">
+                      <div>
+                        <label htmlFor="utilise_edit">
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="block font-semibold mb-1"
                           >
-                            Invoice Type
+                            Utilise Edit
                           </Typography>
                         </label>
                       </div>
                       <div className="">
-                        <div className="">
-                          {/* <select
-                             name="invoice_type"
-                              className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                              style={{
-                                height: "28px", // Match this to your Autocomplete's root height
-                                padding: "4px 6px", // Match this padding
-                                fontSize: "0.875rem", // Ensure font size is consistent
-                                width: 300,
-                              }}
-                              value={invoiceData[0].invoice_type}
-                              onChange={handleInputChangeInvoiceData}
-                            >
-                              <option value="">Select Invoice Type</option>
-                              <option value="b2b">B2B</option>
-                              <option value="b2c-l">B2C-L</option>
-                              <option value="bsc-o">BSC-O</option>
-                              <option value="nil rated">Nil Rated</option>
-                              <option value="advance received">
-                                Advance Received
-                              </option>
-                              <option value="export">Export</option>
-                              <option value="unregistered local">
-                                Unregistered Local
-                              </option>
-                              <option value="unregistered non-local">
-                                Unregistered non-local
-                              </option>
-                              <option value="sez">SEZ</option>
-                            </select> */}
-                          {/* <select
-                              name="invoice_type"
-                              value={invoiceData[0].invoice_type}
-                              onChange={handleInputChangeInvoiceData}
-                            >
-                              {(vendorData.gst_no
-                                ? [
-                                    "B2B",
-                                    "B2C-L",
-                                    "BSC-O",
-                                    "Nil Rated",
-                                    "Advance Received",
-                                    "SEZ",
-                                    "Export",
-                                  ]
-                                : filteredInvoiceTypes
-                              ).map((option) => (
-                                <option key={option} value={option}>
-                                  {option}
-                                </option>
-                              ))}
-                            </select> */}
-  
-                          <select
-                            name="invoice_type"
-                            className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                            style={{
-                              height: "28px", // Match this to your Autocomplete's root height
-                              padding: "4px 6px", // Match this padding
-                              fontSize: "0.875rem", // Ensure font size is consistent
-                              width: 300,
-                            }}
-                            value={invoiceData[0].invoice_type} // Ensures the selected value matches the state
-                            onChange={handleInputChangeInvoiceData}
-                          >
-                            {vendorData.gst_no === "" // Check if gst_no is empty
-                              ? // Show only these options when gst_no is empty
-                                [
-                                  "Select Invoice Type",
-                                  "Unregistered Local",
-                                  "Unregistered Non-Local",
-                                ].map((option) => (
-                                  <option
-                                    key={option}
-                                    value={option.toLowerCase()}
-                                  >
-                                    {option}
-                                  </option>
-                                ))
-                              : // Show other options when gst_no is not empty
-                                [
-                                  "Select Invoice Type",
-                                  "B2B",
-                                  "B2C-L",
-                                  "BSC-O",
-                                  "Nil Rated",
-                                  "Advance Received",
-                                  "SEZ",
-                                  "Export",
-                                ].map((option) => (
-                                  <option
-                                    key={option}
-                                    value={option.toLowerCase()}
-                                  >
-                                    {option}
-                                  </option>
-                                ))}
-                          </select>
-                        </div>
+                        <Checkbox
+                          name="utilise_edit"
+                          ripple={false}
+                          checked={invoiceData[0]?.utilise_edit || false} // Access the first entry in the array
+                          className="h-5 w-5 rounded-md border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0"
+                          onChange={handleInputChangeInvoiceData} // Updated function
+                        />
                       </div>
                     </div>
-                    <div>
+         
+                    {/* <div>
                       <div>
                         <label htmlFor="entry_type">
                           <Typography
@@ -1476,7 +1426,7 @@ import {
                           </select>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     <div>
                       <div>
                         <label htmlFor="attach_invoice">
@@ -1521,117 +1471,9 @@ import {
                         />
                       </div>
                     </div>
-                    <div>
-                      <div>
-                        <label htmlFor="">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className=" font-semibold mb-1 hidden"
-                          >
-                            Utilise Edit
-                          </Typography>
-                        </label>
-                      </div>
-                      <div className="">
-                        {/* <input
-                            type="file"
-                            size="md"
-                            name="attach_e_way_bill"
-                            placeholder="Eway Bill"
-                            onChange={handleInputChangeInvoiceData}
-                          /> */}
-                        {/* <Checkbox defaultChecked /> */}
-                      </div>
-                    </div>
-                    <div className="flex  align-middle items-center gap-5 mt-2">
-                      <div>
-                        <label htmlFor="utilise_edit">
-                          <Typography
-                            variant="small"
-                            color="blue-gray"
-                            className="block font-semibold mb-1"
-                          >
-                            Utilise Edit
-                          </Typography>
-                        </label>
-                      </div>
-                      <div className="">
-                        <Checkbox
-                          name="utilise_edit"
-                          ripple={false}
-                          checked={invoiceData[0]?.utilise_edit || false} // Access the first entry in the array
-                          className="h-5 w-5 rounded-md border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0"
-                          onChange={handleInputChangeInvoiceData} // Updated function
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div>
-                        <div>
-                          <label htmlFor="utilise_month">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="block font-semibold mb-1 mt-2"
-                            >
-                              Utilise Month
-                            </Typography>
-                          </label>
-                        </div>
-                        <div className="">
-                          <div className="">
-                            {/* <select
-                              className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                              style={{
-                                height: "28px",
-                                padding: "4px 6px",
-                                fontSize: "0.875rem",
-                                width: 300,
-                              }}
-                              name="utilise_month"
-                              value={invoiceData[0].utilise_month}
-                              onChange={handleInputChangeInvoiceData}
-                            >
-                              <option value="">Select Utilise Month</option>
-                              <option value="January">January</option>
-                              <option value="February">February</option>
-                              <option value="March">March</option>
-                              <option value="April">April</option>
-                              <option value="May">May</option>
-                              <option value="June">June</option>
-                              <option value="July">July</option>
-                              <option value="August">August</option>
-                              <option value="September">September</option>
-                              <option value="October">October</option>
-                              <option value="November">November</option>
-                              <option value="December">December</option>
-                            </select> */}
-  
-  
-                            <Input
-                          type="date"
-                          size="md"
-                          name="utilise_month"
-                          placeholder="utilise_month"
-                          value={invoiceData[0].utilise_month}
-                          onChange={handleInputChangeInvoiceData}
-                          className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                          labelProps={{
-                            className: "hidden",
-                          }}
-                          // containerProps={{ className: "min-w-full" }}
-                          style={{
-                            height: "28px", // Match this to your Autocomplete's root height
-                            padding: "4px 6px", // Match this padding
-                            fontSize: "0.875rem", // Ensure font size is consistent
-                            width: 300,
-                          }}
-                        />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                
+                   
+           
                   </div>
                 </div>
   
@@ -1962,46 +1804,72 @@ import {
                               >
                                 <Table>
                                   <TableHead>
-                                    <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
+                                    <TableRow   className="font-semibold bg-primary text-white"
+                                     sx={{
+                                      color: "white", // Text color
+                                      padding: "4px",
+                                    }}
+                                    >
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         Product
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         Description
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         HSN Code
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         Unit
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         Rate
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         Amount
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         GST Rate
                                       </TableCell>
@@ -2010,13 +1878,19 @@ import {
                                         <>
                                           <TableCell
                                             className="font-semibold text-gray-600"
-                                            sx={{ padding: "4px" }}
+                                          sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                           >
                                             SGST
                                           </TableCell>
                                           <TableCell
                                             className="font-semibold text-gray-600"
-                                            sx={{ padding: "4px" }}
+                                          sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                           >
                                             CGST
                                           </TableCell>
@@ -2026,20 +1900,29 @@ import {
                                       {shouldShowIGST && (
                                         <TableCell
                                           className="font-semibold text-gray-600"
-                                          sx={{ padding: "4px" }}
+                                        sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                         >
                                           Igst
                                         </TableCell>
                                       )}
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       >
                                         Total Invoice{" "}
                                       </TableCell>
                                       <TableCell
                                         className="font-semibold text-gray-600"
-                                        sx={{ padding: "4px" }}
+                                      sx={{
+                                        color: "white", // Text color
+                                        padding: "4px",
+                                      }}
                                       ></TableCell>
                                     </TableRow>
                                   </TableHead>
@@ -2512,31 +2395,95 @@ import {
                           <div>
                             <div className="grid grid-cols-4 gap-4">
                               <div className="col-span-1"></div>
-                              <div className="col-span-1"></div>
                               <div className="col-span-1">
+
+
+
+
+
+                              <div>
+                      <div>
+                        <label htmlFor="invoice_type">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="block font-semibold mb-1"
+                          >
+                            Invoice Type
+                          </Typography>
+                        </label>
+                      </div>
+                      <div className="">
+                        <div className="">
+                         
+                          <select
+                            name="invoice_type"
+                            className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                            style={{
+                              height: "28px", // Match this to your Autocomplete's root height
+                              padding: "4px 6px", // Match this padding
+                              fontSize: "0.875rem", // Ensure font size is consistent
+                              width: 300,
+                            }}
+                            value={invoiceData[0].invoice_type} // Ensures the selected value matches the state
+                            onChange={handleInputChangeInvoiceData}
+                          >
+                            {vendorData.gst_no === "" // Check if gst_no is empty
+                              ? // Show only these options when gst_no is empty
+                                [
+                                  "Select Invoice Type",
+                                  "Unregistered Local",
+                                  "Unregistered Non-Local",
+                                ].map((option) => (
+                                  <option
+                                    key={option}
+                                    value={option.toLowerCase()}
+                                  >
+                                    {option}
+                                  </option>
+                                ))
+                              : // Show other options when gst_no is not empty
+                                [
+                                  "Select Invoice Type",
+                                  "B2B",
+                                  "B2C-L",
+                                  "BSC-O",
+                                  "Nil Rated",
+                                  "Advance Received",
+                                  "SEZ",
+                                  "Export",
+                                ].map((option) => (
+                                  <option
+                                    key={option}
+                                    value={option.toLowerCase()}
+                                  >
+                                    {option}
+                                  </option>
+                                ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+
+
+                              </div>
+                              <div className="col-span-1">
+                                <div>
+                        <label htmlFor="invoice_type">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="block font-semibold mb-1"
+                          >
+                           Select TDS/TCS
+                          </Typography>
+                        </label>
+                      </div>
                                 <div className="text-sm my-2">
-                                  {/* <div className="col-span-6 font-bold">
-                                      TCS :
-                                    </div>
-                                    <div className="col-span-6">
-                                      <TextField
-                                        variant="outlined"
-                                        size="small"
-                                        name="tcs"
-                                        value={invoiceData[0].tcs}
-                                        onChange={handleInputChangeInvoiceData}
-                                        sx={{
-                                          "& .MuiOutlinedInput-root": {
-                                            padding: "1px",
-                                            fontSize: "0.875rem",
-                                            minHeight: "1px",
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            padding: "2px",
-                                          },
-                                        }}
-                                      />
-                                    </div> */}
+                                 
                                   <select
                                     id="option"
                                     value={selectedTDSTCSOption}
@@ -2554,7 +2501,7 @@ import {
                                 </div>
                               
                               </div>
-                              <div className="col-span-1">
+                              <div className="col-span-1 mt-5">
                                
                                 <div className=" text-sm ">
                                   <div className="">
@@ -2571,7 +2518,7 @@ import {
                                               onChange={
                                                 handleInputChangeInvoiceData
                                               }
-                                              className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
                                           <div>
@@ -2584,7 +2531,7 @@ import {
                                               onChange={
                                                 handleInputChangeInvoiceData
                                               }
-                                              className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
                                         </div>
@@ -2603,7 +2550,7 @@ import {
                                                 handleInputChangeInvoiceData
                                               }
                                               value={invoiceData[0].tds_tcs_rate}
-                                              className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
                                           <div>
@@ -2616,7 +2563,7 @@ import {
                                                 handleInputChangeInvoiceData
                                               }
                                               value={invoiceData[0].tds}
-                                              className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
                                         </div>
@@ -2626,7 +2573,7 @@ import {
                                 </div>
                                
                                 <div className="grid grid-cols-12 text-sm my-2">
-                                  <div className="col-span-6 font-bold">
+                                  <div className="col-span-6 font-bold my-auto">
                                     Amount Receivable :
                                   </div>
                                   <div className="col-span-6">

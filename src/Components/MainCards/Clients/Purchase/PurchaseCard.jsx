@@ -267,14 +267,14 @@ export default function PurchaseCard({ rowId, fileData }) {
         `http://127.0.0.1:8000/api/get-purchase-invoice/${id}/${rowId}`
       );
       console.log("dd123", response.data);
-      setFormData(response.data.client_location);
-      setVendorData(response.data.vendor);
-      setRows(response.data.product_summaries);
-      if (response.data.purchase_invoice) {
+      setFormData(response?.data?.client_location);
+      setVendorData(response?.data?.vendor);
+      setRows(response?.data?.product_summaries);
+      if (response?.data?.purchase_invoice) {
         setInvoiceData([
           {
-            ...response.data.purchase_invoice,
-            invoice_type: response.data.purchase_invoice.invoice_type || "", // Ensure the field is populated
+            ...response?.data?.purchase_invoice,
+            invoice_type: response?.data?.purchase_invoice?.invoice_type || "", // Ensure the field is populated
           },
         ]);
       }
@@ -354,10 +354,10 @@ export default function PurchaseCard({ rowId, fileData }) {
           `http://127.0.0.1:8000/api/get-purchase/${id}`
         );
         // console.log("ggggggg->", response.data);
-        setOffData(response.data.serializer);
-        setCustomerData(response.data.serializer_customer);
-        setProduct_ser_Data(response.data.product_serializer);
-        setBranch_ser_name(response.data.branch_serializer);
+        setOffData(response?.data?.serializer);
+        setCustomerData(response?.data?.serializer_customer);
+        setProduct_ser_Data(response?.data?.product_serializer);
+        setBranch_ser_name(response?.data?.branch_serializer);
       } catch (error) {}
     };
     fetchBankDetails();
@@ -367,21 +367,21 @@ export default function PurchaseCard({ rowId, fileData }) {
     if (!newValue) return;
 
     try {
-      if (isBranch && newValue.branch_name) {
+      if (isBranch && newValue?.branch_name) {
         setFormData((prev) => ({
           ...prev,
-          branchID: newValue.id, // Store branch ID
+          branchID: newValue?.id, // Store branch ID
         }));
-      } else if (newValue.location) {
+      } else if (newValue?.location) {
         const updatedFormData = {
-          offLocID: newValue.id,
-          location: newValue.location,
-          contact: newValue.contact || "",
-          address: newValue.address || "",
-          city: newValue.city || "",
-          state: newValue.state || "",
-          country: newValue.country || "",
-          branchID: newValue.branch || "",
+          offLocID: newValue?.id,
+          location: newValue?.location,
+          contact: newValue?.contact || "",
+          address: newValue?.address || "",
+          city: newValue?.city || "",
+          state: newValue?.state || "",
+          country: newValue?.country || "",
+          branchID: newValue?.branch || "",
         };
         setFormData(updatedFormData);
         setShowBranchInput(false);
@@ -418,8 +418,8 @@ export default function PurchaseCard({ rowId, fileData }) {
       return;
     }
 
-    const matchingLocation = offData.find(
-      (option) => option.location.toLowerCase() === newInputValue.toLowerCase()
+    const matchingLocation = offData?.find(
+      (option) => option?.location?.toLowerCase() === newInputValue.toLowerCase()
     );
 
     if (matchingLocation) {
@@ -1061,53 +1061,57 @@ export default function PurchaseCard({ rowId, fileData }) {
                     </div>
                     <div className="col-span-8">
                       <div className="">
-                        <Stack spacing={1} sx={{ width: 300 }}>
-                          <Autocomplete
-                            freeSolo
-                            id="location-select"
-                            disableClearable
-                            options={offData}
-                            getOptionLabel={(option) => option.location || ""}
-                            onChange={(event, newValue) =>
-                              handleLocationChange(newValue)
-                            }
-                            onInputChange={handleInputChangeLocation}
-                            value={
-                              offData.find(
-                                (option) =>
-                                  option.location === formData.location
-                              ) || null
-                            } // Bind the value
-                            renderOption={(props, option) => (
-                              <li
-                                {...props}
-                                key={option.id}
-                                style={{
-                                  padding: "4px 8px",
-                                  fontSize: "0.875rem",
-                                }}
-                              >
-                                {option.location}
-                              </li>
-                            )}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                size="small"
-                                placeholder="Office Location"
-                                sx={{
-                                  "& .MuiInputBase-root": {
-                                    height: 28,
-                                    padding: "4px 6px",
-                                  },
-                                  "& .MuiOutlinedInput-input": {
-                                    padding: "4px 6px",
-                                  },
-                                }}
-                              />
-                            )}
-                          />
-                        </Stack>
+                      <Stack spacing={1} sx={{ width: 300 }}>
+  <Autocomplete
+    freeSolo
+    id="branch-select"
+    disableClearable
+    options={offData}
+    getOptionLabel={(option) =>
+      typeof option === "string" ? option : option.location || ""
+    }
+    isOptionEqualToValue={(option, value) =>
+      option.location?.toLowerCase() === value?.toLowerCase()
+    }
+    value={formData.location || ""}
+    onInputChange={(event, newInputValue) => {
+     
+      console.log("Input Changed:", newInputValue); // Debug: Log input changes
+
+      handleInputChangeLocation(event, newInputValue);
+    }}
+    onChange={(event, newValue) => {
+      console.log("Option Selected:", newValue); // Debug: Log option selection
+      handleLocationChange(newValue);
+
+    }}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        size="small"
+
+      value={formData.location || "" }
+        className="border border-red-500"
+        placeholder="Branch Select"
+        sx={{
+          "& .MuiInputBase-root": {
+            height: 28,
+            padding: "4px 6px",
+          },
+          "& .MuiOutlinedInput-input": {
+            padding: "4px 6px",
+          },
+        }}
+        slotProps={{
+          input: {
+            ...params.InputProps,
+            type: "search",
+          },
+        }}
+      />
+    )}
+  />
+</Stack>
                       </div>
                     </div>
                   </div>
