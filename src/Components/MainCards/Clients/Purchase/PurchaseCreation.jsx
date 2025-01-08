@@ -788,42 +788,143 @@ function PurchaseCreation() {
   };
 
   useEffect(() => {
-    const tdsTcsRate = parseFloat(invoiceData[0]?.tds_tcs_rate) || 0;
-    const totalAmount = parseFloat(invoiceData[0]?.taxable_amount) || 0;
-    const TotalAllInvoice =
-      parseFloat(invoiceData[0]?.total_invoice_value) || 0;
+    const currentType = invoiceData[0]?.invoice_type.toLowerCase();
 
-    // Calculate TCS or TDS amount and format to 2 decimal places
-    const amountToAddOrSubtract = ((totalAmount * tdsTcsRate) / 100).toFixed(2);
+    if (currentType === "nil rated") {
+      setRows((prevRows) =>
+        prevRows.map((row) => ({
+          ...row,
+          cgst: "0.00",
+          sgst: "0.00",
+          igst: "0.00",
+          total_invoice: parseFloat(row.product_amount || 0).toFixed(2),
+        }))
+      );
+      setShouldShowIGST(false);
+      setShouldShowCGSTSGST(false);
+    } else if (currentType === "sez") {
+      setRows((prevRows) =>
+        prevRows.map((row) => {
+          if (row.product_amount && row.gstRate) {
+            const gstValue = (
+              (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+              100
+            ).toFixed(2);
+            return {
+              ...row,
+              cgst: "0.00",
+              sgst: "0.00",
+              igst: gstValue,
+              total_invoice: (
+                parseFloat(row.product_amount) + parseFloat(gstValue)
+              ).toFixed(2),
+            };
+          }
+          return row;
+        })
+      );
+      setShouldShowIGST(true);
+      setShouldShowCGSTSGST(false);
+    } else {
+      const vendorGstPrefix = vendorData.gst_no?.slice(0, 2);
+      const branchGstPrefix = branchNoGst?.slice(0, 2);
 
-    setInvoiceData((prevData) =>
-      prevData.map((data, index) =>
-        index === 0
-          ? {
-              ...data,
-              tcs: selectedTDSTCSOption === "tcs" ? amountToAddOrSubtract : 0,
-              tds: selectedTDSTCSOption === "tds" ? amountToAddOrSubtract : 0,
-              amount_receivable:
-                selectedTDSTCSOption === "tcs"
-                  ? (
-                      TotalAllInvoice + parseFloat(amountToAddOrSubtract)
-                    ).toFixed(2)
-                  : (
-                      TotalAllInvoice - parseFloat(amountToAddOrSubtract)
-                    ).toFixed(2),
+      if (vendorGstPrefix === branchGstPrefix) {
+        setRows((prevRows) =>
+          prevRows.map((row) => {
+            if (row.product_amount && row.gstRate) {
+              const gstValue = (
+                (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+                100
+              ).toFixed(2);
+              const halfGst = (gstValue / 2).toFixed(2);
+              return {
+                ...row,
+                cgst: halfGst,
+                sgst: halfGst,
+                igst: "0.00",
+                total_invoice: (
+                  parseFloat(row.product_amount) +
+                  parseFloat(halfGst) +
+                  parseFloat(halfGst)
+                ).toFixed(2),
+              };
             }
-          : data
-      )
-    );
-  }, [
-    invoiceData[0]?.taxable_amount,
-    invoiceData[0]?.total_invoice_value,
-    invoiceData[0]?.tds_tcs_rate,
-    selectedTDSTCSOption,
-  ]);
+            return row;
+          })
+        );
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(true);
+      } else {
+        // Different GST region: Show IGST
+        setRows((prevRows) =>
+          prevRows.map((row) => {
+            if (row.product_amount && row.gstRate) {
+              const gstValue = (
+                (parseFloat(row.gstRate) * parseFloat(row.product_amount)) /
+                100
+              ).toFixed(2);
+              return {
+                ...row,
+                cgst: "0.00",
+                sgst: "0.00",
+                igst: gstValue,
+                total_invoice: (
+                  parseFloat(row.product_amount) + parseFloat(gstValue)
+                ).toFixed(2),
+              };
+            }
+            return row;
+          })
+        );
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      }
+    }
+  }, [invoiceData[0]?.invoice_type, vendorData.gst_no, branchNoGst]);
+
+  // Auto-detect TCS or TDS on initial load based on prepopulated values
 
   useEffect(() => {
-    if (vendorData.gst_no && branchNoGst) {
+    if (invoiceData[0].tcs && parseFloat(invoiceData[0].tcs) > 0) {
+      setSelectedTDSTCSOption("tcs");
+    } else if (invoiceData[0].tds && parseFloat(invoiceData[0].tds) > 0) {
+      setSelectedTDSTCSOption("tds");
+    }
+  }, [invoiceData]);
+
+  useEffect(() => {
+    if (!vendorData.gst_no) {
+      setFilteredInvoiceTypes([
+        "Select Entity Type",
+        "Unregistered Local",
+        "Unregistered Non-Local",
+      ]);
+
+      if (invoiceData[0].invoice_type.toLowerCase() === "unregistered local") {
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(true);
+      } else if (
+        invoiceData[0].invoice_type.toLowerCase() === "unregistered non-local"
+      ) {
+        setShouldShowIGST(true);
+        setShouldShowCGSTSGST(false);
+      } else {
+        setShouldShowIGST(false);
+        setShouldShowCGSTSGST(false);
+      }
+    } else {
+      setFilteredInvoiceTypes([
+        "Select Entity Type",
+        "B2B",
+        "B2C-L",
+        "BSC-O",
+        "Nil Rated",
+        "Advance Received",
+        "SEZ",
+        "Export",
+      ]);
+
       const vendorGstPrefix = vendorData.gst_no.slice(0, 2);
       const branchGstPrefix = branchNoGst.slice(0, 2);
 
@@ -840,31 +941,6 @@ function PurchaseCreation() {
         setShouldShowIGST(true);
         setShouldShowCGSTSGST(false);
       }
-    } else if (!vendorData.gst_no) {
-      setFilteredInvoiceTypes(["Unregistered Local", "Unregistered Non-Local"]);
-
-      if (invoiceData[0].invoice_type.toLowerCase() === "unregistered local") {
-        setShouldShowIGST(false);
-        setShouldShowCGSTSGST(true);
-      } else if (
-        invoiceData[0].invoice_type.toLowerCase() === "unregistered non-local"
-      ) {
-        setShouldShowIGST(true);
-        setShouldShowCGSTSGST(false);
-      } else {
-        setShouldShowIGST(false);
-        setShouldShowCGSTSGST(false);
-      }
-    } else {
-      setFilteredInvoiceTypes([
-        "B2B",
-        "B2C-L",
-        "BSC-O",
-        "Nil Rated",
-        "Advance Received",
-        "SEZ",
-        "Export",
-      ]);
     }
   }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
 
