@@ -54,6 +54,65 @@ import {
   function ExpensesCreation() {
     const { id } = useParams();
     const dispatch = useDispatch();
+    const resetFields = () => {
+      setFormData({
+        offLocID: "",
+        location: "",
+        contact: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        branchID: "",
+      });
+    
+      setVendorData({
+        vendorID: "",
+        gst_no: "",
+        name: "",
+        pan: "",
+        vendor_address: "",
+        customer: false,
+        vendor: false,
+      });
+    
+      setRows([
+        {
+          product: "",
+          hsnCode: "",
+          gstRate: "",
+          description: "",
+          unit: "",
+          rate: "",
+          product_amount: "",
+          cgst: "",
+          sgst: "",
+          igst: "",
+          total_invoice: 0,
+        },
+      ]);
+    
+      setInvoiceData([
+        {
+          month: "",
+          invoice_no: "",
+          invoice_date: "",
+          invoice_type: "",
+          entry_type: "",
+          attach_e_way_bill: "",
+          attach_invoice: "",
+          taxable_amount: "",
+          totalall_gst: "",
+          total_invoice_value: "",
+          tds_tcs_rate: "",
+          tcs: "",
+          tds: "",
+          amount_receivable: "",
+          utilise_month: "",
+          utilise_edit: false,
+        },
+      ]);
+    };
     const [openCreateModal, setOpenCreateModal] = React.useState(false);
     const [offData, setOffData] = useState([]);
     const [value, setValue] = React.useState("1");
@@ -87,6 +146,8 @@ import {
     const handleCreateClose = () => {
       console.log("Closing modal");
       setOpenCreateModal(false);
+      resetFields()
+      
     };
     
     // const handleCreateClose = () => setOpenCreateModal(false);
@@ -719,63 +780,7 @@ import {
           handleCreateClose();
   
           // Clear all form data
-          setFormData({
-            offLocID: "",
-            location: "",
-            contact: "",
-            address: "",
-            city: "",
-            state: "",
-            country: "",
-            branchID: "",
-          });
-    
-          setVendorData({
-            vendorID: "",
-            gst_no: "",
-            name: "",
-            pan: "",
-            customer_address: "",
-            customer: false,
-            vendor: false,
-          });
-    
-          setRows([
-            {
-              product: "",
-              hsnCode: "",
-              gstRate: "",
-              description: "",
-              unit: "",
-              rate: "",
-              product_amount: "",
-              cgst: 0,
-              sgst: 0,
-              igst: 0,
-              total_invoice: 0,
-            },
-          ]);
-    
-          setInvoiceData([
-            {
-              month: "",
-              invoice_no: "",
-              invoice_date: "",
-              invoice_type: "",
-              entry_type: "",
-              attach_invoice: "",
-              attach_e_way_bill: "",
-              taxable_amount: "",
-              totalall_gst: "",
-              total_invoice_value: "",
-              tds_tcs_rate: "",
-              tcs: "",
-              tds: "",
-              amount_receivable: "",
-              utilise_month: "",
-              utilise_edit: false,
-            },
-          ]);
+          resetFields()
         } else {
           throw new Error("Unexpected response status.");
         }

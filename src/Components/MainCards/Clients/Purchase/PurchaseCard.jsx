@@ -85,7 +85,65 @@ export default function PurchaseCard({ rowId, fileData }) {
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const resetFields = () => {
+    setFormData({
+      offLocID: "",
+      location: "",
+      contact: "",
+      address: "",
+      city: "",
+      state: "",
+      country: "",
+      branchID: "",
+    });
 
+    setVendorData({
+      vendorID: "",
+      gst_no: "",
+      name: "",
+      pan: "",
+      vendor_address: "",
+      customer: false,
+      vendor: false,
+    });
+
+    setRows([
+      {
+        product: "",
+        hsnCode: "",
+        gstRate: "",
+        description: "",
+        unit: "",
+        rate: "",
+        product_amount: "",
+        cgst: "",
+        sgst: "",
+        igst: "",
+        total_invoice: 0,
+      },
+    ]);
+
+    setInvoiceData([
+      {
+        month: "",
+        invoice_no: "",
+        invoice_date: "",
+        invoice_type: "",
+        entry_type: "",
+        attach_e_way_bill: "",
+        attach_invoice: "",
+        taxable_amount: "",
+        totalall_gst: "",
+        total_invoice_value: "",
+        tds_tcs_rate: "",
+        tcs: "",
+        tds: "",
+        amount_receivable: "",
+        utilise_month: "",
+        utilise_edit: false,
+      },
+    ]);
+  };
   const handleFileChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -196,7 +254,11 @@ export default function PurchaseCard({ rowId, fileData }) {
     setValue(newValue);
   };
 
-  const handleCreateClose = () => setOpenCreateModal(false);
+  const handleCreateClose = () => {
+    // console.log("Closing modal");
+    setOpenCreateModal(false);
+    resetFields();
+  };
   const [formData, setFormData] = useState({
     offLocID: "",
     location: "",
@@ -812,6 +874,7 @@ export default function PurchaseCard({ rowId, fileData }) {
         dispatch(fetchClientDetails(id));
     await fetchBankDetails()
         handleCreateClose();
+        resetFields();
       } else {
         toast.error("Failed to Update PurchaseInvoice. Please try again.", {
           position: "top-right",
@@ -1120,7 +1183,7 @@ export default function PurchaseCard({ rowId, fileData }) {
                                 size="small"
                                 value={formData.location || ""}
                                 className="border border-red-500"
-                                placeholder="Branch Select"
+                                placeholder="Location Select"
                                 sx={{
                                   "& .MuiInputBase-root": {
                                     height: 28,
