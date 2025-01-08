@@ -15,6 +15,7 @@ import { useParams } from "react-router-dom";
 import PurchaseCreation from "./PurchaseCreation";
 import PurchaseFileCreation from "./PurchaseFileCreation";
 import PurchaseCard from "./PurchaseCard";
+import Date from "./Date";
 // import SalesCreation from "./SalesCreation";
 // import SalesFileCreation from "./SalesFileCreation";
 // import SalesCard from "./SalesCard";
@@ -258,7 +259,7 @@ function Purchase({ purchaseInvoiceData }) {
       
           <div className="flex align-middle items-center gap-2">
           
-           
+           {/* <Date /> */}
             <PurchaseFileCreation />
             <PurchaseCreation />
           </div>

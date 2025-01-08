@@ -1742,7 +1742,7 @@ export default function IncomeCard({ rowId, fileData }) {
                                       value={vendorData.gst_no || ""} // Bind value to formData.gst_no
                                       renderOption={(props, option) => (
                                         <li {...props} key={option.id}>
-                                          {option.gst_no}
+                                          {option.gst_no} ({option.name})
                                         </li>
                                       )}
                                       renderInput={(params) => (

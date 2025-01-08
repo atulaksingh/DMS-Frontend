@@ -57,7 +57,7 @@ function SalesInvoice() {
               <h2 className="text-lg font-bold">Location Details</h2>
               <p className="text-gray-600">
                 {" "}
-                Office Location: {invoiceData?.city || "Not Available"}
+                Office Location: {invoiceData?.client_location_name || "Not Available"}
               </p>
               <p className="text-gray-600">
                 Address: lo

@@ -1397,7 +1397,6 @@ function PurchaseCreation() {
                         labelProps={{
                           className: "hidden",
                         }}
-                        // containerProps={{ className: "min-w-full" }}
                         style={{
                           height: "28px", // Match this to your Autocomplete's root height
                           padding: "4px 6px", // Match this padding
