@@ -348,21 +348,20 @@ export default function PurchaseCard({ rowId, fileData }) {
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
   useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-purchase/${id}`
-        );
-        // console.log("ggggggg->", response.data);
-        setOffData(response?.data?.serializer);
-        setCustomerData(response?.data?.serializer_customer);
-        setProduct_ser_Data(response?.data?.product_serializer);
-        setBranch_ser_name(response?.data?.branch_serializer);
-      } catch (error) {}
-    };
     fetchBankDetails();
   }, [id]);
-
+  const fetchBankDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/get-purchase/${id}`
+      );
+      // console.log("ggggggg->", response.data);
+      setOffData(response?.data?.serializer);
+      setCustomerData(response?.data?.serializer_customer);
+      setProduct_ser_Data(response?.data?.product_serializer);
+      setBranch_ser_name(response?.data?.branch_serializer);
+    } catch (error) {}
+  };
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (!newValue) return;
 
@@ -400,9 +399,24 @@ export default function PurchaseCard({ rowId, fileData }) {
     }
   };
 
+  // useEffect(() => {
+  //   console.log("formdata changed", formData);
+  //   const matchingLocation = offData?.find(
+  //     (option) =>
+  //       option?.location?.toLowerCase() === formData?.location?.toLowerCase()
+  //   );
+
+  //   console.log("mila ", matchingLocation);
+  //   if (matchingLocation) {
+  //     setShowBranchInput(false);
+  //   }
+  // }, [formData]);
+
   // console.log("123",branchNoGst)
   const handleInputChangeLocation = async (event, newInputValue) => {
+    console.log("in change location");
     if (!newInputValue) {
+      console.log("no new value");
       setFormData((prev) => ({
         ...prev,
         offLocID: "",
@@ -417,19 +431,31 @@ export default function PurchaseCard({ rowId, fileData }) {
       setShowBranchInput(false);
       return;
     }
-
+    console.log("offdata", offData);
     const matchingLocation = offData?.find(
-      (option) => option?.location?.toLowerCase() === newInputValue.toLowerCase()
+      (option) =>
+        option?.location?.toLowerCase() === newInputValue.toLowerCase()
     );
+    console.log({ matchingLocation });
 
     if (matchingLocation) {
+      console.log("found match");
       handleLocationChange(matchingLocation);
+      setShowBranchInput(false);
     } else {
+      console.log("no match found");
       setShowBranchInput(true);
       setFormData((prev) => ({
         ...prev,
         location: newInputValue,
         offLocID: "",
+        contact: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        branchID: "",
+        
       }));
     }
   };
@@ -784,6 +810,7 @@ export default function PurchaseCard({ rowId, fileData }) {
           autoClose: 2000,
         });
         dispatch(fetchClientDetails(id));
+    await fetchBankDetails()
         handleCreateClose();
       } else {
         toast.error("Failed to Update PurchaseInvoice. Please try again.", {
@@ -955,6 +982,7 @@ export default function PurchaseCard({ rowId, fileData }) {
   }, [vendorData.gst_no, branchNoGst, invoiceData[0].invoice_type]);
 
   const truncateFileName = (fileName, maxLength = 20) => {
+    if (typeof fileName !== "string") return "Invalid file name";
     if (fileName.length <= maxLength) return fileName;
     const start = fileName.slice(0, 10); // First 10 characters
     const end = fileName.slice(-10); // Last 10 characters
@@ -1061,57 +1089,57 @@ export default function PurchaseCard({ rowId, fileData }) {
                     </div>
                     <div className="col-span-8">
                       <div className="">
-                      <Stack spacing={1} sx={{ width: 300 }}>
-  <Autocomplete
-    freeSolo
-    id="branch-select"
-    disableClearable
-    options={offData}
-    getOptionLabel={(option) =>
-      typeof option === "string" ? option : option.location || ""
-    }
-    isOptionEqualToValue={(option, value) =>
-      option.location?.toLowerCase() === value?.toLowerCase()
-    }
-    value={formData.location || ""}
-    onInputChange={(event, newInputValue) => {
-     
-      console.log("Input Changed:", newInputValue); // Debug: Log input changes
+                        <Stack spacing={1} sx={{ width: 300 }}>
+                          <Autocomplete
+                            freeSolo
+                            id="location-select"
+                            disableClearable
+                            options={offData}
+                            getOptionLabel={(option) =>
+                              typeof option === "string"
+                                ? option
+                                : option.location || ""
+                            }
+                            isOptionEqualToValue={(option, value) =>
+                              option.location?.toLowerCase() ===
+                              value?.toLowerCase()
+                            }
+                            value={formData.location || ""}
+                            onInputChange={(event, newInputValue) => {
+                              console.log("Input Changed:", newInputValue); // Debug: Log input changes
 
-      handleInputChangeLocation(event, newInputValue);
-    }}
-    onChange={(event, newValue) => {
-      console.log("Option Selected:", newValue); // Debug: Log option selection
-      handleLocationChange(newValue);
-
-    }}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        size="small"
-
-      value={formData.location || "" }
-        className="border border-red-500"
-        placeholder="Branch Select"
-        sx={{
-          "& .MuiInputBase-root": {
-            height: 28,
-            padding: "4px 6px",
-          },
-          "& .MuiOutlinedInput-input": {
-            padding: "4px 6px",
-          },
-        }}
-        slotProps={{
-          input: {
-            ...params.InputProps,
-            type: "search",
-          },
-        }}
-      />
-    )}
-  />
-</Stack>
+                              handleInputChangeLocation(event, newInputValue);
+                            }}
+                            onChange={(event, newValue) => {
+                              console.log("Option Selected:", newValue); // Debug: Log option selection
+                              handleLocationChange(newValue);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                size="small"
+                                value={formData.location || ""}
+                                className="border border-red-500"
+                                placeholder="Branch Select"
+                                sx={{
+                                  "& .MuiInputBase-root": {
+                                    height: 28,
+                                    padding: "4px 6px",
+                                  },
+                                  "& .MuiOutlinedInput-input": {
+                                    padding: "4px 6px",
+                                  },
+                                }}
+                                slotProps={{
+                                  input: {
+                                    ...params.InputProps,
+                                    type: "search",
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        </Stack>
                       </div>
                     </div>
                   </div>
@@ -1606,16 +1634,25 @@ export default function PurchaseCard({ rowId, fileData }) {
                           className="mb-1"
                         />
 
-                        <a
-                          href={`http://127.0.0.1:8000${bankData?.attach_invoice}`}
+<a
+                          href={
+                            typeof invoiceData[0]?.attach_invoice === "string"
+                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`
+                              : "#"
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
-                            {bankData?.attach_invoice
-                              ? truncateFileName(
-                                  bankData.attach_invoice.split("/").pop()
-                                )
+                            {invoiceData[0]?.attach_invoice
+                              ? typeof invoiceData[0]?.attach_invoice ===
+                                "string"
+                                ? truncateFileName(
+                                    invoiceData[0].attach_invoice
+                                      .split("/")
+                                      .pop()
+                                  )
+                                : invoiceData[0]?.attach_invoice.name // Show File name if it's a File object
                               : "No file uploaded"}
                           </p>
                         </a>
@@ -1649,17 +1686,26 @@ export default function PurchaseCard({ rowId, fileData }) {
                           className="mb-1"
                         />
 
-                        <a
-                          href={`http://127.0.0.1:8000${bankData?.attach_e_way_bill}`}
+<a
+                          href={
+                            typeof invoiceData[0]?.attach_e_way_bill ===
+                            "string"
+                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`
+                              : "#"
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <p className="text-blue-500">
-                            {/* {bankData?.attach_e_way_bill?.split("/").pop()} */}
-                            {bankData?.attach_e_way_bill
-                              ? truncateFileName(
-                                  bankData.attach_e_way_bill.split("/").pop()
-                                )
+                            {invoiceData[0]?.attach_e_way_bill
+                              ? typeof invoiceData[0]?.attach_e_way_bill ===
+                                "string"
+                                ? truncateFileName(
+                                    invoiceData[0].attach_e_way_bill
+                                      .split("/")
+                                      .pop()
+                                  )
+                                : invoiceData[0]?.attach_e_way_bill.name // Show File name if it's a File object
                               : "No file uploaded"}
                           </p>
                         </a>
@@ -1712,7 +1758,6 @@ export default function PurchaseCard({ rowId, fileData }) {
                       />
                     </div>
                   </div> */}
-        
                 </div>
               </div>
 

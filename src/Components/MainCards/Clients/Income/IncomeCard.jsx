@@ -336,46 +336,46 @@ export default function IncomeCard({ rowId, fileData }) {
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
   useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-income/${id}`
-        );
-        console.log("ggggggg->", response.data);
-        setOffData(response.data.serializer);
-        setCustomerData(response.data.serializer_customer);
-        setProduct_ser_Data(response.data.product_serializer);
-        setBranch_ser_name(response.data.branch_serializer);
-      } catch (error) {}
-    };
     fetchBankDetails();
   }, [id]);
+  const fetchBankDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/get-income/${id}`
+      );
+      // console.log("ggggggg->", response.data);
+      setOffData(response.data.serializer);
+      setCustomerData(response.data.serializer_customer);
+      setProduct_ser_Data(response.data.product_serializer);
+      setBranch_ser_name(response.data.branch_serializer);
+    } catch (error) {}
+  };
 
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (!newValue) return;
 
     try {
-      if (isBranch && newValue.branch_name) {
+      if (isBranch && newValue?.branch_name) {
         setFormData((prev) => ({
           ...prev,
-          branchID: newValue.id, // Store branch ID
+          branchID: newValue?.id, // Store branch ID
         }));
-      } else if (newValue.location) {
+      } else if (newValue?.location) {
         const updatedFormData = {
-          offLocID: newValue.id,
-          location: newValue.location,
-          contact: newValue.contact || "",
-          address: newValue.address || "",
-          city: newValue.city || "",
-          state: newValue.state || "",
-          country: newValue.country || "",
-          branchID: newValue.branch || "",
+          offLocID: newValue?.id,
+          location: newValue?.location,
+          contact: newValue?.contact || "",
+          address: newValue?.address || "",
+          city: newValue?.city || "",
+          state: newValue?.state || "",
+          country: newValue?.country || "",
+          branchID: newValue?.branch || "",
         };
         setFormData(updatedFormData);
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-income/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `http://127.0.0.1:8000/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -405,19 +405,27 @@ export default function IncomeCard({ rowId, fileData }) {
       setShowBranchInput(false);
       return;
     }
-
-    const matchingLocation = offData.find(
-      (option) => option.location.toLowerCase() === newInputValue.toLowerCase()
+    const matchingLocation = offData?.find(
+      (option) =>
+        option?.location?.toLowerCase() === newInputValue.toLowerCase()
     );
 
     if (matchingLocation) {
       handleLocationChange(matchingLocation);
+      setShowBranchInput(false);
     } else {
       setShowBranchInput(true);
       setFormData((prev) => ({
         ...prev,
         location: newInputValue,
         offLocID: "",
+        contact: "",
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+        branchID: "",
+        
       }));
     }
   };
@@ -773,6 +781,7 @@ export default function IncomeCard({ rowId, fileData }) {
         });
         dispatch(fetchClientDetails(id));
         handleCreateClose();
+        await fetchBankDetails()
       } else {
         toast.error("Failed to Update Sales Invoice. Please try again.", {
           position: "top-right",
