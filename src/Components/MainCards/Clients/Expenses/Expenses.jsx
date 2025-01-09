@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import ExpensesCreation from "./ExpensesCreation";
 import ExpensesFileCreation from "./ExpensesFileCreation";
 import ExpensesCard from "./ExpensesCard";
+import axios from "axios";
 // import ExpensesCreation from "./ExpensesCreation";
 // import ExpensesFileCreation from "./ExpensesFileCreation";
 // import ExpensesCard from "./PurchaseCard";
@@ -42,6 +43,41 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function Expenses({ expensesInvoiceData }) {
+
+  const { id } = useParams();
+
+  const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
+  const fetchAllLocBranchDetails = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/get-income/${id}`);
+      setAllLocationBranchProductData({
+        serializer: response?.data?.serializer || [],
+        serializer_customer: response?.data?.serializer_customer || [],
+        product_serializer: response?.data?.product_serializer || [],
+        branch_serializer: response?.data?.branch_serializer || []
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setAllLocationBranchProductData({
+        serializer: [],
+        serializer_customer: [],
+        product_serializer: [],
+        branch_serializer: []
+      });
+    }
+  };
+  
+  useEffect(() => {
+    fetchAllLocBranchDetails();
+  }, [id]);
+
+
+
+
+
+
+
+
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
@@ -189,7 +225,7 @@ function Expenses({ expensesInvoiceData }) {
           const rowData = expensesInvoiceData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
           {/* <PurchaseCard rowId={rowData.id} fileData={expensesInvoiceData.attach_e_way_bill}/>  */}
-          <ExpensesCard rowId={rowData.id} fileData={expensesInvoiceData.attach_e_way_bill} />
+          <ExpensesCard rowId={rowData.id} allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails} />
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -268,7 +304,7 @@ function Expenses({ expensesInvoiceData }) {
             {/* <PurchaseFileCreation /> */}
             {/* <PurchaseCreation /> */}
             <ExpensesFileCreation />
-            <ExpensesCreation />
+            <ExpensesCreation allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails}/>
         
           </div>
         </div>

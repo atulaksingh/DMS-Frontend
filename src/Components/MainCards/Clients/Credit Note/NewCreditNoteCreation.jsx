@@ -2378,6 +2378,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
                                           </span>
                                           <TextField
                                             value={rows[index]?.unit || ""} // Editable part: unit from 'rows'
+                                            type="number"
                                             onChange={(e) => {
                                               const enteredValue =
                                                 e.target.value.replace(

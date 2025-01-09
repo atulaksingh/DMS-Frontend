@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
@@ -748,10 +746,9 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
       if (error.response) {
         const errorMessage =
           error.response.data.message || "An unexpected error occurred.";
-       
+
         toast.error(` ${errorMessage}`);
       } else if (error.request) {
-       
         alert("No response received from the server. Please try again later.");
       } else {
         console.error("Error in request setup:", error.message);
@@ -2178,7 +2175,6 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
                                                 padding: "2px",
                                                 fontSize: "0.875rem",
                                                 minHeight: "30px",
-                                                // width: "60px",
                                               },
                                               "& .MuiOutlinedInput-input": {
                                                 padding: "0px",
@@ -2187,24 +2183,45 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
                                           />
                                           <span style={{ margin: "0 5px" }}>
                                             <RxSlash />
-                                          </span>{" "}
-                                          {/* Add slash between static and editable part */}
+                                          </span>
                                           <TextField
                                             value={rows[index]?.unit || ""} // Editable part: unit from 'rows'
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "unit",
-                                                e.target.value
-                                              )
-                                            } // Update state on change
-                                            onInput={(e) => {
-                                              // Replace any negative sign with empty string
-                                              e.target.value =
+                                            type="number"
+                                            onChange={(e) => {
+                                              const enteredValue =
                                                 e.target.value.replace(
                                                   /-/g,
                                                   ""
+                                                ); // Remove negative sign
+                                              const maxAllowed =
+                                                units[index]?.unit || 0; // Get the maximum allowed value
+
+                                              if (
+                                                parseFloat(enteredValue) >
+                                                parseFloat(maxAllowed)
+                                              ) {
+                                                // Show toast notification if the value exceeds
+                                                toast.error(
+                                                  `Value cannot exceed ${maxAllowed}`,
+                                                  {
+                                                    position: "top-right",
+                                                    autoClose: 2000,
+                                                    hideProgressBar: true,
+                                                    closeOnClick: true,
+                                                    pauseOnHover: true,
+                                                    draggable: true,
+                                                    theme: "colored",
+                                                  }
                                                 );
+                                                return; // Prevent updating the state
+                                              }
+
+                                              // Update state if value is valid
+                                              handleInputChangeProduct(
+                                                index,
+                                                "unit",
+                                                enteredValue
+                                              );
                                             }}
                                             variant="outlined"
                                             size="small"
