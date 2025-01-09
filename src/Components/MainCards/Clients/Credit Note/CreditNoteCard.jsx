@@ -2898,11 +2898,11 @@ export default function CreditNoteCard({ rowId, fileData ,fetchInvoiceDetails}) 
             },
           }}
         >
-          {/* <MenuItem onClick={handleViewOpen}>View</MenuItem> */}
+          <MenuItem onClick={handleViewOpen}>View</MenuItem>
 
-          <Link to={`/purchaseInvoice/${id}/${rowId}`}>
+          {/* <Link to={`/purchaseInvoice/${id}/${rowId}`}>
             <MenuItem>View</MenuItem>
-          </Link>
+          </Link> */}
           {/* <MenuItem onClick={handleCreateOpen}>Update</MenuItem> */}
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
         </Menu>

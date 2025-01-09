@@ -212,10 +212,10 @@ function NewDCreation({ fetchInvoiceDetails }) {
       amount_receivable: "",
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -235,7 +235,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
         setInvoiceData([
           {
             ...response.data.debit_note,
-            invoice_type: response.data.debit_note.invoice_type || "", // Ensure the field is populated
+            invoice_type: response.data.debit_note.invoice_type || "", 
           },
         ]);
       }
@@ -938,7 +938,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
                 component="h2"
                 className="text-center border-b-2 border-[#366FA1] pb-3"
               >
-                Update Sales Invoice Details
+                Update Debit Note Invoice Details
               </Typography>
 
               <form
@@ -1379,7 +1379,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
                             )
                           }
                           variant="outlined"
-                          type="number"
+                          type="text"
                           size="small"
                           sx={{
                             "& .MuiInputBase-root": {
