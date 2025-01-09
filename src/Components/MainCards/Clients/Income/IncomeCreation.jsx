@@ -49,9 +49,22 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function IncomeCreation() {
+function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) {
   const { id } = useParams();
   const dispatch = useDispatch();
+
+
+  const offData = allLocationBranchProductData?.serializer || [];
+  const customerData = allLocationBranchProductData?.serializer_customer || [];
+  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
+
+
+
+
+
+
+
   const resetFields = () => {
     setFormData({
       offLocID: "",
@@ -112,12 +125,9 @@ function IncomeCreation() {
     ]);
   };
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
-  const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
   const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
-  const [customerData, setCustomerData] = useState([]);
-  const [product_ser_Data, setProduct_ser_Data] = useState([]);
-  const [branch_ser_name, setBranch_ser_name] = useState([]);
+
   const [showBranchInput, setShowBranchInput] = useState(false);
   const [branchNoGst, setBranchNoGst] = useState("");
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -269,21 +279,7 @@ function IncomeCreation() {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
-  useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-income/${id}`
-        );
-        // console.log("ggggggg->", response.data);
-        setOffData(response.data.serializer);
-        setCustomerData(response.data.serializer_customer);
-        setProduct_ser_Data(response.data.product_serializer);
-        setBranch_ser_name(response.data.branch_serializer);
-      } catch (error) {}
-    };
-    fetchBankDetails();
-  }, [id]);
+
 
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (isBranch && newValue && newValue.branch_name) {
@@ -761,7 +757,7 @@ function IncomeCreation() {
 
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-
+        await fetchAllLocBranchDetails(id)
         // Optionally close the modal and reset form
         handleCreateClose();
         resetFields()
@@ -1035,7 +1031,7 @@ function IncomeCreation() {
                           color="blue-gray"
                           className="block font-semibold"
                         >
-                          Contact
+                          Contact No
                         </Typography>
                       </label>
                     </div>
@@ -1043,7 +1039,7 @@ function IncomeCreation() {
                       {" "}
                       <div className="h-7">
                         <Input
-                          type="text"
+                          type="number"
                           size="md"
                           name="contact"
                           placeholder="Contact No"
@@ -1624,7 +1620,7 @@ function IncomeCreation() {
                             <div>
                               <div className="grid grid-cols-12 gap-2 mb-3">
                                 <div className="col-span-4 border-r-2 border-primary">
-                                  <label htmlFor="contact">
+                                  <label htmlFor="name">
                                     <Typography
                                       variant="small"
                                       color="blue-gray"

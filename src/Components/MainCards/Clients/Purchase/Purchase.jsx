@@ -16,6 +16,7 @@ import PurchaseCreation from "./PurchaseCreation";
 import PurchaseFileCreation from "./PurchaseFileCreation";
 import PurchaseCard from "./PurchaseCard";
 import Date from "./Date";
+import axios from "axios";
 // import SalesCreation from "./SalesCreation";
 // import SalesFileCreation from "./SalesFileCreation";
 // import SalesCard from "./SalesCard";
@@ -38,6 +39,41 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function Purchase({ purchaseInvoiceData }) {
+
+  const { id } = useParams();
+
+    const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
+    const fetchAllLocBranchDetails = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/get-purchase/${id}`);
+        setAllLocationBranchProductData({
+          serializer: response?.data?.serializer || [],
+          serializer_customer: response?.data?.serializer_customer || [],
+          product_serializer: response?.data?.product_serializer || [],
+          branch_serializer: response?.data?.branch_serializer || []
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setAllLocationBranchProductData({
+          serializer: [],
+          serializer_customer: [],
+          product_serializer: [],
+          branch_serializer: []
+        });
+      }
+    };
+    
+    useEffect(() => {
+      fetchAllLocBranchDetails();
+    }, [id]);
+
+
+
+
+
+
+
+
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
@@ -184,7 +220,7 @@ function Purchase({ purchaseInvoiceData }) {
         customBodyRenderLite: (dataIndex) => {
           const rowData = purchaseInvoiceData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
-          <PurchaseCard rowId={rowData.id} fileData={purchaseInvoiceData.attach_e_way_bill}/> 
+          <PurchaseCard rowId={rowData.id} allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails}/> 
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -261,7 +297,7 @@ function Purchase({ purchaseInvoiceData }) {
           
            {/* <Date /> */}
             <PurchaseFileCreation />
-            <PurchaseCreation />
+            <PurchaseCreation allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails} />
           </div>
         </div>
         <CacheProvider value={muiCache}>

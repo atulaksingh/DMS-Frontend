@@ -18,6 +18,7 @@ import { useParams } from "react-router-dom";
 import IncomeFileCreation from "./IncomeFileCreation";
 import IncomeCreation from "./IncomeCreation";
 import IncomeCard from "./IncomeCard";
+import axios from "axios";
 
 
 const muiCache = createCache({
@@ -38,6 +39,37 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function Income({incomeInvoiceData}) {
+
+  const { id } = useParams();
+
+  const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
+  const fetchAllLocBranchDetails = async () => {
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/get-income/${id}`);
+      setAllLocationBranchProductData({
+        serializer: response?.data?.serializer || [],
+        serializer_customer: response?.data?.serializer_customer || [],
+        product_serializer: response?.data?.product_serializer || [],
+        branch_serializer: response?.data?.branch_serializer || []
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setAllLocationBranchProductData({
+        serializer: [],
+        serializer_customer: [],
+        product_serializer: [],
+        branch_serializer: []
+      });
+    }
+  };
+  
+  useEffect(() => {
+    fetchAllLocBranchDetails();
+  }, [id]);
+
+
+
+
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
@@ -174,7 +206,7 @@ function Income({incomeInvoiceData}) {
           const rowData = incomeInvoiceData[dataIndex];
           return <div>{/* <BankCard rowId={rowData.id} /> */} 
           {/* <PurchaseCard rowId={rowData.id} fileData={purchaseInvoiceData.attach_e_way_bill}/>  */}
-          <IncomeCard rowId={rowData.id} fileData={incomeInvoiceData.attach_e_way_bill} />
+          <IncomeCard rowId={rowData.id} allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails} />
           </div>;
         },
         setCellHeaderProps: () => ({
@@ -251,7 +283,7 @@ function Income({incomeInvoiceData}) {
           
            
             <IncomeFileCreation />
-            <IncomeCreation />
+            <IncomeCreation allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>

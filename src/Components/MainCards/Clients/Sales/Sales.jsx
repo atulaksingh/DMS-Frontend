@@ -13,6 +13,7 @@ import { useParams } from "react-router-dom";
 import SalesCreation from "./SalesCreation";
 import SalesFileCreation from "./SalesFileCreation";
 import SalesCard from "./SalesCard";
+import axios from "axios";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -32,6 +33,36 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function Sales({ salesInvoiceData }) {
+    const { id } = useParams();
+
+    const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
+    const fetchAllLocBranchDetails = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/api/get-sales/${id}`);
+        setAllLocationBranchProductData({
+          serializer: response?.data?.serializer || [],
+          serializer_customer: response?.data?.serializer_customer || [],
+          product_serializer: response?.data?.product_serializer || [],
+          branch_serializer: response?.data?.branch_serializer || []
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setAllLocationBranchProductData({
+          serializer: [],
+          serializer_customer: [],
+          product_serializer: [],
+          branch_serializer: []
+        });
+      }
+    };
+    
+    useEffect(() => {
+      fetchAllLocBranchDetails();
+    }, [id]);
+
+
+
+
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; 
     const maxHeight = 525; 
@@ -55,6 +86,9 @@ function Sales({ salesInvoiceData }) {
   useEffect(() => {
     setTableBodyHeight(calculateTableBodyHeight());
   }, [salesInvoiceData]);
+
+
+
 
   const columns = [
     {
@@ -177,7 +211,7 @@ function Sales({ salesInvoiceData }) {
       options: {
         customBodyRenderLite: (dataIndex) => {
           const rowData = salesInvoiceData[dataIndex];
-          return <div>{/* <BankCard rowId={rowData.id} /> */} <SalesCard rowId={rowData.id} fileData={salesInvoiceData.attach_e_way_bill}/> </div>;
+          return <div>{/* <BankCard rowId={rowData.id} /> */} <SalesCard rowId={rowData.id}  allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails}/> </div>;
         },
         setCellHeaderProps: () => ({
           style: {
@@ -252,7 +286,7 @@ function Sales({ salesInvoiceData }) {
           <div className="flex align-middle items-center gap-2">
           
             <SalesFileCreation />
-            <SalesCreation />
+            <SalesCreation allLocationBranchProductData={allLocationBranchProductData} fetchAllLocBranchDetails={fetchAllLocBranchDetails}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>

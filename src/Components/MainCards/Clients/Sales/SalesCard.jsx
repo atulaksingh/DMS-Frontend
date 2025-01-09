@@ -76,9 +76,13 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function SalesCard({ rowId, fileData }) {
+export default function SalesCard({ rowId ,allLocationBranchProductData,fetchAllLocBranchDetails}) {
   const { id } = useParams();
   const salesID = rowId;
+  const offData = allLocationBranchProductData?.serializer || [];
+  const customerData = allLocationBranchProductData?.serializer_customer || [];
+  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
   // console.log("use",useParams())
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -165,12 +169,9 @@ const helloworld = () => setOpenViewModal(false)
 
   ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
 
-  const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
   const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
-  const [customerData, setCustomerData] = useState([]);
-  const [product_ser_Data, setProduct_ser_Data] = useState([]);
-  const [branch_ser_name, setBranch_ser_name] = useState([]);
+
   const [showBranchInput, setShowBranchInput] = useState(false);
   const [branchNoGst, setBranchNoGst] = useState("");
   //   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -334,21 +335,7 @@ const helloworld = () => setOpenViewModal(false)
   const [selectedLocation, setSelectedLocation] = useState("");
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
-  useEffect(() => {
-    fetchBankDetails();
-  }, [id]);
-  const fetchBankDetails = async () => {
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-sales/${id}`
-      );
-      // console.log("ggggggg->", response.data);
-      setOffData(response.data.serializer);
-      setCustomerData(response.data.serializer_customer);
-      setProduct_ser_Data(response.data.product_serializer);
-      setBranch_ser_name(response.data.branch_serializer);
-    } catch (error) {}
-  };
+
 
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (!newValue) return;
@@ -779,8 +766,9 @@ const helloworld = () => setOpenViewModal(false)
           autoClose: 2000,
         });
         dispatch(fetchClientDetails(id));
+        await fetchAllLocBranchDetails();
+        
         handleCreateClose();
-        await fetchBankDetails();
       } else {
         toast.error("Failed to Update Sales Invoice. Please try again.", {
           position: "top-right",
@@ -1125,7 +1113,7 @@ const helloworld = () => setOpenViewModal(false)
                       {" "}
                       <div className="h-7">
                         <Input
-                          type="text"
+                          type="number"
                           size="md"
                           name="contact"
                           placeholder="Contact No"
@@ -1749,7 +1737,7 @@ const helloworld = () => setOpenViewModal(false)
                             <div>
                               <div className="grid grid-cols-12 gap-2 mb-3">
                                 <div className="col-span-4 border-r-2 border-primary">
-                                  <label htmlFor="contact">
+                                  <label htmlFor="name">
                                     <Typography
                                       variant="small"
                                       color="blue-gray"

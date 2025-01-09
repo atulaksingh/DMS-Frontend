@@ -77,9 +77,20 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function IncomeCard({ rowId, fileData }) {
+export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAllLocBranchDetails }) {
   const { id } = useParams();
   const incomeID = rowId;
+
+
+  const offData = allLocationBranchProductData?.serializer || [];
+  const customerData = allLocationBranchProductData?.serializer_customer || [];
+  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
+
+
+
+
+
   // console.log("use",useParams())
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -166,12 +177,9 @@ export default function IncomeCard({ rowId, fileData }) {
 
   ///////////////////////////////////////////////////////  sales Update ////////////////////////////////////
 
-  const [offData, setOffData] = useState([]);
   const [value, setValue] = React.useState("1");
   const [selectedValueInvoiceType, setSelectedValueInvoiceType] = useState("");
-  const [customerData, setCustomerData] = useState([]);
-  const [product_ser_Data, setProduct_ser_Data] = useState([]);
-  const [branch_ser_name, setBranch_ser_name] = useState([]);
+  
   const [showBranchInput, setShowBranchInput] = useState(false);
   const [branchNoGst, setBranchNoGst] = useState("");
   //   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -335,21 +343,7 @@ export default function IncomeCard({ rowId, fileData }) {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
-  useEffect(() => {
-    fetchBankDetails();
-  }, [id]);
-  const fetchBankDetails = async () => {
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-income/${id}`
-      );
-      // console.log("ggggggg->", response.data);
-      setOffData(response.data.serializer);
-      setCustomerData(response.data.serializer_customer);
-      setProduct_ser_Data(response.data.product_serializer);
-      setBranch_ser_name(response.data.branch_serializer);
-    } catch (error) {}
-  };
+ 
 
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (!newValue) return;
@@ -781,7 +775,7 @@ export default function IncomeCard({ rowId, fileData }) {
         });
         dispatch(fetchClientDetails(id));
         handleCreateClose();
-        await fetchBankDetails()
+        await fetchAllLocBranchDetails(id)
       } else {
         toast.error("Failed to Update Sales Invoice. Please try again.", {
           position: "top-right",
@@ -1118,7 +1112,7 @@ export default function IncomeCard({ rowId, fileData }) {
                           color="blue-gray"
                           className="block font-semibold"
                         >
-                          Contact
+                          Contact No
                         </Typography>
                       </label>
                     </div>
@@ -1126,7 +1120,7 @@ export default function IncomeCard({ rowId, fileData }) {
                       {" "}
                       <div className="h-7">
                         <Input
-                          type="text"
+                          type="number"
                           size="md"
                           name="contact"
                           placeholder="Contact No"
@@ -1782,7 +1776,7 @@ export default function IncomeCard({ rowId, fileData }) {
                             <div>
                               <div className="grid grid-cols-12 gap-2 mb-3">
                                 <div className="col-span-4 border-r-2 border-primary">
-                                  <label htmlFor="contact">
+                                  <label htmlFor="name">
                                     <Typography
                                       variant="small"
                                       color="blue-gray"
