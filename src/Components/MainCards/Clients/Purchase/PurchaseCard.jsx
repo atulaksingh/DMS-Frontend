@@ -2220,7 +2220,6 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {/* <div style={{ maxHeight: "450px", overflowY: "auto" }}> */}
                                   {rows.map((row, index) => (
                                     <TableRow key={index} className="p-0 ">
                                       <TableCell sx={{ padding: "6px" }}>
@@ -2235,7 +2234,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                           onChange={(event, newValue) =>
                                             handleProductChange(index, newValue)
                                           }
-                                          inputValue={row.product || ""} // Ensure inputValue is always a string
+                                          inputValue={row.product || ""}
                                           onInputChange={(event, value) =>
                                             handleInputChangeProductField(
                                               index,
@@ -2264,7 +2263,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                                   padding: "2px",
                                                   fontSize: "0.875rem",
                                                   minHeight: "30px",
-                                                  width: "100px",
+                                                  width: "200px",
                                                 },
                                                 "& .MuiOutlinedInput-input": {
                                                   padding: "4px",
@@ -2276,6 +2275,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
+                                          type="text"
                                           value={row.description}
                                           onChange={(e) =>
                                             handleInputChangeProduct(
@@ -2302,13 +2302,18 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.hsnCode}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "hsnCode",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            // Allow only numbers
+                                            if (/^\d*$/.test(inputValue)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "hsnCode",
+                                                inputValue
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2327,15 +2332,19 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.unit}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "unit",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "unit",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
+                                          type="text"
                                           sx={{
                                             "& .MuiOutlinedInput-root": {
                                               padding: "2px",
@@ -2352,13 +2361,17 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.rate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "rate",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "rate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2376,13 +2389,17 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.product_amount}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "product_amount",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "product_amount",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2397,24 +2414,28 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                           }}
                                           slotProps={{
                                             inputLabel: {
-                                              shrink: true, // Ensures the label stays visible
+                                              shrink: true,
                                             },
                                           }}
                                           inputProps={{
-                                            readOnly: true, // Making the field read-only
+                                            readOnly: true,
                                           }}
                                         />
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.gstRate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "gstRate",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "gstRate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2435,13 +2456,17 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
                                               value={row.cgst || ""}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "cgst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              type="text"
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (/^\d*$/.test(value)) {
+                                                  handleInputChangeProduct(
+                                                    index,
+                                                    "cgst",
+                                                    value
+                                                  );
+                                                }
+                                              }}
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2456,24 +2481,28 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                               }}
                                               slotProps={{
                                                 inputLabel: {
-                                                  shrink: true, // Ensures the label stays visible
+                                                  shrink: true,
                                                 },
                                               }}
                                               inputProps={{
-                                                readOnly: true, // Making the field read-only
+                                                readOnly: true,
                                               }}
                                             />
                                           </TableCell>
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
                                               value={row.sgst || ""}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "sgst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              type="number"
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (/^\d*$/.test(value)) {
+                                                  handleInputChangeProduct(
+                                                    index,
+                                                    "sgst",
+                                                    value
+                                                  );
+                                                }
+                                              }}
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2488,11 +2517,11 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                               }}
                                               slotProps={{
                                                 inputLabel: {
-                                                  shrink: true, // Ensures the label stays visible
+                                                  shrink: true,
                                                 },
                                               }}
                                               inputProps={{
-                                                readOnly: true, // Making the field read-only
+                                                readOnly: true,
                                               }}
                                             />
                                           </TableCell>
@@ -2503,13 +2532,17 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.igst || ""}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "igst",
-                                                e.target.value
-                                              )
-                                            }
+                                            type="number"
+                                            onChange={(e) => {
+                                              const value = e.target.value;
+                                              if (/^\d*$/.test(value)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  value
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2524,11 +2557,11 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                             }}
                                             slotProps={{
                                               inputLabel: {
-                                                shrink: true, // Ensures the label stays visible
+                                                shrink: true,
                                               },
                                             }}
                                             inputProps={{
-                                              readOnly: true, // Making the field read-only
+                                              readOnly: true,
                                             }}
                                           />
                                         </TableCell>
@@ -2537,13 +2570,17 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.total_invoice}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "total_invoice",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="number"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "total_invoice",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2558,11 +2595,11 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                           }}
                                           slotProps={{
                                             inputLabel: {
-                                              shrink: true, // Ensures the label stays visible
+                                              shrink: true,
                                             },
                                           }}
                                           inputProps={{
-                                            readOnly: true, // Making the field read-only
+                                            readOnly: true,
                                           }}
                                         />
                                       </TableCell>
@@ -2582,7 +2619,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                   <TableRow>
                                     <TableCell
                                       colSpan={12}
-                                      className="text-blue-500 space-x-5 text-sm py-4"
+                                      className="text-blue-500 space-x-5 text-sm"
                                     >
                                       <div className="flex justify-between">
                                         <div>
@@ -2771,6 +2808,9 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2784,6 +2824,9 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2803,6 +2846,9 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds_tcs_rate}
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2816,6 +2862,9 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds}
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>

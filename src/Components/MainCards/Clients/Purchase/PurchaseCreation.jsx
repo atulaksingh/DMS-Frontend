@@ -49,11 +49,15 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
+function PurchaseCreation({
+  allLocationBranchProductData,
+  fetchAllLocBranchDetails,
+}) {
   const { id } = useParams();
   const offData = allLocationBranchProductData?.serializer || [];
   const customerData = allLocationBranchProductData?.serializer_customer || [];
-  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const product_ser_Data =
+    allLocationBranchProductData?.product_serializer || [];
   const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
 
   const dispatch = useDispatch();
@@ -284,7 +288,6 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
-
 
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (isBranch && newValue && newValue.branch_name) {
@@ -762,8 +765,8 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
 
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-        await fetchBankDetails()
         handleCreateClose();
+        await fetchAllLocBranchDetails(id);
 
         // Clear all form data
         resetFields();
@@ -1395,7 +1398,7 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                       />
                     </div>
                   </div>
-      
+
                   <div>
                     <div>
                       <label htmlFor="attach_invoice">
@@ -1969,7 +1972,6 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {/* <div style={{ maxHeight: "450px", overflowY: "auto" }}> */}
                                   {rows.map((row, index) => (
                                     <TableRow key={index} className="p-0 ">
                                       <TableCell sx={{ padding: "6px" }}>
@@ -1984,7 +1986,7 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                           onChange={(event, newValue) =>
                                             handleProductChange(index, newValue)
                                           }
-                                          inputValue={row.product || ""} // Ensure inputValue is always a string
+                                          inputValue={row.product || ""}
                                           onInputChange={(event, value) =>
                                             handleInputChangeProductField(
                                               index,
@@ -2025,6 +2027,7 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
+                                          type="text"
                                           value={row.description}
                                           onChange={(e) =>
                                             handleInputChangeProduct(
@@ -2051,13 +2054,18 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.hsnCode}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "hsnCode",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            // Allow only numbers
+                                            if (/^\d*$/.test(inputValue)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "hsnCode",
+                                                inputValue
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2076,15 +2084,19 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.unit}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "unit",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "unit",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
+                                          type="text"
                                           sx={{
                                             "& .MuiOutlinedInput-root": {
                                               padding: "2px",
@@ -2101,13 +2113,17 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.rate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "rate",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "rate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2125,13 +2141,17 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.product_amount}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "product_amount",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "product_amount",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2146,24 +2166,28 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                           }}
                                           slotProps={{
                                             inputLabel: {
-                                              shrink: true, // Ensures the label stays visible
+                                              shrink: true,
                                             },
                                           }}
                                           inputProps={{
-                                            readOnly: true, // Making the field read-only
+                                            readOnly: true,
                                           }}
                                         />
                                       </TableCell>
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.gstRate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "gstRate",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="text"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "gstRate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2184,13 +2208,17 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
                                               value={row.cgst || ""}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "cgst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              type="text"
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (/^\d*$/.test(value)) {
+                                                  handleInputChangeProduct(
+                                                    index,
+                                                    "cgst",
+                                                    value
+                                                  );
+                                                }
+                                              }}
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2205,24 +2233,28 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                               }}
                                               slotProps={{
                                                 inputLabel: {
-                                                  shrink: true, // Ensures the label stays visible
+                                                  shrink: true,
                                                 },
                                               }}
                                               inputProps={{
-                                                readOnly: true, // Making the field read-only
+                                                readOnly: true,
                                               }}
                                             />
                                           </TableCell>
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
                                               value={row.sgst || ""}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "sgst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              type="number"
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (/^\d*$/.test(value)) {
+                                                  handleInputChangeProduct(
+                                                    index,
+                                                    "sgst",
+                                                    value
+                                                  );
+                                                }
+                                              }}
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2237,11 +2269,11 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                               }}
                                               slotProps={{
                                                 inputLabel: {
-                                                  shrink: true, // Ensures the label stays visible
+                                                  shrink: true,
                                                 },
                                               }}
                                               inputProps={{
-                                                readOnly: true, // Making the field read-only
+                                                readOnly: true,
                                               }}
                                             />
                                           </TableCell>
@@ -2252,13 +2284,17 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.igst || ""}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "igst",
-                                                e.target.value
-                                              )
-                                            }
+                                            type="number"
+                                            onChange={(e) => {
+                                              const value = e.target.value;
+                                              if (/^\d*$/.test(value)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  value
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2273,11 +2309,11 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                             }}
                                             slotProps={{
                                               inputLabel: {
-                                                shrink: true, // Ensures the label stays visible
+                                                shrink: true,
                                               },
                                             }}
                                             inputProps={{
-                                              readOnly: true, // Making the field read-only
+                                              readOnly: true,
                                             }}
                                           />
                                         </TableCell>
@@ -2286,13 +2322,17 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.total_invoice}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "total_invoice",
-                                              e.target.value
-                                            )
-                                          }
+                                          type="number"
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "total_invoice",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2307,11 +2347,11 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                           }}
                                           slotProps={{
                                             inputLabel: {
-                                              shrink: true, // Ensures the label stays visible
+                                              shrink: true,
                                             },
                                           }}
                                           inputProps={{
-                                            readOnly: true, // Making the field read-only
+                                            readOnly: true,
                                           }}
                                         />
                                       </TableCell>
@@ -2921,26 +2961,40 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter TCS Rate"
                                             name="tds_tcs_rate"
                                             value={invoiceData[0].tds_tcs_rate}
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             name="tcs"
                                             placeholder="Enter TCS value"
                                             value={invoiceData[0].tcs}
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2953,26 +3007,40 @@ function PurchaseCreation({allLocationBranchProductData,fetchBankDetails}) {
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter TDS Rate"
                                             name="tds_tcs_rate"
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds_tcs_rate}
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
                                         <div>
                                           <input
                                             id="tds"
-                                            type="text"
+                                            type="number"
                                             name="tds"
                                             placeholder="Enter TDS value"
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds}
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
