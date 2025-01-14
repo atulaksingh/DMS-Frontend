@@ -77,18 +77,18 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function ExpensesCard({ rowId, allLocationBranchProductData,fetchAllLocBranchDetails }) {
+export default function ExpensesCard({
+  rowId,
+  allLocationBranchProductData,
+  fetchAllLocBranchDetails,
+}) {
   const { id } = useParams();
-
 
   const offData = allLocationBranchProductData?.serializer || [];
   const customerData = allLocationBranchProductData?.serializer_customer || [];
-  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const product_ser_Data =
+    allLocationBranchProductData?.product_serializer || [];
   const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
-
-
-
-
 
   const expenseID = rowId;
   const dispatch = useDispatch();
@@ -370,7 +370,6 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
 
-
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (!newValue) return;
 
@@ -445,7 +444,6 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
         state: "",
         country: "",
         branchID: "",
-        
       }));
     }
   };
@@ -800,22 +798,29 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
           autoClose: 2000,
         });
         dispatch(fetchClientDetails(id));
-        await fetchAllLocBranchDetails(id)
+        await fetchAllLocBranchDetails(id);
         handleCreateClose();
-        await fetchBankDetails();
+        await fetchAllLocBranchDetails();
       } else {
-        toast.error("Failed to Update Sales Invoice. Please try again.", {
-          position: "top-right",
-          autoClose: 2000,
-        });
+        toast.error(
+          `Failed to Update Expense Invoice ${response.data.error_message}`,
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
-      toast.error("Failed to Update Expense Invoice. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+
+      toast.error(
+        `Failed to Update Expense Invoice ${error.response.data.error_message}`,
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
 
@@ -1548,7 +1553,6 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
                     </div>
                   </div>
 
-
                   <div>
                     <div>
                       <div>
@@ -1587,7 +1591,6 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
                       </div>
                     </div>
                   </div>
-
 
                   <div className="flex  align-middle items-center gap-5 mt-2">
                     <div>
@@ -1751,10 +1754,6 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
                       </div>
                     </div>
                   </div>
-
-                 
-          
-         
                 </div>
               </div>
 
@@ -1867,7 +1866,7 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
                                       value={vendorData.gst_no || ""} // Bind value to formData.gst_no
                                       renderOption={(props, option) => (
                                         <li {...props} key={option.id}>
-                                          {option.gst_no}  ({option.name})
+                                          {option.gst_no} ({option.name})
                                         </li>
                                       )}
                                       renderInput={(params) => (
@@ -2690,17 +2689,17 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
                               </div>
                             </div>
                             <div className="col-span-1">
-                            <div>
-                                  <label htmlFor="invoice_type">
-                                    <Typography
-                                      variant="small"
-                                      color="blue-gray"
-                                      className="block font-semibold mb-1"
-                                    >
-                                      Select TDS/TCS
-                                    </Typography>
-                                  </label>
-                                </div>
+                              <div>
+                                <label htmlFor="invoice_type">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="block font-semibold mb-1"
+                                  >
+                                    Select TDS/TCS
+                                  </Typography>
+                                </label>
+                              </div>
                               <div className="text-sm my-2">
                                 <select
                                   id="option"
@@ -2708,7 +2707,6 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
                                   onChange={(e) =>
                                     setSelectedTDSTCSOption(e.target.value)
                                   }
-                                  
                                   className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 >
                                   <option value="" disabled>
@@ -3033,7 +3031,7 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
           <MenuItem onClick={handleViewOpen}>View</MenuItem>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/expenses/creditNote/${id}/${expenseID}`}>
+          <Link to={`/expenses/creditNote/${id}/${expenseID}`}>                           
             <MenuItem>Credit Note</MenuItem>
           </Link>
         </Menu>

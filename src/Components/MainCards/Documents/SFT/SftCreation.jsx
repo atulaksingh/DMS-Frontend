@@ -158,7 +158,7 @@ function SftCreation() {
                   }}
                   showMonthYearPicker
                   dateFormat="MMMM"
-                  className="w-full px-3 py-2 border border-[#cecece] bg-white py-1 text-gray-900 focus:border-[#366FA1]"
+                  className="w-full px-3 py-2 border border-[#cecece] bg-white  text-gray-900 focus:border-[#366FA1]"
                   placeholderText="Select Month"
                 />
               </div>

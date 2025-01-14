@@ -104,7 +104,7 @@ export default function AirCard({ rowId }) {
       );
 
       if (response.status === 200 || response.status === 201) {
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -152,7 +152,7 @@ export default function AirCard({ rowId }) {
       // console.log("res-----air---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success(`${response.data.messgae}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

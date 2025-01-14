@@ -212,7 +212,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      tds_tcs_rate: "0.00",
+      tds_tcs_rate: 0,
       // tds_tcs_section: "",
       tcs: "",
       tds: "",
@@ -246,7 +246,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
     } else if (type === "file") {
       fieldValue = e.target.files[0];
     } else if (name === "tds_tcs_rate" && value === "") {
-      fieldValue = "0.00"; // Default to 0.00 if empty
+      fieldValue = ""; // Default to 0.00 if empty
     } else {
       fieldValue = value;
     }
@@ -793,15 +793,20 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
         handleCreateClose();
         resetFields();
       } else {
-        throw new Error("Unexpected response status.");
+        throw new Error(
+           toast.error(`Failed to Update Sales Invoice. Please try again.${response.data.message}`, {
+                    position: "top-right",
+                    autoClose: 2000,
+                  })
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
-       toast.error("Failed to Sales. Please try again.", {
-              position: "top-right",
-              autoClose: 2000,
-            });
+        toast.error(`Failed to Update Sales Invoice.${error.response.data.error_message} `, {
+               position: "top-right",
+               autoClose: 2000,
+             });
     }
   };
 
@@ -2964,7 +2969,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             name="tcs"
                                             placeholder="Enter TCS value"
                                             value={invoiceData[0].tcs}
@@ -3002,7 +3007,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                         <div>
                                           <input
                                             id="tds"
-                                            type="text"
+                                            type="number"
                                             name="tds"
                                             placeholder="Enter TDS value"
                                             onChange={

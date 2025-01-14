@@ -202,7 +202,7 @@ function PurchaseCreation({
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      tds_tcs_rate: "0.00",
+      tds_tcs_rate: 0,
       // tds_tcs_section: "",
       tcs: 0,
       tds: 0,
@@ -238,7 +238,7 @@ function PurchaseCreation({
     } else if (type === "file") {
       fieldValue = e.target.files[0];
     } else if (name === "tds_tcs_rate" && value === "") {
-      fieldValue = "0.00"; // Default to 0.00 if empty
+      fieldValue = ""; // Default to 0.00 if empty
     } else {
       fieldValue = value;
     }
@@ -781,7 +781,7 @@ function PurchaseCreation({
       } else {
         Error(
 
-          toast.error(`${response.data.error_message}`, {
+          toast.error(`${response.data.message}`, {
             position: "top-right",
             autoClose: 2000,
           })
@@ -793,7 +793,7 @@ function PurchaseCreation({
       //   position: "top-right",
       //   autoClose: 2000,
       // });
-      toast.error(`${error.message}`, {
+      toast.error(`${error.response.data.error_message}`, {
         position: "top-right",
         autoClose: 2000,
       });

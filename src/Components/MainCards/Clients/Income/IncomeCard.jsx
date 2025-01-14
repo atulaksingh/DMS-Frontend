@@ -777,7 +777,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
         handleCreateClose();
         await fetchAllLocBranchDetails(id)
       } else {
-        toast.error("Failed to Update Sales Invoice. Please try again.", {
+        toast.error(`Failed to Update Income Invoice. Please try again.${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -785,6 +785,10 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
+      toast.error(`Failed to Update Income Invoice. Please try again.${error.response.data.error_message}`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
 

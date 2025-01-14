@@ -770,7 +770,7 @@ const helloworld = () => setOpenViewModal(false)
         
         handleCreateClose();
       } else {
-        toast.error("Failed to Update Sales Invoice. Please try again.", {
+        toast.error(`Failed to Update Sales Invoice. Please try again.${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -778,6 +778,10 @@ const helloworld = () => setOpenViewModal(false)
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
+      toast.error(`Failed to Update Sales Invoice.${error.response.data.error_message} `, {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
 

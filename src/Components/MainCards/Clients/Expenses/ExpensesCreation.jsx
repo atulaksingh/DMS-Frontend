@@ -202,7 +202,7 @@ function ExpensesCreation({
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      tds_tcs_rate: "0.00",
+      tds_tcs_rate: 0,
       // tds_tcs_section: "",
       tcs: "",
       tds: "",
@@ -238,7 +238,7 @@ function ExpensesCreation({
     } else if (type === "file") {
       fieldValue = e.target.files[0];
     } else if (name === "tds_tcs_rate" && value === "") {
-      fieldValue = "0.00"; // Default to 0.00 if empty
+      fieldValue = ""; // Default to 0.00 if empty
     } else {
       fieldValue = value;
     }
@@ -778,7 +778,7 @@ function ExpensesCreation({
         resetFields();
       } else {
         Error(
-          toast.error(`${response.data.error_message}`, {
+          toast.error(`${response.data.message}`, {
             position: "top-right",
             autoClose: 2000,
           })
@@ -787,7 +787,7 @@ function ExpensesCreation({
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
-      toast.error(`${error.message}`, {
+      toast.error(`${error.response.data.error_message}`, {
         position: "top-right",
         autoClose: 2000,
       });

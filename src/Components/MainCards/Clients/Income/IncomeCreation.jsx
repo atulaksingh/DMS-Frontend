@@ -201,7 +201,7 @@ function IncomeCreation({
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      tds_tcs_rate: "0.00",
+      tds_tcs_rate: 0,
       // tds_tcs_section: "",
       tcs: "",
       tds: "",
@@ -235,7 +235,7 @@ function IncomeCreation({
     } else if (type === "file") {
       fieldValue = e.target.files[0];
     } else if (name === "tds_tcs_rate" && value === "") {
-      fieldValue = "0.00"; // Default to 0.00 if empty
+      fieldValue = ""; // Default to 0.00 if empty
     } else {
       fieldValue = value;
     }
@@ -768,7 +768,7 @@ function IncomeCreation({
         resetFields();
       } else {
         Error(
-          toast.error(`${response.data.error_message}`, {
+          toast.error(`${response.data.message}`, {
             position: "top-right",
             autoClose: 2000,
           })
@@ -778,7 +778,7 @@ function IncomeCreation({
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
-      toast.error(`${error.message}`, {
+      toast.error(`${error.response.data.error_message}}`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -2514,7 +2514,7 @@ function IncomeCreation({
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter TCS Rate"
                                             name="tds_tcs_rate"
                                             value={invoiceData[0].tds_tcs_rate}
@@ -2560,7 +2560,7 @@ function IncomeCreation({
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter TDS Rate"
                                             name="tds_tcs_rate"
                                             onChange={

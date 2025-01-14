@@ -863,7 +863,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
         handleCreateClose();
         resetFields();
       } else {
-        toast.error("Failed to Update PurchaseInvoice. Please try again.", {
+        toast.error(`Failed to Update PurchaseInvoice. Please try again.${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -871,10 +871,11 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
-      toast.error("Failed to Update PurchaseInvoice. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+
+          toast.error(`Failed to Update Purchase Invoice.${error.response.data.error_message} `, {
+                     position: "top-right",
+                     autoClose: 2000,
+                   });
     }
   };
 

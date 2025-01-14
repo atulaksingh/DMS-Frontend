@@ -244,7 +244,7 @@ function ZipFile({zipFileData}) {
       <div>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Income Details
+            Zip File Upload Details
           </div>
       
           <div className="flex align-middle items-center gap-2">

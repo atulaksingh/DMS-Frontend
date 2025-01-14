@@ -71,7 +71,7 @@ function IncomeFileCreation() {
   
       // Check if the response status is success (2xx)
       if (response.status === 200 || response.status === 201) {
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
