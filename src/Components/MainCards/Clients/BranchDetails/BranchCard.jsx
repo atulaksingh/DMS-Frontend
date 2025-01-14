@@ -141,10 +141,10 @@ export default function BranchCard({ rowId }) {
         `http://127.0.0.1:8000/api/edit-branch/${id}/${rowId}`,
         formDataToSend
       );
-  
+  // console.log("response",response)
       // Check if the response is successful
-      if (response.status === 200 || response.data.success) {
-        toast.success("Branch details updated successfully!", {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -165,7 +165,10 @@ export default function BranchCard({ rowId }) {
           pincode: "",
         });
       } else {
-        throw new Error("Failed to update branch details.");
+         toast.error("Unexpected response from the server.", {
+                  position: "top-right",
+                  autoClose: 2000,
+                });
       }
     } catch (error) {
       console.error("Error submitting data:", error);
@@ -197,8 +200,8 @@ export default function BranchCard({ rowId }) {
       // console.log("res-----Branch---->", response);
       
       setOpenDeleteModal(false);
-      if (response.status === 200) {
-        toast.success("Branch deleted successfully!", {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

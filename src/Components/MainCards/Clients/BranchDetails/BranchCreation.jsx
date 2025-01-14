@@ -79,7 +79,7 @@ function BranchCreation() {
     branch_name: "",
     contact: "",
     gst_no: "",
-    country: "", 
+    country: "",
     state: "",
     city: "",
     address: "",
@@ -97,11 +97,11 @@ function BranchCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-  
+
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-  
+
       // Append text fields to FormData
       formDataToSend.append("branch_name", formData.branch_name);
       formDataToSend.append("contact", formData.contact);
@@ -111,23 +111,25 @@ function BranchCreation() {
       formDataToSend.append("city", formData.city);
       formDataToSend.append("address", formData.address);
       formDataToSend.append("pincode", formData.pincode);
-  
+
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-branch/${id}`,
         formDataToSend
       );
-  
+
+      console.log("Response Data:", response.data);
+
       // Check if the response is successful
-      if (response.status === 201 || response.data.success) {
+      if (response.status === 201 || response.status === 200) {
         toast.success("Branch details created successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
-  
+
         // Dispatch action to fetch client details
         dispatch(fetchClientDetails(id));
-  
+
         // Optionally close the modal and reset form
         handleCreateClose();
         setFormData({
@@ -141,18 +143,33 @@ function BranchCreation() {
           pincode: "",
         });
       } else {
-        // Handle non-successful response
-        throw new Error("Failed to create branch details.");
+        toast.error("Unexpected response from the server.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Branch details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+
+      // Check if error has a response object from Axios
+      if (error.response) {
+        toast.error(
+          error.response.data.message ||
+            "Failed to create branch details. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
+      } else {
+        // Fallback error message for unexpected errors
+        toast.error("An unexpected error occurred. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     }
   };
-  
 
   return (
     <>

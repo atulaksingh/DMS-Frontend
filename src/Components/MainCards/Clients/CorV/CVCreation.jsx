@@ -47,7 +47,7 @@ function CVCreation() {
     customer: false,
     vendor: false,
   });
-    // console.log("formdatata", formData);
+  // console.log("formdatata", formData);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -62,13 +62,14 @@ function CVCreation() {
       [name]: checked, // Toggle the value between true and false
     }));
   };
-  const handleSubmit = async (e) => {
+
+  const handleSubmit1 = async (e) => {
     e.preventDefault(); // Prevent default form submission
-  
+
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-  
+
       // Append text fields to FormData
       formDataToSend.append("name", formData.name);
       formDataToSend.append("gst_no", formData.gst_no);
@@ -76,45 +77,143 @@ function CVCreation() {
       formDataToSend.append("address", formData.address);
       formDataToSend.append("customer", formData.customer);
       formDataToSend.append("vendor", formData.vendor);
-  
+
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-customer/${id}`,
         formDataToSend
       );
-  
+
       console.log(response.data);
-  
-      // Call the dispatch function after a successful response
-      dispatch(fetchClientDetails(id));
-  
-      toast.success(`${response.data.Message}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-  
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        name: "",
-        gst_no: "",
-        pan: "",
-        address: "",
-        customer: "",
-        vendor: "",
-      });
-    } catch (error) {
-      console.error("Error submitting data:", error);
-      toast.error(
-        "Failed to create Client and Vendor details. Please try again.",
-        {
+
+      // Check if the response is successful
+      if (
+        response.status === 201 ||
+        response.status === 200 ||
+        response.data.success
+      ) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
-        }
-      );
+        });
+
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          name: "",
+          gst_no: "",
+          pan: "",
+          address: "",
+          customer: "",
+          vendor: "",
+        });
+      } else {
+        throw new Error("Failed to create customer and vendor details.");
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+
+      // Check if the error response contains specific error messages
+      if (error.response && error.response.data && error.response.data.error) {
+        const errorMessages = error.response.data.error;
+
+        // Display each field's error messages using toast
+        Object.keys(errorMessages).forEach((field) => {
+          errorMessages[field].forEach((message) => {
+            toast.error(`${field}: ${message}`, {
+              position: "top-right",
+              autoClose: 3000,
+            });
+          });
+        });
+      } else {
+        // Generic error message for other cases
+        toast.error(
+          "Failed to create Client and Vendor details. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+      }
     }
   };
-  
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+
+    try {
+      // Create a FormData object
+      const formDataToSend = new FormData();
+
+      // Append text fields to FormData
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("gst_no", formData.gst_no);
+      formDataToSend.append("pan", formData.pan);
+      formDataToSend.append("address", formData.address);
+      formDataToSend.append("customer", formData.customer);
+      formDataToSend.append("vendor", formData.vendor);
+
+      // Make a POST request to your API
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/create-customer/${id}`,
+        formDataToSend
+      );
+      console.log("bbb", response);
+      // Check if the response is successful
+      if (response.status === 201 || response.status === 200) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          name: "",
+          gst_no: "",
+          pan: "",
+          address: "",
+          customer: "",
+          vendor: "",
+        });
+      } else {
+        // Handle non-successful response
+        throw new Error(
+          
+          toast.error(`${response.data.message}`, {
+            position: "top-right",
+            autoClose: 2000,
+          })
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting data:", error);
+       // Check if error has a response object from Axios
+           if (error.response) {
+             toast.error(
+               error.response.data.message ||
+                 "Failed to create branch details. Please try again.",
+               {
+                 position: "top-right",
+                 autoClose: 2000,
+               }
+             );
+           } else {
+             // Fallback error message for unexpected errors
+             toast.error("An unexpected error occurred. Please try again.", {
+               position: "top-right",
+               autoClose: 2000,
+             });
+           }
+    }
+  };
 
   return (
     <>
@@ -251,20 +350,19 @@ function CVCreation() {
                   <div className="col-span-4">
                     <div className="col-span-4">
                       <div className="flex gap-10">
-                        
-                      <Checkbox
-                        name="customer"
-                        label="Customer"
-                        ripple={false}
-                        checked={formData.customer} // Controlled checkbox state
-                        onChange={handleCheckboxChange} // Handle checkbox change
-                      />
-                      <Checkbox
-                        name="vendor"
-                        label="Vendor"
-                        checked={formData.vendor} // Controlled checkbox state
-                        onChange={handleCheckboxChange} // Handle checkbox change
-                      />
+                        <Checkbox
+                          name="customer"
+                          label="Customer"
+                          ripple={false}
+                          checked={formData.customer} // Controlled checkbox state
+                          onChange={handleCheckboxChange} // Handle checkbox change
+                        />
+                        <Checkbox
+                          name="vendor"
+                          label="Vendor"
+                          checked={formData.vendor} // Controlled checkbox state
+                          onChange={handleCheckboxChange} // Handle checkbox change
+                        />
                       </div>
                     </div>
                   </div>

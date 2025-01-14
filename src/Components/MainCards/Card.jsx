@@ -65,10 +65,10 @@ export default function Card({ rowId ,fetchClients}) {
       const response = await axios.delete(
         `http://127.0.0.1:8000/api/delete-client/${deleteId}`
       );
-  
+  // console.log("response",response)
       setOpenCreateModal(false);
       if (response.status === 200 || response.status === 201) {
-        const toastId = toast.success(`${response.data.Message}`, {
+        const toastId = toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

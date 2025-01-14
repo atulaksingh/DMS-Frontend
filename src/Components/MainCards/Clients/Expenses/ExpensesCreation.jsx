@@ -1350,7 +1350,7 @@ import {
                       </div>
                       <div className="">
                         <Input
-                          type="text"
+                          type="number"
                           size="md"
                           name="invoice_no"
                           placeholder="Invoice No"
@@ -2084,13 +2084,17 @@ import {
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.hsnCode}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "hsnCode",
-                                                e.target.value
-                                              )
-                                            }
+                                            onChange={(e) => {
+                                              const inputValue = e.target.value;
+                                              // Allow only numbers
+                                              if (/^\d*$/.test(inputValue)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "hsnCode",
+                                                  inputValue
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2109,13 +2113,16 @@ import {
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.unit}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "unit",
-                                                e.target.value
-                                              )
-                                            }
+                                            onChange={(e) => {
+                                              const value = e.target.value;
+                                              if (/^\d*$/.test(value)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "unit",
+                                                  value
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2134,13 +2141,16 @@ import {
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.rate}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "rate",
-                                                e.target.value
-                                              )
-                                            }
+                                            onChange={(e) => {
+                                              const value = e.target.value;
+                                              if (/^\d*$/.test(value)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "rate",
+                                                  value
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2190,13 +2200,17 @@ import {
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.gstRate}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "gstRate",
-                                                e.target.value
-                                              )
-                                            }
+                                
+                                            onChange={(e) => {
+                                              const value = e.target.value;
+                                              if (/^\d*$/.test(value)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "gstRate",
+                                                  value
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2593,6 +2607,13 @@ import {
                                               onChange={
                                                 handleInputChangeInvoiceData
                                               }
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
                                               className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
@@ -2606,6 +2627,13 @@ import {
                                               onChange={
                                                 handleInputChangeInvoiceData
                                               }
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
                                               className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
@@ -2625,6 +2653,13 @@ import {
                                                 handleInputChangeInvoiceData
                                               }
                                               value={invoiceData[0].tds_tcs_rate}
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
                                               className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>
@@ -2638,6 +2673,13 @@ import {
                                                 handleInputChangeInvoiceData
                                               }
                                               value={invoiceData[0].tds}
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
                                               className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                             />
                                           </div>

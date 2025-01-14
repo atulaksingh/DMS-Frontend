@@ -63,23 +63,23 @@ function BankCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("account_no", formData.account_no);
       formDataToSend.append("bank_name", formData.bank_name);
       formDataToSend.append("ifsc", formData.ifsc);
       formDataToSend.append("account_type", formData.account_type);
       formDataToSend.append("branch", formData.branch);
-
+  
       // Append multiple files if selected
       for (let i = 0; i < formData.files.length; i++) {
         formDataToSend.append("files", formData.files[i]);
       }
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-bank/${id}`,
@@ -90,25 +90,37 @@ function BankCreation() {
           },
         }
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("Bank details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-      dispatch(fetchClientDetails(id)); // This will trigger fetching client details using the id
-      // history.push(`/client-details/${id}`);
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        account_no: "",
-        bank_name: "",
-        ifsc: "",
-        account_type: "",
-        branch: "",
-      });
-      setAttachment(null); // Clear the file input
+  
+      console.log("bank",response)
+      // Check if the response indicates success
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          account_no: "",
+          bank_name: "",
+          ifsc: "",
+          account_type: "",
+          branch: "",
+        });
+        setAttachment(null); // Clear the file input
+      } else {
+        // If response doesn't indicate success, show error toast
+        toast.error("Failed to create bank details. Please check your input.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
+      // Handle any unexpected errors
       console.error("Error submitting data:", error);
       toast.error("Failed to create bank details. Please try again.", {
         position: "top-right",
@@ -116,7 +128,7 @@ function BankCreation() {
       });
     }
   };
-
+  
   return (
     <>
       <div>

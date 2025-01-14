@@ -853,7 +853,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
       );
       // console.log("Data submitted successfully:", response.data);
       // Handle successful response
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message, {
           position: "top-right",
           autoClose: 2000,
@@ -871,6 +871,10 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
+      toast.error("Failed to Update PurchaseInvoice. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -1507,7 +1511,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                     </div>
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="md"
                         name="invoice_no"
                         placeholder="Invoice No"
@@ -2874,7 +2878,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-12 text-sm mt-8">
+                              <div className="grid grid-cols-12 text-sm mt-3 my-auto">
                                 <div className="col-span-6 font-bold">
                                   Amount Receivable :
                                 </div>

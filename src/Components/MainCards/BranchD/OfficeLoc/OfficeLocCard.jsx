@@ -72,11 +72,11 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("location", formData.location);
       formDataToSend.append("contact", formData.contact);
@@ -84,41 +84,53 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
       formDataToSend.append("city", formData.city);
       formDataToSend.append("state", formData.state);
       formDataToSend.append("country", formData.country);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`,
         formDataToSend
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("Office Location details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
- 
-      setTimeout(() => {
-        fetchBranchDetails();
-        handleCreateClose();
-      }, 500); // Delay to ensure the toast stays for a while
-      // Optionally close the modal and reset form
-      setFormData({
-        location: "",
-        contact: "",
-        address: "",
-        city: "",
-        state: "",
-        country: "",
-      });
-
+  
+      // Check for success response
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Refresh branch details and close modal
+        setTimeout(() => {
+          fetchBranchDetails();
+          handleCreateClose();
+        }, 500);
+  
+        // Reset the form
+        setFormData({
+          location: "",
+          contact: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+        });
+      } else {
+        // Handle unexpected response statuses
+        throw new Error(response.data?.message || "Failed to update Office Location details.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Office Location details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+  
+      // Show error toast with meaningful message
+      toast.error(
+        error.response?.data?.Message || "Failed to update Office Location details. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

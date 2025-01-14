@@ -51,7 +51,7 @@ const styleCreateMOdal = {
 };
 function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) {
   const { id } = useParams();
-  // console.log("allLocationBranchProductData",allLocationBranchProductData)
+  console.log("allLocationBranchProductData",allLocationBranchProductData)
   const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const resetFields = () => {
@@ -104,7 +104,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
         taxable_amount: "",
         totalall_gst: "",
         total_invoice_value: "",
-        tds_tcs_rate: "",
+        tds_tcs_rate: 0,
         tcs: "",
         tds: "",
         amount_receivable: "",
@@ -212,7 +212,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      tds_tcs_rate: "",
+      tds_tcs_rate: "0.00",
       // tds_tcs_section: "",
       tcs: "",
       tds: "",
@@ -239,7 +239,17 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
 
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type } = e.target;
-    const fieldValue = type === "file" ? e.target.files[0] : value;
+    let fieldValue;
+
+    if (type === "checkbox") {
+      fieldValue = checked;
+    } else if (type === "file") {
+      fieldValue = e.target.files[0];
+    } else if (name === "tds_tcs_rate" && value === "") {
+      fieldValue = "0.00"; // Default to 0.00 if empty
+    } else {
+      fieldValue = value;
+    }
 
     setInvoiceData((prevData) => {
       const updatedData = [...prevData];
@@ -768,7 +778,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
       );
       // console.log("Data submitted successfully:", response.data);
       // Handle successful response
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // Handle success response
         // console.log(response.data);
         toast.success(`${response.data.message}`, {
@@ -778,7 +788,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
 
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-        fetchAllLocBranchDetails(id)
+        fetchAllLocBranchDetails()
         // Optionally close the modal and reset form
         handleCreateClose();
         resetFields();
@@ -788,6 +798,10 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
+       toast.error("Failed to Sales. Please try again.", {
+              position: "top-right",
+              autoClose: 2000,
+            });
     }
   };
 
@@ -1356,7 +1370,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                     </div>
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="md"
                         name="invoice_no"
                         placeholder="Invoice No"
@@ -2084,13 +2098,18 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.hsnCode}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "hsnCode",
-                                              e.target.value
-                                            )
-                                          }
+                                   
+                                          onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            // Allow only numbers
+                                            if (/^\d*$/.test(inputValue)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "hsnCode",
+                                                inputValue
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2109,13 +2128,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.unit}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "unit",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "unit",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2134,13 +2156,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.rate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "rate",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "rate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2158,13 +2183,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.product_amount}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "product_amount",
-                                              e.target.value
-                                            )
-                                          }
+                                          // onChange={(e) => {
+                                          //   const value = e.target.value;
+                                          //   if (/^\d*$/.test(value)) {
+                                          //     handleInputChangeProduct(
+                                          //       index,
+                                          //       "product_amount",
+                                          //       value
+                                          //     );
+                                          //   }
+                                          // }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2190,13 +2218,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.gstRate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "gstRate",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "gstRate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2217,13 +2248,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
                                               value={row.cgst || ""}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "cgst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (/^\d*$/.test(value)) {
+                                                  handleInputChangeProduct(
+                                                    index,
+                                                    "cgst",
+                                                    value
+                                                  );
+                                                }
+                                              }}
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2249,13 +2283,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                           <TableCell sx={{ padding: "6px" }}>
                                             <TextField
                                               value={row.sgst || ""}
-                                              onChange={(e) =>
-                                                handleInputChangeProduct(
-                                                  index,
-                                                  "sgst",
-                                                  e.target.value
-                                                )
-                                              }
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                if (/^\d*$/.test(value)) {
+                                                  handleInputChangeProduct(
+                                                    index,
+                                                    "sgst",
+                                                    value
+                                                  );
+                                                }
+                                              }}
                                               variant="outlined"
                                               size="small"
                                               sx={{
@@ -2285,13 +2322,16 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                         <TableCell sx={{ padding: "6px" }}>
                                           <TextField
                                             value={row.igst || ""}
-                                            onChange={(e) =>
-                                              handleInputChangeProduct(
-                                                index,
-                                                "igst",
-                                                e.target.value
-                                              )
-                                            }
+                                            onChange={(e) => {
+                                              const value = e.target.value;
+                                              if (/^\d*$/.test(value)) {
+                                                handleInputChangeProduct(
+                                                  index,
+                                                  "igst",
+                                                  value
+                                                );
+                                              }
+                                            }}
                                             variant="outlined"
                                             size="small"
                                             sx={{
@@ -2907,13 +2947,17 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter TCS Rate"
                                             name="tds_tcs_rate"
                                             value={invoiceData[0].tds_tcs_rate}
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                           
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and decimal
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2927,6 +2971,9 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2939,12 +2986,15 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                         <div>
                                           <input
                                             id="tcs"
-                                            type="text"
+                                            type="number"
                                             placeholder="Enter TDS Rate"
                                             name="tds_tcs_rate"
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and decimal
+                                            }}
                                             value={invoiceData[0].tds_tcs_rate}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
@@ -2958,6 +3008,9 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
+                                            }}
                                             value={invoiceData[0].tds}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />

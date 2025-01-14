@@ -46,6 +46,7 @@ function Income({incomeInvoiceData}) {
   const fetchAllLocBranchDetails = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/api/get-income/${id}`);
+      console.log("insome",response.data)
       setAllLocationBranchProductData({
         serializer: response?.data?.serializer || [],
         serializer_customer: response?.data?.serializer_customer || [],

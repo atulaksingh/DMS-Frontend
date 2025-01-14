@@ -86,7 +86,7 @@ function BranchDocCreation({fetchBranchDetails}) {
       );
   
       // Check if the response is successful
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         // Call fetchBranchDetails only on successful response
         fetchBranchDetails();
   
@@ -101,13 +101,13 @@ function BranchDocCreation({fetchBranchDetails}) {
         handleCreateClose();
 
         // Optionally close the modal and reset form
-        toast.success("Bank details created successfully!", {
+        toast.success("Branch Documents details created successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
       } else {
         // Handle error response (if not 200)
-        toast.error("Failed to create Branch details. Please try again.", {
+        toast.error("Failed to create Branch documents details. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });

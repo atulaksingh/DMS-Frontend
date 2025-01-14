@@ -34,11 +34,14 @@ const styleCreateMOdal = {
 };
 function Sales({ salesInvoiceData }) {
     const { id } = useParams();
-
+    useEffect(() => {
+      fetchAllLocBranchDetails();
+    }, [id]);
     const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
     const fetchAllLocBranchDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/get-sales/${id}`);
+        console.log("sales",response.data)
         setAllLocationBranchProductData({
           serializer: response?.data?.serializer || [],
           serializer_customer: response?.data?.serializer_customer || [],
@@ -56,9 +59,7 @@ function Sales({ salesInvoiceData }) {
       }
     };
     
-    useEffect(() => {
-      fetchAllLocBranchDetails();
-    }, [id]);
+
 
 
 

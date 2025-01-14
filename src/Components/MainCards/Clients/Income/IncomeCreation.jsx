@@ -49,21 +49,18 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) {
+function IncomeCreation({
+  allLocationBranchProductData,
+  fetchAllLocBranchDetails,
+}) {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-
   const offData = allLocationBranchProductData?.serializer || [];
   const customerData = allLocationBranchProductData?.serializer_customer || [];
-  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const product_ser_Data =
+    allLocationBranchProductData?.product_serializer || [];
   const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
-
-
-
-
-
-
 
   const resetFields = () => {
     setFormData({
@@ -76,7 +73,7 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
       country: "",
       branchID: "",
     });
-  
+
     setVendorData({
       vendorID: "",
       gst_no: "",
@@ -86,7 +83,7 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
       customer: false,
       vendor: false,
     });
-  
+
     setRows([
       {
         product: "",
@@ -102,7 +99,7 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
         total_invoice: 0,
       },
     ]);
-  
+
     setInvoiceData([
       {
         month: "",
@@ -115,7 +112,7 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
         taxable_amount: "",
         totalall_gst: "",
         total_invoice_value: "",
-        tds_tcs_rate: "",
+        tds_tcs_rate: 0,
         tcs: "",
         tds: "",
         amount_receivable: "",
@@ -152,7 +149,6 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
     setValue(newValue);
   };
 
-  
   const handleCreateClose = () => {
     setOpenCreateModal(false);
     resetFields();
@@ -205,7 +201,7 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      tds_tcs_rate: "",
+      tds_tcs_rate: "0.00",
       // tds_tcs_section: "",
       tcs: "",
       tds: "",
@@ -232,7 +228,17 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
 
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type } = e.target;
-    const fieldValue = type === "file" ? e.target.files[0] : value;
+    let fieldValue;
+
+    if (type === "checkbox") {
+      fieldValue = checked;
+    } else if (type === "file") {
+      fieldValue = e.target.files[0];
+    } else if (name === "tds_tcs_rate" && value === "") {
+      fieldValue = "0.00"; // Default to 0.00 if empty
+    } else {
+      fieldValue = value;
+    }
 
     setInvoiceData((prevData) => {
       const updatedData = [...prevData];
@@ -279,7 +285,6 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
   const [selectedLocation, setSelectedLocation] = useState("");
   const [productID, setProductID] = useState("");
   const [selectedGstNo, setSelectedGstNo] = useState("");
-
 
   const handleLocationChange = async (newValue, isBranch = false) => {
     if (isBranch && newValue && newValue.branch_name) {
@@ -757,16 +762,26 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
 
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-        await fetchAllLocBranchDetails(id)
+        await fetchAllLocBranchDetails(id);
         // Optionally close the modal and reset form
         handleCreateClose();
-        resetFields()
+        resetFields();
       } else {
-        throw new Error("Unexpected response status.");
+        Error(
+          toast.error(`${response.data.error_message}`, {
+            position: "top-right",
+            autoClose: 2000,
+          })
+        );
+        // throw new Error("Unexpected response status.");
       }
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -1335,7 +1350,7 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                     </div>
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="md"
                         name="invoice_no"
                         placeholder="Invoice No"
@@ -1998,13 +2013,17 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.hsnCode}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "hsnCode",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const inputValue = e.target.value;
+                                            // Allow only numbers
+                                            if (/^\d*$/.test(inputValue)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "hsnCode",
+                                                inputValue
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2023,13 +2042,16 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.unit}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "unit",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "unit",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2048,13 +2070,16 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.rate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "rate",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "rate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2104,13 +2129,16 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                       <TableCell sx={{ padding: "6px" }}>
                                         <TextField
                                           value={row.gstRate}
-                                          onChange={(e) =>
-                                            handleInputChangeProduct(
-                                              index,
-                                              "gstRate",
-                                              e.target.value
-                                            )
-                                          }
+                                          onChange={(e) => {
+                                            const value = e.target.value;
+                                            if (/^\d*$/.test(value)) {
+                                              handleInputChangeProduct(
+                                                index,
+                                                "gstRate",
+                                                value
+                                              );
+                                            }
+                                          }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2152,11 +2180,11 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                               }}
                                               slotProps={{
                                                 inputLabel: {
-                                                  shrink: true, // Ensures the label stays visible
+                                                  shrink: true,
                                                 },
                                               }}
                                               inputProps={{
-                                                readOnly: true, // Making the field read-only
+                                                readOnly: true,
                                               }}
                                             />
                                           </TableCell>
@@ -2493,6 +2521,13 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2506,6 +2541,13 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2525,6 +2567,13 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds_tcs_rate}
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>
@@ -2538,6 +2587,13 @@ function IncomeCreation({allLocationBranchProductData,fetchAllLocBranchDetails})
                                               handleInputChangeInvoiceData
                                             }
                                             value={invoiceData[0].tds}
+                                            onInput={(e) => {
+                                              e.target.value =
+                                                e.target.value.replace(
+                                                  /[^0-9.]/g,
+                                                  ""
+                                                ); // Allows only digits and a decimal point
+                                            }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
                                         </div>

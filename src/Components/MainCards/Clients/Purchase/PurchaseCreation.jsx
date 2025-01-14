@@ -53,6 +53,7 @@ function PurchaseCreation({
   allLocationBranchProductData,
   fetchAllLocBranchDetails,
 }) {
+  console.log("allLocationBranchProductData purchase",allLocationBranchProductData)
   const { id } = useParams();
   const offData = allLocationBranchProductData?.serializer || [];
   const customerData = allLocationBranchProductData?.serializer_customer || [];
@@ -143,7 +144,7 @@ function PurchaseCreation({
         taxable_amount: "",
         totalall_gst: "",
         total_invoice_value: "",
-        tds_tcs_rate: "",
+        tds_tcs_rate: 0,
         tcs: "",
         tds: "",
         amount_receivable: "",
@@ -201,7 +202,7 @@ function PurchaseCreation({
       taxable_amount: "",
       totalall_gst: "",
       total_invoice_value: "",
-      // tds_tcs_rate: "",
+      tds_tcs_rate: "0.00",
       // tds_tcs_section: "",
       tcs: 0,
       tds: 0,
@@ -230,12 +231,19 @@ function PurchaseCreation({
 
   const handleInputChangeInvoiceData = (e) => {
     const { name, value, type, checked } = e.target; // Include `checked`
-    const fieldValue =
-      type === "checkbox"
-        ? checked
-        : type === "file"
-        ? e.target.files[0]
-        : value; // Handle checkbox, file, and others
+    let fieldValue;
+
+    if (type === "checkbox") {
+      fieldValue = checked;
+    } else if (type === "file") {
+      fieldValue = e.target.files[0];
+    } else if (name === "tds_tcs_rate" && value === "") {
+      fieldValue = "0.00"; // Default to 0.00 if empty
+    } else {
+      fieldValue = value;
+    }
+
+
 
     setInvoiceData((prevData) => {
       const updatedData = Array.isArray(prevData) ? [...prevData] : [{}];
@@ -755,7 +763,7 @@ function PurchaseCreation({
       );
       console.log("Data submitted successfully:", response);
       // Handle successful response
-      if (response.status === 201) {
+      if (response.status === 201 ||response.status === 200) {
         // Handle success response
         console.log(response.data);
         toast.success(`${response.data.message}`, {
@@ -765,16 +773,30 @@ function PurchaseCreation({
 
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
+        await fetchAllLocBranchDetails();
         handleCreateClose();
-        await fetchAllLocBranchDetails(id);
 
         // Clear all form data
         resetFields();
       } else {
-        throw new Error("Unexpected response status.");
+        Error(
+
+          toast.error(`${response.data.error_message}`, {
+            position: "top-right",
+            autoClose: 2000,
+          })
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);
+      // toast.error(`${error.response.data.error_message}`, {
+      //   position: "top-right",
+      //   autoClose: 2000,
+      // });
+      toast.error(`${error.message}`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
       // Handle error response
     }
   };
@@ -1345,7 +1367,7 @@ function PurchaseCreation({
                     </div>
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="md"
                         name="invoice_no"
                         placeholder="Invoice No"
@@ -2323,16 +2345,16 @@ function PurchaseCreation({
                                         <TextField
                                           value={row.total_invoice}
                                           type="number"
-                                          onChange={(e) => {
-                                            const value = e.target.value;
-                                            if (/^\d*$/.test(value)) {
-                                              handleInputChangeProduct(
-                                                index,
-                                                "total_invoice",
-                                                value
-                                              );
-                                            }
-                                          }}
+                                          // onChange={(e) => {
+                                          //   const value = e.target.value;
+                                          //   if (/^\d*$/.test(value)) {
+                                          //     handleInputChangeProduct(
+                                          //       index,
+                                          //       "total_invoice",
+                                          //       value
+                                          //     );
+                                          //   }
+                                          // }}
                                           variant="outlined"
                                           size="small"
                                           sx={{
@@ -2964,16 +2986,12 @@ function PurchaseCreation({
                                             type="number"
                                             placeholder="Enter TCS Rate"
                                             name="tds_tcs_rate"
-                                            value={invoiceData[0].tds_tcs_rate}
+                                            value={invoiceData[0].tds_tcs_rate }
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
                                             onInput={(e) => {
-                                              e.target.value =
-                                                e.target.value.replace(
-                                                  /[^0-9.]/g,
-                                                  ""
-                                                ); // Allows only digits and a decimal point
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and decimal
                                             }}
                                             className="mt-2 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />
@@ -3006,20 +3024,16 @@ function PurchaseCreation({
                                       <div className="flex gap-5 ">
                                         <div>
                                           <input
-                                            id="tcs"
+                                            id="tds"
                                             type="number"
                                             placeholder="Enter TDS Rate"
                                             name="tds_tcs_rate"
                                             onChange={
                                               handleInputChangeInvoiceData
                                             }
-                                            value={invoiceData[0].tds_tcs_rate}
+                                            value={invoiceData[0].tds_tcs_rate }
                                             onInput={(e) => {
-                                              e.target.value =
-                                                e.target.value.replace(
-                                                  /[^0-9.]/g,
-                                                  ""
-                                                ); // Allows only digits and a decimal point
+                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and decimal
                                             }}
                                             className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                           />

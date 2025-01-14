@@ -96,13 +96,13 @@ export default function CVCard({ rowId }) {
         formDataToSend
       );
   
-      if (response.status === 200) { // Check if response is successful
-        console.log(response.data); // Log success response
+      if (response.status === 200 || response.status === 201) { // Check if response is successful
+        // console.log(response.data); // Log success response
   
         // Dispatch fetchClientDetails only on success
         dispatch(fetchClientDetails(id));
   
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -123,7 +123,7 @@ export default function CVCard({ rowId }) {
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error(
-        error.response?.data?.Message || 
+        error.response?.data?.message || 
         "Failed to update Client and Vendor details. Please try again.",
         {
           position: "top-right",
@@ -153,14 +153,14 @@ export default function CVCard({ rowId }) {
       );
       // console.log("res-----Client and Vendor---->", response);
       setOpenDeleteModal(false);
-      if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
         dispatch(fetchClientDetails(id));
       } else {
-        toast.error(`${response.data.Message}`, {
+        toast.error(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -189,7 +189,7 @@ export default function CVCard({ rowId }) {
       const response = await axios.get(
         `http://127.0.0.1:8000/api/edit-customer/${id}/${rowId}`
       );
-      console.log("dd", response.data);
+      // console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
       console.error("Error fetching Client and Vendor data:", error);

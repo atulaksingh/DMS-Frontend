@@ -84,8 +84,8 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
       );
       // console.log("111",response.data)
       // Check if response is successful (you can adjust this depending on the response structure)
-      if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -138,9 +138,9 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
       // setOwnerShare(response.remaining_shares)
       createOwnerShare()
       dispatch(fetchClientDetails(id)); 
-      setOpenDeleteModal(false)
+      setOpenDeleteModal(false)     
       if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

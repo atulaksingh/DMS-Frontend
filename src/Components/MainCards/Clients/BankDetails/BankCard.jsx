@@ -81,26 +81,25 @@ export default function BankCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("account_no", formData.account_no);
       formDataToSend.append("bank_name", formData.bank_name);
       formDataToSend.append("ifsc", formData.ifsc);
       formDataToSend.append("account_type", formData.account_type);
       formDataToSend.append("branch", formData.branch);
-
+  
       // Append files
-      formData.files.forEach((file) => {
-        formDataToSend.append("files", file);
-      });
-
-      // Debug FormData
-
-      // console.log("form", formDataToSend);
+      if (formData.files && formData.files.length > 0) {
+        formData.files.forEach((file) => {
+          formDataToSend.append("files", file);
+        });
+      }
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
@@ -111,31 +110,51 @@ export default function BankCard({ rowId }) {
           },
         }
       );
-
-      console.log(response.data); // Handle success response
-      dispatch(fetchClientDetails(id));
-      toast.success("Bank details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        account_no: "",
-        bank_name: "",
-        ifsc: "",
-        account_type: "",
-        branch: "",
-      });
+  // console.log("response",response)
+      // Check if the response indicates success
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Dispatch action to fetch client details
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          account_no: "",
+          bank_name: "",
+          ifsc: "",
+          account_type: "",
+          branch: "",
+        });
+      } else {
+        // Show error toast if response indicates failure
+        toast.error(
+          response.data.message || "Failed to update bank details. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
+      }
     } catch (error) {
+      // Handle unexpected errors
       console.error("Error submitting data:", error);
-      toast.error("Failed to create bank details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+  
+      // Display error message in a toast
+      toast.error(
+        error.response?.data?.message || "An unexpected error occurred. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -157,8 +176,8 @@ export default function BankCard({ rowId }) {
       // console.log("res-----bank---->", response);
       dispatch(fetchClientDetails(id));
       setOpenDeleteModal(false);
-      if (response.status === 200) {
-        toast.success("bank deleted successfully!", {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

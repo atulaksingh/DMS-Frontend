@@ -230,7 +230,7 @@ function ClientUpdate() {
 
 
       if (response.status === 200 || response.status === 201) {
-        const toastId = toast.success(`${response.data.Message}`, {
+        const toastId = toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

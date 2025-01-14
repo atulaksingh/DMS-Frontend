@@ -87,18 +87,7 @@ function Owner({ ownerData }) {
         formData
       );
       setOwnerShare(response?.data?.remaining_shares)
-      // console.log("formmmowner", response?.data?.remaining_shares);
-      // if (response.status === 200 || response.status === 201) {
-      //   toast.success("Owner created successfully!", {
-      //     position: "top-right",
-      //     autoClose: 2000,
-      //   });
-      // } else {
-      //   toast.error(`Failed to create owner: ${response.statusText}`, {
-      //     position: "top-right",
-      //     autoClose: 2000,
-      //   });
-      // }
+
     } catch (error) {
       console.error("Error creating owner:", error);
       toast.error("An error occurred. Please try again.", {
@@ -132,16 +121,11 @@ function Owner({ ownerData }) {
         `http://127.0.0.1:8000/api/create-owner/${id}`,
         formData
       );
-      // console.log(response.data); // Handle success response
-      // toast.success("Owner created successfully!", {
-      //   position: "top-right",
-      //   autoClose: 2000,
-      // });
-      // Optionally close the modal and reset form
-      // setOwnerShare(response.data.remaining_shares)
+      console.log(response.data); // Handle success response
+   
 
       if (response.status === 200 || response.status === 201) {
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

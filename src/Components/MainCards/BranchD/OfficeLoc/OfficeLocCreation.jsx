@@ -90,11 +90,11 @@ function OfficeLocCreation({ fetchBranchDetails }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("location", formData.location);
       formDataToSend.append("contact", formData.contact);
@@ -102,41 +102,51 @@ function OfficeLocCreation({ fetchBranchDetails }) {
       formDataToSend.append("city", formData.city);
       formDataToSend.append("state", formData.state);
       formDataToSend.append("country", formData.country);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-officelocation/${branchID}`,
         formDataToSend
       );
-
-      console.log(response.data); // Handle success response
-
-      // if (response.status === 200 && response.data.Message === "Office Location Created") {
-      // Success
-      fetchBranchDetails();
-
-      setFormData({
-        location: "",
-        contact: "",
-        address: "",
-        city: "",
-        state: "",
-        country: "",
-      });
-      handleCreateClose();
-
-      toast.success("Office Location details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+  
+      // Check if the response indicates success
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Fetch updated branch details and reset form
+        fetchBranchDetails();
+  
+        setFormData({
+          location: "",
+          contact: "",
+          address: "",
+          city: "",
+          state: "",
+          country: "",
+        });
+  
+        handleCreateClose();
+      } else {
+        // If the response is not successful, handle it as an error
+        throw new Error(response.data?.message || "Failed to create office location.");
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create bank details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+  
+      // Show error toast with meaningful message
+      toast.error(
+        error.response?.data?.message || "Failed to create office location. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
+  
 
   return (
     <>
