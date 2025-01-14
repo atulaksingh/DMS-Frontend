@@ -15,6 +15,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 
 import Modal from "@mui/material/Modal";
+import { fetchClientDetails } from "../../Redux/clientSlice";
+import { useDispatch } from "react-redux";
 
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
@@ -49,6 +51,7 @@ export default function PfCard({ rowId }) {
   //   console.log("dddd",rowId)
 
   const { id } = useParams();
+  const dispatch = useDispatch();
   // console.log("rowIdbank", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -85,11 +88,12 @@ export default function PfCard({ rowId }) {
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success("pf deleted successfully!", {
           position: "top-right",
           autoClose: 2000,
         });
+                dispatch(fetchClientDetails(id));
       } else {
         toast.error("Failed to delete pf. Please try again.", {
           position: "top-right",
@@ -294,7 +298,7 @@ export default function PfCard({ rowId }) {
         position: "top-right",
         autoClose: 2000,
       });
-
+        dispatch(fetchClientDetails(id));
       handleCreateClose();
       setFormData({
         employee_name: "",

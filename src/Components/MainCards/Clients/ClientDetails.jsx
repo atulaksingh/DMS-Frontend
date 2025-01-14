@@ -129,15 +129,15 @@ function ClientDetails() {
                 <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" text-gray-700 font-[550] ">
-                      <div>Client Name :</div>
+                      <div>Client Name:</div>
                     </div>
                     <div className="text-gray-600  ">
-                      {clientData?.client_name}
+                      {clientData?.client_name} 
                     </div>
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Entity Type :</div>
+                      <div>Entity Type:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
                       {clientData?.entity_type}
@@ -145,7 +145,7 @@ function ClientDetails() {
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Date of Incorporation :</div>
+                      <div>Date of Incorporation:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
                       {clientData.date_of_incorporation}
@@ -155,7 +155,7 @@ function ClientDetails() {
                 <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" text-gray-700 font-[550] ">
-                      <div>Contact Person :</div>
+                      <div>Contact Person:</div>
                     </div>
                     <div className="text-gray-600 subpixel-antialiased ">
                       {clientData.contact_person}
@@ -163,7 +163,7 @@ function ClientDetails() {
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Designation :</div>
+                      <div>Designation:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
                       {clientData.designation}
@@ -171,7 +171,7 @@ function ClientDetails() {
                   </div>
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
-                      <div>Contact No :</div>
+                      <div>Contact No:</div>
                     </div>
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
                       {clientData.contact_no_1}
@@ -188,14 +188,7 @@ function ClientDetails() {
                       {clientData.contact_no_2}
                     </div>
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Business Details :</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.business_detail}
-                    </div>
-                  </div>
+                 
                   <div className="col-span-1 flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
                       <div>Status :</div>
@@ -203,6 +196,15 @@ function ClientDetails() {
                     <div className=" text-gray-700 font-medium subpixel-antialiased ">
                       {clientData.status}
                     </div>
+                  </div>
+                </div>
+                <div>
+                <div className=" flex gap-x-4 justify-start">
+                    <div className=" font-semibold text-gray-700">
+                      <div>Business Details:</div>
+                    </div>
+                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
+                      {clientData.business_detail}                     </div>
                   </div>
                 </div>
               </>

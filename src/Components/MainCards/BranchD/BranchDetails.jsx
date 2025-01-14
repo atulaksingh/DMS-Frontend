@@ -103,7 +103,8 @@ function BranchDetails() {
                       {branchData.city}
                     </div>
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
+                </div>
+                  <div className=" flex gap-x-4 justify-start">
                     <div className=" font-semibold text-gray-700">
                       <div>Address:</div>
                     </div>
@@ -111,7 +112,6 @@ function BranchDetails() {
                       {branchData.address}
                     </div>
                   </div>
-                </div>
 
                 {/* <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">

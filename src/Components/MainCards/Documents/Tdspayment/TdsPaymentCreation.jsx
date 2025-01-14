@@ -85,9 +85,9 @@ function TdsPaymentCreation() {
         formDataToSend
       );
   
-      if (response.status === 200) { // Check if response is successful
+      if (response.status === 200 || response.status === 201) { // Check if response is successful
         console.log(response.data); // Handle success response
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -112,7 +112,10 @@ function TdsPaymentCreation() {
           net_amount: "",
         });
       } else {
-        throw new Error("Failed to create Tds Payment details.");
+        throw new Error( toast.error("Failed to create Tds Payment details. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        }));
       }
     } catch (error) {
       console.error("Error submitting data:", error);

@@ -103,7 +103,7 @@ export default function TaxAuditCard({ rowId }) {
       );
 
       if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -146,7 +146,7 @@ export default function TaxAuditCard({ rowId }) {
       // console.log("res-----taxAudit---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success(`${response.data.Messgae}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

@@ -14,6 +14,8 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../Redux/clientSlice";
 // import "./App.css";
 const styleCreateMOdal = {
   position: "absolute",
@@ -29,6 +31,7 @@ const styleCreateMOdal = {
 };
 const PfCreation = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [currentStep, setCurrentStep] = useState(0);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -129,69 +132,83 @@ const PfCreation = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       const formDataToSend = new FormData();
+  
+      // Append all fields from formData to FormData
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
-
+  
+      // Make the API call
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-pf/${id}`,
         formDataToSend
       );
-
       console.log(response.data); // Handle success response
-      toast.success("pf details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      handleCreateClose();
-      setFormData({
-        employee_name: "",
-        employee_code: "",
-        uan: "",
-        pf_number: "",
-        pf_deducted: "",
-        date_of_joining: "",
-        status: "",
-        gender: "",
-        month: "",
-        gross_ctc: "",
-        basic_pay: "",
-        hra: "",
-        statutory_bonus: "",
-        special_allowance: "",
-        pf: "",
-        gratuity: "",
-        total_gross_salary: "",
-        number_of_days_in_month: "",
-        present_days: "",
-        lwp: "",
-        leave_adjustment: "",
-        basic_pay_monthly: "",
-        hra_monthly: "",
-        statutory_bonus_monthly: "",
-        special_allowance_monthly: "",
-        total_gross_salary_monthly: "",
-        provident_fund: "",
-        professional_tax: "",
-        advance: "",
-        esic_employee: "",
-        tds: "",
-        total_deduction: "",
-        net_pay: "",
-        advance_esic_employer_cont: "",
-      });
+  
+      // Check if the response is successful
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+  
+        // Dispatch and reset form only on success
+        dispatch(fetchClientDetails(id));
+        handleCreateClose();
+        setFormData({
+          employee_name: "",
+          employee_code: "",
+          uan: "",
+          pf_number: "",
+          pf_deducted: "",
+          date_of_joining: "",
+          status: "",
+          gender: "",
+          month: "",
+          gross_ctc: "",
+          basic_pay: "",
+          hra: "",
+          statutory_bonus: "",
+          special_allowance: "",
+          pf: "",
+          gratuity: "",
+          total_gross_salary: "",
+          number_of_days_in_month: "",
+          present_days: "",
+          lwp: "",
+          leave_adjustment: "",
+          basic_pay_monthly: "",
+          hra_monthly: "",
+          statutory_bonus_monthly: "",
+          special_allowance_monthly: "",
+          total_gross_salary_monthly: "",
+          provident_fund: "",
+          professional_tax: "",
+          advance: "",
+          esic_employee: "",
+          tds: "",
+          total_deduction: "",
+          net_pay: "",
+          advance_esic_employer_cont: "",
+        });
+      }
     } catch (error) {
-      console.error("Error submitting data:", error.response.data);
-      toast.error("Failed to create pf details. Please try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      // Show error toast if the API call fails
+      toast.error(
+        error.response?.data?.message || "Failed to create PF details. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
+      console.error("Error submitting data:", error.response?.data || error.message);
     }
   };
+  
   return (
     <>
       <ToastContainer />

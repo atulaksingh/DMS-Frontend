@@ -300,7 +300,8 @@ export default function CVCard({ rowId }) {
                               {CVData.pan}
                             </div>
                           </div>
-                          <div className="w-full flex gap-2 ">
+                        </div>
+                          <div className="w-full flex gap-2 p-2">
                             <Typography
                               variant="h6"
                               color="blue-gray"
@@ -313,7 +314,6 @@ export default function CVCard({ rowId }) {
                                    {CVData.address} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis nulla laudantium dignissimos inventore debitis, tempora amet natus a quidem. Dignissimos velit est natus debitis vitae temporibus iusto eaque neque quibusdam!
                             </div>
                           </div>
-                        </div>
 
                         <div className="flex gap-6  p-2">
                           <div className="w-full flex gap-3">

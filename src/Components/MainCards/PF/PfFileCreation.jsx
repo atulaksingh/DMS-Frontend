@@ -8,6 +8,8 @@ import { Input, Typography } from "@material-tailwind/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchClientDetails } from "../../Redux/clientSlice";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -22,6 +24,7 @@ const styleCreateMOdal = {
 };
 function PfFileCreation() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -42,18 +45,16 @@ function PfFileCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
-
-
+  
       // Append file field to FormData
       if (attachment) {
         formDataToSend.append("file", attachment);
       }
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-file/${id}`,
@@ -64,25 +65,34 @@ function PfFileCreation() {
           },
         }
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("PF File details created successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-
-      setAttachment(null); // Clear the file input
+  
+      // Check if the response status is 200 (success)
+      if (response.status === 200 || response.status === 201) {
+        // Show success toast
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        console.log(response.data);
+  
+        // Dispatch the client details fetch action
+        dispatch(fetchClientDetails(id));
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setAttachment(null); // Clear the file input
+      }
     } catch (error) {
-      console.error("Error submitting data:", error);
+      // Show error toast
       toast.error("Failed to create PF File details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
+      console.error("Error submitting data:", error);
     }
   };
+  
 
   return (
     <>

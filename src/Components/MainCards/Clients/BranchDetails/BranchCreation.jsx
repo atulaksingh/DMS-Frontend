@@ -222,19 +222,19 @@ function BranchCreation() {
                   </div>
 
                   <div className="col-span-2">
-                    <label htmlFor="contact">
+                    <label htmlFor="contact">pincode
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="block font-semibold  mb-1"
                       >
-                        Contact
+                        Contact No
                       </Typography>
                     </label>
 
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="lg"
                         name="contact"
                         placeholder="Contact"
@@ -500,7 +500,7 @@ function BranchCreation() {
 
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="lg"
                         name="pincode"
                         placeholder="Pin Code"

@@ -302,20 +302,20 @@ export default function CompanyDocumentCard({ rowId }) {
                               {bankData.password}
                             </div>
                           </div>
-                          <div className="w-full flex gap-3">
+                        </div>
+                          <div className="p-2 w-full flex gap-3">
                             <Typography
                               variant="h6"
                               color="blue-gray"
                               className=""
                               size="sm"
                             >
-                              Remarks :
+                              Remarks:
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {bankData.remark}
+                              {bankData.remark} 
                             </div>
                           </div>
-                        </div>
 
                         <div className="p-2">
                               <Typography
@@ -724,7 +724,7 @@ export default function CompanyDocumentCard({ rowId }) {
           }}
         >
           <MenuItem onClick={handleViewOpen}>View</MenuItem>
-          <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
+          {/* <MenuItem onClick={handleCreateOpen}>Update</MenuItem> */}
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
         </Menu>
       </div>

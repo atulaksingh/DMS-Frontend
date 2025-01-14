@@ -103,8 +103,8 @@ export default function SftCard({ rowId }) {
         }
       );
 
-      if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -147,7 +147,7 @@ export default function SftCard({ rowId }) {
       // console.log("res-----sft---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success(`${response.data.Messgae}`, {
+        toast.success(`${response.data.messgae}`, {
           position: "top-right",
           autoClose: 2000,
         });

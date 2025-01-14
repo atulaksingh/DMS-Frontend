@@ -74,8 +74,8 @@ function TaxAuditCreation() {
         }
       );
 
-      if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

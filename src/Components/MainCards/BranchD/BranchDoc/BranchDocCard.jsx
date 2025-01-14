@@ -319,7 +319,8 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
                               {branchDocData.password}
                             </div>
                           </div>
-                          <div className="w-full flex gap-3">
+                        </div>
+                          <div className="w-full flex gap-3 p-2">
                             <Typography
                               variant="h6"
                               color="blue-gray"
@@ -332,7 +333,6 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
                               {branchDocData.remark}
                             </div>
                           </div>
-                        </div>
 
                         <div className="p-2">
                           <Typography

@@ -12,7 +12,9 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
+import { Country, State, City } from "country-state-city";
 import { ToastContainer, toast } from "react-toastify";
+import { Autocomplete, Stack, TextField } from "@mui/material";
 // import "react-toastify/dist/ReactToastify.css";
 const options = ["None", "Atria", "Callisto"];
 const style = {
@@ -60,7 +62,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
     state: "",
     country: "",
   });
-
+console.log("form",formData)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -69,6 +71,45 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
     }));
   };
   // Handle file input change
+  
+
+  const [countries, setCountries] = useState(Country.getAllCountries());
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const handleCountryChange = (country) => {
+    setSelectedCountry(country);
+    setStates(State.getStatesOfCountry(country?.isoCode));
+    setCities([]);
+    setSelectedState(null);
+    setSelectedCity(null); // Reset city when country changes
+    setFormData((prev) => ({
+      ...prev,
+      country: country?.name, // Update formData with selected country
+    }));
+  };
+
+  const handleStateChange = (state) => {
+    setSelectedState(state);
+    setCities(City.getCitiesOfState(selectedCountry?.isoCode, state?.isoCode));
+    setSelectedCity(null); // Reset city when state changes
+    setFormData((prev) => ({
+      ...prev,
+      state: state?.name, // Update formData with selected state
+    }));
+  };
+
+  const handleCityChange = (city) => {
+    setSelectedCity(city);
+    setFormData((prev) => ({
+      ...prev,
+      city: city?.name, // Update formData with selected city
+    }));
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -188,7 +229,64 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
         `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`
       );
       // console.log("dd", response.data);
-      setFormData(response.data);
+      // setFormData(response.data);
+
+        if (response.status === 200 || response.status === 200 || response.data.success) {
+              const branchData = response.data;
+        
+              console.log("Branch Data:", branchData);
+        
+              // Find the matching country, state, and city based on the received data
+              const country = countries.find((c) => c.name === branchData.country);
+              const state = country
+                ? State.getStatesOfCountry(country.isoCode).find(
+                    (s) => s.name === branchData.state
+                  )
+                : null;
+              const city = state
+                ? City.getCitiesOfState(country.isoCode, state.isoCode).find(
+                    (ci) => ci.name === branchData.city
+                  )
+                : null;
+        
+              // Set the form data with the received branch data
+              setFormData({
+               
+
+                location: branchData.location,
+                contact: branchData.contact,
+                address: branchData.address,
+                country: branchData.country,
+                state: branchData.state,
+                city: branchData.city,
+              });
+
+
+        
+              // Set selected country, state, and city
+              setSelectedCountry(country);
+              setSelectedState(state);
+              setSelectedCity(city);
+        
+              // Update states and cities lists based on the selected country and state
+              setStates(country ? State.getStatesOfCountry(country.isoCode) : []);
+              setCities(
+                state ? City.getCitiesOfState(country.isoCode, state.isoCode) : []
+              );
+        
+              // Dispatch action to fetch client details
+              // dispatch(fetchClientDetails(id));
+            } else {
+              throw new Error("Failed to load Branch data.");
+            }
+
+
+
+
+
+
+
+
     } catch (error) {
       console.error("Error fetching Office Location data:", error);
       toast.error("Failed to load Office Location data. Please try again.", {
@@ -285,34 +383,6 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-6   p-2">
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              Address:
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto">
-                              {locationData.address}
-                            </div>
-                          </div>
-                          <div className="w-full flex gap-3">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              City:
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] mt-0.5">
-                              {locationData.city}
-                            </div>
-                          </div>
-                        </div>
 
                         <div className="grid grid-cols-2 gap-6  p-2">
                           <div className="w-full flex gap-3">
@@ -342,6 +412,39 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                             </div>
                           </div>
                         </div>
+
+
+                        <div className="grid grid-cols-2 gap-6   p-2">
+                       
+                          <div className="w-full flex gap-3">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                              size="sm"
+                            >
+                              City:
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] mt-0.5">
+                              {locationData.city}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="w-full flex gap-3 p-2">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className=""
+                              size="sm"
+                            >
+                              Address:
+                            </Typography>
+                            <div className="text-gray-700 text-[15px] my-auto">
+                              {locationData.address}
+                            </div>
+                          </div>
+
+                     
                       </div>
                     </form>
                   </div>
@@ -446,7 +549,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                         />
                       </div>
                     </div>
-                    <div className="col-span-2">
+                    {/* <div className="col-span-2">
                       <label htmlFor="city">
                         <Typography
                           variant="small"
@@ -527,7 +630,195 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
                           containerProps={{ className: "min-w-full" }}
                         />
                       </div>
-                    </div>
+                    </div> */}
+       <div className="col-span-2">
+                       <label htmlFor="gst_no">
+                         <Typography
+                           variant="small"
+                           color="blue-gray"
+                           className="block font-semibold mb-1 "
+                         >
+                           Country
+                         </Typography>
+                       </label>
+   
+                       <div className="">
+                         <div className="">
+                           <div className="">
+                             <Stack spacing={1} sx={{ width: 300 }}>
+                               <Autocomplete
+                                 id="country-select"
+                                 options={countries}
+                                 disableClearable
+                                 value={selectedCountry} 
+                                 getOptionLabel={(option) =>
+                                   `${option.flag} ${option.name}`
+                                 }
+                                 onChange={(event, newValue) =>
+                                   handleCountryChange(newValue)
+                                 }
+                                 renderOption={(props, option) => (
+                                   <li
+                                     {...props}
+                                     key={option.isoCode}
+                                     style={{
+                                       padding: "4px 8px",
+                                       fontSize: "0.875rem",
+                                     }}
+                                   >
+                                     {option.flag} {option.name}
+                                   </li>
+                                 )}
+                                 renderInput={(params) => (
+                                   <TextField
+                                     {...params}
+                                     size="small"
+                                     placeholder="Select Country"
+                                     sx={{
+                                       "& .MuiInputBase-root": {
+                                         height: 33,
+                                         padding: "4px 6px",
+                                       },
+                                       "& .MuiOutlinedInput-input": {
+                                         padding: "4px 6px",
+                                       },
+                                     }}
+                                     InputProps={{
+                                       ...params.InputProps,
+                                       type: "search",
+                                     }}
+                                   />
+                                 )}
+                               />
+                             </Stack>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                     <div className="col-span-2">
+                       <label htmlFor="gst_no">
+                         <Typography
+                           variant="small"
+                           color="blue-gray"
+                           className="block font-semibold mb-1 "
+                         >
+                           State
+                         </Typography>
+                       </label>
+   
+                       <div className="">
+                         <div className="">
+                           <div className="">
+                             <Stack spacing={1} sx={{ width: 300 }}>
+                               <Autocomplete
+                                 id="state-select"
+                                 options={states}
+                                 disableClearable
+                                 value={selectedState} // Use selectedState as the default value
+                                 getOptionLabel={(option) => option.name}
+                                 onChange={(event, newValue) =>
+                                   handleStateChange(newValue)
+                                 }
+                                 renderOption={(props, option) => (
+                                   <li
+                                     {...props}
+                                     key={option.isoCode}
+                                     style={{
+                                       padding: "4px 8px",
+                                       fontSize: "0.875rem",
+                                     }}
+                                   >
+                                     {option.name}
+                                   </li>
+                                 )}
+                                 renderInput={(params) => (
+                                   <TextField
+                                     {...params}
+                                     size="small"
+                                     placeholder="Select State"
+                                     sx={{
+                                       "& .MuiInputBase-root": {
+                                         height: 33,
+                                         padding: "4px 6px",
+                                       },
+                                       "& .MuiOutlinedInput-input": {
+                                         padding: "4px 6px",
+                                       },
+                                     }}
+                                   />
+                                 )}
+                               />
+                             </Stack>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                     <div className="col-span-2">
+                       <label htmlFor="gst_no">
+                         <Typography
+                           variant="small"
+                           color="blue-gray"
+                           className="block font-semibold mb-1 mt-2"
+                         >
+                           City
+                         </Typography>
+                       </label>
+   
+                       <div className="">
+                         <div className="">
+                           <div className="">
+                             <Stack spacing={1} sx={{ width: 300 }}>
+                               <Autocomplete
+                                 id="city-select"
+                                 options={cities}
+                                 disableClearable
+                                 value={selectedCity} // Use selectedCity as the default value
+                                 getOptionLabel={(option) => option.name}
+                                 onChange={(event, newValue) =>
+                                   handleCityChange(newValue)
+                                 }
+                                 renderOption={(props, option) => (
+                                   <li
+                                     {...props}
+                                     key={option.name}
+                                     style={{
+                                       padding: "4px 8px",
+                                       fontSize: "0.875rem",
+                                     }}
+                                   >
+                                     {option.name}
+                                   </li>
+                                 )}
+                                 renderInput={(params) => (
+                                   <TextField
+                                     {...params}
+                                     size="small"
+                                     placeholder="Select City"
+                                     sx={{
+                                       "& .MuiInputBase-root": {
+                                         height: 33,
+                                         padding: "20px 6px",
+                                       },
+                                       "& .MuiOutlinedInput-input": {
+                                         padding: "20px 6px",
+                                       },
+                                     }}
+                                   />
+                                 )}
+                               />
+                             </Stack>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+
+
+
+
+
+
+
+
                     <div className="col-span-4">
                       <label htmlFor="address">
                         <Typography

@@ -112,9 +112,9 @@ export default function TdsPaymentCard({ rowId }) {
         }
       );
   
-      if (response.status === 200) { // Check if response is successful
+      if (response.status === 200 || response.status === 201) { // Check if response is successful
         console.log(response.data); // Handle success response
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -170,8 +170,8 @@ export default function TdsPaymentCard({ rowId }) {
       );
       // console.log("res-----Tds Return---->", response);
       setOpenDeleteModal(false);
-      if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

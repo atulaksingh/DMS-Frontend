@@ -123,7 +123,7 @@ export default function TdsReturnCard({ rowId }) {
       if (response.status === 200) {
         // Handle success response
         console.log(response.data);
-        toast.success("Tds Return details update successfully!", {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -144,7 +144,15 @@ export default function TdsReturnCard({ rowId }) {
           files: [],
         });
       } else {
-        throw new Error("Unexpected response status.");
+        throw new Error(
+          toast.error(
+            "Failed to create Tds Return details. Please try again.",
+            {
+              position: "top-right",
+              autoClose: 2000,
+            }
+          )
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);

@@ -359,13 +359,13 @@ export default function BranchCard({ rowId }) {
                         color="blue-gray"
                         className="block font-semibold  mb-1"
                       >
-                        Contact
+                        Contact No
                       </Typography>
                     </label>
 
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="lg"
                         name="contact"
                         placeholder="Contact"
@@ -628,7 +628,7 @@ export default function BranchCard({ rowId }) {
 
                     <div className="">
                       <Input
-                        type="text"
+                        type="number"
                         size="lg"
                         name="pincode"
                         placeholder="Pin Code"

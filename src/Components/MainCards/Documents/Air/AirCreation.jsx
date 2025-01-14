@@ -1,7 +1,10 @@
-
-
 import React, { useState, useCallback } from "react";
-import { Button, DialogFooter, Typography, Input } from "@material-tailwind/react";
+import {
+  Button,
+  DialogFooter,
+  Typography,
+  Input,
+} from "@material-tailwind/react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
@@ -76,25 +79,30 @@ function AirCreation() {
         }
       );
 
-      if (response.status === 200) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
         dispatch(fetchClientDetails(id));
         // Optionally close the modal and reset form
         handleCreateClose();
-  
+
         // Clear the form data after successful response
         setFormData({
           financial_year: "",
           month: "",
           files: [],
         });
-  
+
         // Clear the selected dates
         setSelectedYear(null);
         setSelectedMonth(null);
+      } else {
+        toast.error(`Failed to create air. ${response.data.error_message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
       }
     } catch (error) {
       console.error("Error submitting data:", error);

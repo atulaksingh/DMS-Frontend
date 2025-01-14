@@ -103,7 +103,7 @@ export default function AirCard({ rowId }) {
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success(`${response.data.Message}`, {
           position: "top-right",
           autoClose: 2000,
@@ -117,10 +117,15 @@ export default function AirCard({ rowId }) {
         });
         setSelectedYear(null);
         setSelectedMonth(null);
+      } else {
+        toast.error(`Failed to update air. ${response.data.error_message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create air details. Please try again.", {
+      toast.error(`Failed to create air details. Please try again.${error.response.data.message}`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -147,7 +152,7 @@ export default function AirCard({ rowId }) {
       // console.log("res-----air---->", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
-        toast.success(`${response.data.Messgae}`, {
+        toast.success(`${response.data.messgae}`, {
           position: "top-right",
           autoClose: 2000,
         });

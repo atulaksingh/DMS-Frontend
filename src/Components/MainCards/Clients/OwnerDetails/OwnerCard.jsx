@@ -107,8 +107,14 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
           mobile: "",
         });
       }
+      else {
+        toast.error(`Failed to delete owner. Please try again.${response.data.error_message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
-      toast.error(`Failed to update Owner.${error.response.data.error}`, {
+      toast.error(`Failed to update Owner.${error.response.data.message}`, {
         position: "top-right",
         autoClose: 2000,
       });
@@ -145,14 +151,14 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
           autoClose: 2000,
         });
       } else {
-        toast.error("Failed to delete owner. Please try again.", {
+        toast.error(`Failed to delete owner. Please try again.`, {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
       console.error("Error deleting owner data:", error);
-      toast.error("Failed to delete owner. Please try again.", {
+      toast.error(`Failed to delete owner. ${error.response.data.error_message}`, {
         position: "top-right",
         autoClose: 2000,
       });
