@@ -794,7 +794,7 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
       );
       // console.log("Data submitted successfully:", response.data);
       // Handle successful response
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success(response.data.message, {
           position: "top-right",
           autoClose: 2000,
@@ -812,6 +812,10 @@ export default function ExpensesCard({ rowId, allLocationBranchProductData,fetch
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
+      toast.error("Failed to Update Expense Invoice. Please try again.", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     }
   };
 

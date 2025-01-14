@@ -1,6 +1,3 @@
-
-
-
 import { Button, DialogFooter } from "@material-tailwind/react";
 import React from "react";
 import Modal from "@mui/material/Modal";
@@ -21,7 +18,7 @@ const styleCreateMOdal = {
   width: 750,
   bgcolor: "background.paper",
   boxShadow: 24,
-  paddingTop: "17px", 
+  paddingTop: "17px",
   paddingInline: "40px",
   borderRadius: "10px",
 };
@@ -50,7 +47,7 @@ function ExpensesFileCreation() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
 
     try {
       const formDataToSend = new FormData();
@@ -68,8 +65,8 @@ function ExpensesFileCreation() {
           },
         }
       );
-  if (response.status === 200 || response.status === 201) {
-        toast.success(`${response.data.Message}`, {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -80,11 +77,16 @@ function ExpensesFileCreation() {
           files: [],
         }));
       } else {
-        throw new Error("Unexpected response");
+        throw new Error(
+          toast.error("Failed to create Expense details. Please try again.", {
+            position: "top-right",
+            autoClose: 2000,
+          })
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create bank details. Please try again.", {
+      toast.error("Failed to create Expense details. Please try again.", {
         position: "top-right",
         autoClose: 2000,
       });
@@ -114,10 +116,7 @@ function ExpensesFileCreation() {
               <div>
                 <div className="grid grid-cols-4 gap-4 ">
                   <div className="col-span-4 ">
-              
-
                     <div className="">
-                
                       <div className="">
                         <div className="flex items-center justify-center bg-grey-lighter">
                           <label className="w-52 flex flex-col items-center px-2 py-4 bg-white text-[#366FA1] rounded-lg shadow-lg tracking-wide uppercase border border-[#366FA1] cursor-pointer hover:bg-[#366FA1] hover:text-white">
