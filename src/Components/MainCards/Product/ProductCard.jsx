@@ -47,7 +47,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function ProductCard({ rowId }) {
+export default function ProductCard({ rowId ,fetchClients}) {
   const { id } = useParams();
 //   console.log("rowIdproduct", rowId);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -82,6 +82,7 @@ export default function ProductCard({ rowId }) {
         `http://127.0.0.1:8000/api/delete-product/${rowId}`
       );
       // console.log("res-----product---->", response);
+      await fetchClients()
       setOpenDeleteModal(false);
       if (response.status === 200) {
         toast.success("product deleted successfully!", {
@@ -175,43 +176,59 @@ export default function ProductCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("product_name", formData.product_name);
       formDataToSend.append("unit_of_measure", formData.unit_of_measure);
       formDataToSend.append("hsn", formData.hsn);
-
-      // Make a POST request to your API
+  
+      // Make a POST request to edit the product
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-product/${rowId}`,
         formDataToSend
       );
-
-      //   console.log(response.data); // Handle success response
-      toast.success(`${response.data.Message}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        product_name: "",
-        unit_of_measure: "",
-        hsn: "",
-      });
+  
+      // Handle success response
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message || "Product updated successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+       await fetchClients()
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          product_name: "",
+          unit_of_measure: "",
+          hsn: "",
+        });
+      } else {
+        toast.error("Failed to update Product details. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Product details. Please try again.", {
+  
+      // Extract detailed error message from API response
+      const errorMessage =
+        error.response?.data?.non_field_errors[0] ||
+        error.response?.data?.message ||
+        "Failed to update Product details. Please try again.";
+  
+      // Show error notification
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
 
   const handleGstNoChange = (event, newValue) => {
     if (newValue && newValue.id) {

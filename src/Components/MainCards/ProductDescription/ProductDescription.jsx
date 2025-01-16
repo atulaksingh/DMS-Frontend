@@ -34,7 +34,7 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function ProductDescription({ productDescriptionData }) {
+function ProductDescription({ productDescriptionData , fetchClients}) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; // Approximate height for one row
     const maxHeight = 525; // Maximum table body height
@@ -142,7 +142,7 @@ function ProductDescription({ productDescriptionData }) {
             <div>
               {/* <HsnCard rowId={rowData.id} /> */}
               {/* <ProductCard rowId={rowData.id}/> */}
-              <ProductDescriptionCard rowId={rowData.id}/>
+              <ProductDescriptionCard rowId={rowData.id} fetchClients={fetchClients}/>
             </div>
           );
         },
@@ -218,7 +218,7 @@ function ProductDescription({ productDescriptionData }) {
           <div >
       
             {/* <ProductCreation /> */}
-            <ProductDescriptionCreation />
+            <ProductDescriptionCreation  fetchClients={fetchClients}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>

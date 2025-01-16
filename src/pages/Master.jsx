@@ -144,8 +144,8 @@ function Master() {
               <TabPanel value="2">
                 <Hsn hsnData={hsnData} fetchClients={fetchClients} />
               </TabPanel>
-              <TabPanel value="3"><Product productData={productData}/></TabPanel>
-              <TabPanel value="4"><ProductDescription productDescriptionData={productDescriptionData}/></TabPanel>
+              <TabPanel value="3"><Product productData={productData} fetchClients={fetchClients}/></TabPanel>
+              <TabPanel value="4"><ProductDescription productDescriptionData={productDescriptionData} fetchClients={fetchClients}/></TabPanel>
             </TabContext>
           </Box>
         </div>

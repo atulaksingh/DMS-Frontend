@@ -45,7 +45,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function ProductDescriptionCard({ rowId }) {
+export default function ProductDescriptionCard({ rowId ,fetchClients}) {
   const { id } = useParams();
   //   console.log("rowIdproduct", rowId);
   const [openViewModal, setOpenViewModal] = React.useState(false);
@@ -83,6 +83,7 @@ export default function ProductDescriptionCard({ rowId }) {
           position: "top-right",
           autoClose: 2000,
         });
+        await fetchClients()
       } else {
         toast.error("Failed to delete product. Please try again.", {
           position: "top-right",
@@ -170,45 +171,62 @@ export default function ProductDescriptionCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("description", formData.description);
       formDataToSend.append("unit", formData.unit);
       formDataToSend.append("product", formData.product);
       formDataToSend.append("rate", formData.rate);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-product-description/${rowId}`,
         formDataToSend
       );
-
-      //   console.log(response.data); // Handle success response
-      toast.success(`${response.data.Message}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        description: "",
-        unit: "",
-        product: null,
-        rate: "",
-      });
+  
+      // Check for successful response (200 or 201)
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message || 'Product description updated successfully!'}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Fetch updated data
+        await fetchClients();
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          description: "",
+          unit: "",
+          product: null,
+          rate: "",
+        });
+      } else {
+        toast.error("Unexpected response from the server. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Product details. Please try again.", {
+  
+      // Extract error message if available
+      const errorMessage =
+        error.response?.data?.error_message || error.response?.data?.message || "Failed to update Product description. Please try again.";
+  
+      // Show error toast with the message
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
 
   const handleGstNoChange = (event, newValue) => {
     if (newValue && newValue.id) {
@@ -289,7 +307,7 @@ export default function ProductDescriptionCard({ rowId }) {
                             </div>
                           </div>
                           </div>
-                          <div className="w-full  gap-3">
+                          <div className="w-full  flex gap-3 p-2">
                             <Typography
                               variant="h6"
                               color="blue-gray"

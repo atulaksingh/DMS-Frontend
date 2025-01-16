@@ -9,7 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 import TextField from "@mui/material/TextField";
-import "react-toastify/dist/ReactToastify.css";
+// import "react-toastify/dist/ReactToastify.css";  
 import { Autocomplete } from "@mui/material";
 const styleCreateMOdal = {
   position: "absolute",
@@ -24,7 +24,7 @@ const styleCreateMOdal = {
   paddingInline: "40px",
   borderRadius: "10px",
 };
-function ProductDescriptionCreation() {
+function ProductDescriptionCreation({fetchClients }) {
   const { id } = useParams();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [customerData, setCustomerData] = useState([]);
@@ -65,45 +65,65 @@ function ProductDescriptionCreation() {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("description", formData.description);
       formDataToSend.append("unit", formData.unit);
       formDataToSend.append("product", formData.product);
       formDataToSend.append("rate", formData.rate);
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/create-product-description`,
         formDataToSend
       );
-
-      //   console.log(response.data); // Handle success response
-      toast.success(`${response.data.Message}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        description: "",
-        unit: "",
-        product: "",
-        rate:""
-      });
+  // console.log("ss",response.data)
+      // Handle success response
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message || "Product description created successfully!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+  
+        // Fetch updated data
+        await fetchClients();
+  
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          description: "",
+          unit: "",
+          product: "",
+          rate: "",
+        });
+      } else {
+        // Handle unexpected non-success statuses
+        toast.error("Unexpected response from the server. Please try again.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to create Product details. Please try again.", {
+  
+      // Extract detailed error messages if available
+      const errorMessage =
+        error.response?.data?.error_message ||
+        error.response?.data?.message ||
+        "Failed to create Product details. Please try again.";
+  
+      // Show error toast with the message
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
 
   const handleGstNoChange = (event, newValue) => {
     if (newValue && newValue.id) {
@@ -115,7 +135,7 @@ function ProductDescriptionCreation() {
   };
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
       <div>
         <Modal
           open={openCreateModal}
