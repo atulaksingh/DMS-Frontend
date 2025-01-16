@@ -113,7 +113,7 @@ export default function TdsPaymentCard({ rowId }) {
       );
   
       if (response.status === 200 || response.status === 201) { // Check if response is successful
-        console.log(response.data); // Handle success response
+        // console.log(response.data); // Handle success response
         toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
@@ -216,7 +216,7 @@ export default function TdsPaymentCard({ rowId }) {
       const response = await axios.get(
         `http://127.0.0.1:8000/api/edit-tdspayment/${id}/${rowId}`
       );
-      console.log("dd", response.data);
+      // console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
       console.error("Error fetching Tds Return data:", error);

@@ -53,7 +53,7 @@ function PurchaseCreation({
   allLocationBranchProductData,
   fetchAllLocBranchDetails,
 }) {
-  console.log("allLocationBranchProductData purchase",allLocationBranchProductData)
+  // console.log("allLocationBranchProductData purchase",allLocationBranchProductData)
   const { id } = useParams();
   const offData = allLocationBranchProductData?.serializer || [];
   const customerData = allLocationBranchProductData?.serializer_customer || [];
@@ -74,7 +74,7 @@ function PurchaseCreation({
   const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
   const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
     useState("");
-  console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
+  // console.log("123456", selectedTDSTCSOption, selectedTDSTCSOption);
   const [shouldShowIGST, setShouldShowIGST] = useState(false);
   const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
   const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -90,7 +90,7 @@ function PurchaseCreation({
     setValue(newValue);
   };
   const handleCreateClose = () => {
-    console.log("Closing modal");
+    // console.log("Closing modal");
     setOpenCreateModal(false);
     resetFields();
   };
@@ -761,11 +761,11 @@ function PurchaseCreation({
           },
         }
       );
-      console.log("Data submitted successfully:", response);
+      // console.log("Data submitted successfully:", response);
       // Handle successful response
       if (response.status === 201 ||response.status === 200) {
         // Handle success response
-        console.log(response.data);
+        // console.log(response.data);
         toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,

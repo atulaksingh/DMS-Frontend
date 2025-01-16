@@ -41,7 +41,7 @@ function Sales({ salesInvoiceData }) {
     const fetchAllLocBranchDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/get-sales/${id}`);
-        console.log("sales",response.data)
+        // console.log("sales",response.data)
         setAllLocationBranchProductData({
           serializer: response?.data?.serializer || [],
           serializer_customer: response?.data?.serializer_customer || [],

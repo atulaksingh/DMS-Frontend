@@ -140,7 +140,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
   const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
   const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
     useState("");
-  console.log("123456", units);
+  // console.log("123456", units);
   const [shouldShowIGST, setShouldShowIGST] = useState(false);
   const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
   const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -212,10 +212,10 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
       amount_receivable: "",
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -725,7 +725,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
           },
         }
       );
-      console.log("Data submitted successfully:", response.data);
+      // console.log("Data submitted successfully:", response.data);
       // Handle successful response
       if (response.status === 200) {
         toast.success(response.data.message, {

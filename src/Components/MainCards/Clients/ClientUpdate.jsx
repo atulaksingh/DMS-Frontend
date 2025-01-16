@@ -45,7 +45,7 @@ function ClientUpdate() {
     status: "active",
     fileinfos: [],
   });
-  console.log("form", filesList);
+  // console.log("form", filesList);
   // Fetch client data when the component mounts
   useEffect(() => {
     const fetchClientData = async () => {
@@ -54,7 +54,7 @@ function ClientUpdate() {
           `http://127.0.0.1:8000/api/edit-client/${id}`
         );
         const data = response.data;
-        console.log("ressss", response.data);
+        // console.log("ressss", response.data);
         // Set formData with the fetched client data
         setFormData({
           client_name: data.client_name,
@@ -158,7 +158,7 @@ function ClientUpdate() {
   };
 
   const handleOpen = (index = null) => {
-    console.log("index", index);
+    // console.log("index", index);
     if (index !== null) {
       setCurrentFileIndex(index); // Set the index of the file being edited
       const fileInfo = filesList[index];
@@ -209,7 +209,7 @@ function ClientUpdate() {
         });
       });
 
-      console.log("Data to send:", data);
+      // console.log("Data to send:", data);
 
       // Submit the form data
       const response = await axios.post(

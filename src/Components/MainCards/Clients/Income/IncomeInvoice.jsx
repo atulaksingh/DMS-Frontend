@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 function IncomeInvoice({ invoiceData }) {
   //   console.log("res", useParams());
  
-  console.log("res", invoiceData);
+  // console.log("res", invoiceData);
   const handlePrint = () => {
     window.print();
   };

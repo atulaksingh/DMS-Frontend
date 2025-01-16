@@ -67,7 +67,7 @@ function HsnFileCreation() {
         }
       );
 
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success("PF File details created successfully!", {
         position: "top-right",
         autoClose: 2000,

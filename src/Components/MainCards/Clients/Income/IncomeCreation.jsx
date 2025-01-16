@@ -750,7 +750,7 @@ function IncomeCreation({
           },
         }
       );
-      console.log("Data submitted successfully:", response);
+      // console.log("Data submitted successfully:", response);
       // Handle successful response
       if (response.status === 200 || response.status === 201) {
         // Handle success response

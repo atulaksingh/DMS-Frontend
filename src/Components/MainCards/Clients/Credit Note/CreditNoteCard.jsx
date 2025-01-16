@@ -254,10 +254,10 @@ export default function CreditNoteCard({ rowId, fileData ,fetchInvoiceDetails}) 
       utilise_edit: false,
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);
@@ -267,7 +267,7 @@ export default function CreditNoteCard({ rowId, fileData ,fetchInvoiceDetails}) 
       const response = await axios.get(
         `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}/${rowId}`
       );
-      console.log("dd123", response.data);
+      // console.log("dd123", response.data);
       setFormData(response.data.client_location);
       setVendorData(response.data.vendor);
       setRows(response.data.product_summaries);

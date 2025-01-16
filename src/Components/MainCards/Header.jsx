@@ -97,7 +97,7 @@ function NavListMenuMaster() {
   const [openNestedMenu, setopenNestedMenu] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const { id } = useParams();
-  console.log("idddd",id)
+  // console.log("idddd",id)
   const renderItems = nestedMenuItems.map(({ title }, key) => (
     <a href="#" key={key}>
       <MenuItem>{title}</MenuItem>
@@ -144,7 +144,7 @@ function NavListMenuMaster() {
         }
       );
 
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success("Upload Invoice  successfully!", {
         position: "top-right",
         autoClose: 2000,

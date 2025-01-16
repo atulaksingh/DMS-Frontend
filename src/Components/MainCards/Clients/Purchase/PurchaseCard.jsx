@@ -329,7 +329,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
       const response = await axios.get(
         `http://127.0.0.1:8000/api/get-purchase-invoice/${id}/${rowId}`
       );
-      console.log("dd123", response.data);
+      // console.log("dd123", response.data);
       setFormData(response?.data?.client_location);
       setVendorData(response?.data?.vendor);
       setRows(response?.data?.product_summaries);
@@ -463,9 +463,9 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
 
   // console.log("123",branchNoGst)
   const handleInputChangeLocation = async (event, newInputValue) => {
-    console.log("in change location");
+    // console.log("in change location");
     if (!newInputValue) {
-      console.log("no new value");
+      // console.log("no new value");
       setFormData((prev) => ({
         ...prev,
         offLocID: "",
@@ -480,19 +480,19 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
       setShowBranchInput(false);
       return;
     }
-    console.log("offdata", offData);
+    // console.log("offdata", offData);
     const matchingLocation = offData?.find(
       (option) =>
         option?.location?.toLowerCase() === newInputValue.toLowerCase()
     );
-    console.log({ matchingLocation });
+    // console.log({ matchingLocation });
 
     if (matchingLocation) {
-      console.log("found match");
+      // console.log("found match");
       handleLocationChange(matchingLocation);
       setShowBranchInput(false);
     } else {
-      console.log("no match found");
+      // console.log("no match found");
       setShowBranchInput(true);
       setFormData((prev) => ({
         ...prev,
@@ -1161,12 +1161,12 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                             }
                             value={formData.location || ""}
                             onInputChange={(event, newInputValue) => {
-                              console.log("Input Changed:", newInputValue); // Debug: Log input changes
+                              // console.log("Input Changed:", newInputValue); // Debug: Log input changes
 
                               handleInputChangeLocation(event, newInputValue);
                             }}
                             onChange={(event, newValue) => {
-                              console.log("Option Selected:", newValue); // Debug: Log option selection
+                              // console.log("Option Selected:", newValue); // Debug: Log option selection
                               handleLocationChange(newValue);
                             }}
                             renderInput={(params) => (

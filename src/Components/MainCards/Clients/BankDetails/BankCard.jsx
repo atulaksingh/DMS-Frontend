@@ -199,6 +199,19 @@ export default function BankCard({ rowId }) {
   const handleViewOpen = () => {
     setOpenViewModal(true);
     setAnchorEl(null);
+    const fetchBankDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+        );
+        setBankData(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetchBankDetails();
   };
 
   const handleDeleteClose = () => setOpenDeleteModal(false);
@@ -227,21 +240,21 @@ export default function BankCard({ rowId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchBankDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
-        );
-        setBankData(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error);
-        setLoading(false);
-      }
-    };
-    fetchBankDetails();
-  }, [id, rowId]);
+  // useEffect(() => {
+  //   const fetchBankDetails = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+  //       );
+  //       setBankData(response.data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setError(error);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchBankDetails();
+  // }, [id, rowId]);
 
   // if (loading) {
   //   return <div>Loading...</div>;

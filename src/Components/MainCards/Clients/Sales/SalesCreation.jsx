@@ -51,7 +51,7 @@ const styleCreateMOdal = {
 };
 function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) {
   const { id } = useParams();
-  console.log("allLocationBranchProductData",allLocationBranchProductData)
+  // console.log("allLocationBranchProductData",allLocationBranchProductData)
   const dispatch = useDispatch();
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const resetFields = () => {

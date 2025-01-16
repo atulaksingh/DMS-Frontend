@@ -140,7 +140,7 @@ export default function ClientUserCard({ rowId }) {
       const response = await axios.delete(
         `http://127.0.0.1:8000/api/delete-clientuser/${id}/${deleteId}`
       );
-      console.log("res-----ClientUser---->123", response);
+      // console.log("res-----ClientUser---->123", response);
       setOpenDeleteModal(false);
       if (response.status === 200) {
         // Success notification

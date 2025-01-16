@@ -262,10 +262,10 @@ function ExpensesCNCreation({ fetchInvoiceDetails }) {
       utilise_edit: false,
     },
   ]);
-  console.log("formdata", formData);
-  console.log("vendorData", vendorData);
-  console.log("rows", rows);
-  console.log("invoiceData", invoiceData);
+  // console.log("formdata", formData);
+  // console.log("vendorData", vendorData);
+  // console.log("rows", rows);
+  // console.log("invoiceData", invoiceData);
   // console.log("offfff", offData);
   const handleCreateOpen = async () => {
     setOpenCreateModal(true);

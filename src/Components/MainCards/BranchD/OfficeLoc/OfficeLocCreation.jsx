@@ -79,7 +79,7 @@ function OfficeLocCreation({ fetchBranchDetails }) {
     country: "",
   });
 
-  console.log("formmm", formData);
+  // console.log("formmm", formData);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({

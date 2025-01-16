@@ -261,7 +261,7 @@ import {
     };
     // console.log("123",branchNoGst)
     const handleInputChangeLocation = async (event, newInputValue) => {
-       console.log("123",newInputValue)
+      //  console.log("123",newInputValue)
       if (newInputValue === "") {
         setFormData({
           offLocID: "",

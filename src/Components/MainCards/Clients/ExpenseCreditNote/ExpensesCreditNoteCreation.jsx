@@ -83,7 +83,7 @@ import {
       setValue(newValue);
     };
     const handleCreateClose = () => {
-      console.log("Closing modal");
+      // console.log("Closing modal");
       setOpenCreateModal(false);
     };
     
@@ -144,10 +144,10 @@ import {
         utilise_edit: false,
       },
     ]);
-    console.log("formData", formData);
-    console.log("vendor", vendorData);
-    console.log("rowsData", rows);
-    console.log("invoiceData", invoiceData);
+    // console.log("formData", formData);
+    // console.log("vendor", vendorData);
+    // console.log("rowsData", rows);
+    // console.log("invoiceData", invoiceData);
    
   
     const handleInputChangeInvoiceData = (e) => {
@@ -690,11 +690,11 @@ import {
             },
           }
         );
-        console.log("Data submitted successfully:", response);
+        // console.log("Data submitted successfully:", response);
         // Handle successful response
         if (response.status === 200) {
           // Handle success response
-          console.log(response.data);
+          // console.log(response.data);
           toast.success(`${response.data.message}`, {
             position: "top-right",
             autoClose: 2000,

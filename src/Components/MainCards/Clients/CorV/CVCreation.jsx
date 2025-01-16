@@ -84,7 +84,7 @@ function CVCreation() {
         formDataToSend
       );
 
-      console.log(response.data);
+      // console.log(response.data);
 
       // Check if the response is successful
       if (
@@ -162,7 +162,7 @@ function CVCreation() {
         `http://127.0.0.1:8000/api/create-customer/${id}`,
         formDataToSend
       );
-      console.log("bbb", response);
+      // console.log("bbb", response);
       // Check if the response is successful
       if (response.status === 201 || response.status === 200) {
         toast.success(`${response.data.message}`, {

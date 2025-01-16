@@ -62,7 +62,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
     state: "",
     country: "",
   });
-console.log("form",formData)
+// console.log("form",formData)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -234,7 +234,7 @@ console.log("form",formData)
         if (response.status === 200 || response.status === 200 || response.data.success) {
               const branchData = response.data;
         
-              console.log("Branch Data:", branchData);
+              // console.log("Branch Data:", branchData);
         
               // Find the matching country, state, and city based on the received data
               const country = countries.find((c) => c.name === branchData.country);

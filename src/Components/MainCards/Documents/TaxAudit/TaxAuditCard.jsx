@@ -196,7 +196,7 @@ export default function TaxAuditCard({ rowId }) {
         path: file.files, // Full path for linking
       }));
 
-      console.log("File Details from API:", fileDetailsFromAPI); // Debug to verify filenames and paths
+      // console.log("File Details from API:", fileDetailsFromAPI); // Debug to verify filenames and paths
       setFileDetails(fileDetailsFromAPI); // Set the file details in state
 
       setSelectedYear(new Date(data.financial_year, 0)); // Assuming financial year is in "YYYY" format

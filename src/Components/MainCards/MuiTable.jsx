@@ -37,12 +37,12 @@ function MuiTable({ tableData ,fetchClients}) {
   };
 
   const handleUpdate = () => {
-    console.log("Update:", currentRow);
+    // console.log("Update:", currentRow);
     handleClose();
   };
 
   const handleDelete = () => {
-    console.log("Delete:", currentRow);
+    // console.log("Delete:", currentRow);
     handleClose();
   };
 

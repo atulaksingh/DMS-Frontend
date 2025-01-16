@@ -55,7 +55,7 @@ const fetchInvoiceDetails = async () => {
     const response = await axios.get(
       `http://127.0.0.1:8000/api/creditnote-list/${id}/${purchID}`
     );
-    console.log("gggggggg",response)
+    // console.log("gggggggg",response)
     const apiData = response.data;
 
     setCreditNoteData(apiData);

@@ -69,7 +69,7 @@ function IncomeDebitNoteFileCreation({fetchInvoiceDetails}) {
         }
       );
 
-      console.log(response.data); // Handle success response
+      // console.log(response.data); // Handle success response
       toast.success(`${response.data.Message}`, {
         position: "top-right",
         autoClose: 2000,

@@ -74,7 +74,7 @@ function PfFileCreation() {
           autoClose: 2000,
         });
   
-        console.log(response.data);
+        // console.log(response.data);
   
         // Dispatch the client details fetch action
         dispatch(fetchClientDetails(id));

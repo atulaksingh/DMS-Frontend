@@ -26,7 +26,7 @@ function Master() {
       const response = await axios.get(
         "http://127.0.0.1:8000/api/list-client"
       );
-        console.log("response",response.data)
+        // console.log("response",response.data)
       setHsnData(response.data.hsn); // Assuming the data is returned in the response body
       setProductData(response.data.product); // Assuming the data is returned in the response body
       setProductDescriptionData(response.data.product_description); // Assuming the data is returned in the response body

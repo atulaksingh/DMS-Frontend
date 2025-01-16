@@ -100,7 +100,7 @@ function TdsReturnCreation() {
 
       if (response.status === 200 || response.status === 201) {
         // Ensure the request was successful
-        console.log(response.data); // Handle success response
+        // console.log(response.data); // Handle success response
         toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,

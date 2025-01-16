@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 function ExpensesInvoice({invoiceData}) {
   const { id, rowId } = useParams();
  
-  console.log("res", invoiceData);
+  // console.log("res", invoiceData);
   const handlePrint = () => {
     window.print();
   };

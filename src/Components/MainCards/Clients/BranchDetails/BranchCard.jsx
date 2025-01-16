@@ -241,7 +241,7 @@ export default function BranchCard({ rowId }) {
       if (response.status === 200 || response.data.success) {
         const branchData = response.data;
   
-        console.log("Branch Data:", branchData);
+        // console.log("Branch Data:", branchData);
   
         // Find the matching country, state, and city based on the received data
         const country = countries.find((c) => c.name === branchData.country);

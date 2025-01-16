@@ -122,7 +122,7 @@ export default function TdsReturnCard({ rowId }) {
 
       if (response.status === 200) {
         // Handle success response
-        console.log(response.data);
+        // console.log(response.data);
         toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
@@ -229,7 +229,7 @@ export default function TdsReturnCard({ rowId }) {
       const response = await axios.get(
         `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`
       );
-      console.log("dd", response.data);
+      // console.log("dd", response.data);
       setFormData(response.data);
     } catch (error) {
       console.error("Error fetching Tds Return data:", error);

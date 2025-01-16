@@ -140,7 +140,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
   const [selectedTDSTCSRateOption, setSelectedTDSTCSRateOption] = useState("");
   const [selectedTDSTCSectionOption, setSelectedTDSTCSectionOption] =
     useState("");
-  console.log("123456", units);
+  // console.log("123456", units);
   const [shouldShowIGST, setShouldShowIGST] = useState(false);
   const [shouldShowCGSTSGST, setShouldShowCGSTSGST] = useState(false);
   const [isGstNoEmpty, setIsGstNoEmpty] = useState(true);
@@ -725,7 +725,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
           },
         }
       );
-      console.log("Data submitted successfully:", response.data);
+      // console.log("Data submitted successfully:", response.data);
       // Handle successful response
       if (response.status === 200) {
         toast.success(response.data.message, {

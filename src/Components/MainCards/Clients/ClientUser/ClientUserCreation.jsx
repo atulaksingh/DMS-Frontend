@@ -71,7 +71,7 @@ function ClientUserCreation() {
   
       // Check if the response is successful
       if (response.status === 200) {
-        console.log(response.data); // Handle success response
+        // console.log(response.data); // Handle success response
         handleCreateClose();
   
         // Show toast notification with response message

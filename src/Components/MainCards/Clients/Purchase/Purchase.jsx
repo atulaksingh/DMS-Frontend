@@ -41,12 +41,12 @@ const styleCreateMOdal = {
 function Purchase({ purchaseInvoiceData }) {
 
   const { id } = useParams();
-console.log("useo",useParams())
+// console.log("useo",useParams())
     const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
     const fetchAllLocBranchDetails = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/get-purchase/${id}`);
-        console.log("response purchase",response?.data)
+        // console.log("response purchase",response?.data)
         setAllLocationBranchProductData({
           serializer: response?.data?.serializer || [],
           serializer_customer: response?.data?.serializer_customer || [],

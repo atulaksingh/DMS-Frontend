@@ -108,13 +108,13 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
         });
       }
       else {
-        toast.error(`Failed to delete owner. Please try again.${response.data.error_message}`, {
+        toast.error(`Failed to delete owner. Please try again.${response.data.messgae}`, {
           position: "top-right",
           autoClose: 2000,
         });
       }
     } catch (error) {
-      toast.error(`Failed to update Owner.${error.response.data.message}`, {
+      toast.error(`Failed to update Owner.${error.response.data.error_message}`, {
         position: "top-right",
         autoClose: 2000,
       });
