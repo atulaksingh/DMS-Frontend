@@ -142,7 +142,7 @@ function Master() {
                 <HomePage />
               </TabPanel>
               <TabPanel value="2">
-                <Hsn hsnData={hsnData} />
+                <Hsn hsnData={hsnData} fetchClients={fetchClients} />
               </TabPanel>
               <TabPanel value="3"><Product productData={productData}/></TabPanel>
               <TabPanel value="4"><ProductDescription productDescriptionData={productDescriptionData}/></TabPanel>

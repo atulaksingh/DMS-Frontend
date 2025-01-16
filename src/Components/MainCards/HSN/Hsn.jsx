@@ -31,7 +31,7 @@ const styleCreateMOdal = {
   p: 4,
   borderRadius: "10px",
 };
-function Hsn({ hsnData }) {
+function Hsn({ hsnData , fetchClients }) {
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; // Approximate height for one row
     const maxHeight = 525; // Maximum table body height
@@ -137,7 +137,7 @@ function Hsn({ hsnData }) {
           const rowData = hsnData[dataIndex];
           return (
             <div>
-              <HsnCard rowId={rowData.id} />
+              <HsnCard rowId={rowData.id} fetchClients={fetchClients}/>
             </div>
           );
         },
@@ -219,8 +219,8 @@ function Hsn({ hsnData }) {
             >
               Create
             </Button> */}
-            <HsnFileCreation />
-            <HsnCreation />
+            <HsnFileCreation fetchClients={fetchClients}/>
+            <HsnCreation fetchClients={fetchClients}/>
           </div>
         </div>
         <CacheProvider value={muiCache}>

@@ -15,7 +15,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 const options = ["None", "Atria", "Callisto"];
 const style = {
     position: "absolute",
@@ -46,7 +46,7 @@ const styleCreateMOdal = {
 };
 const ITEM_HEIGHT = 48;
 
-export default function HsnCard({ rowId }) {
+export default function HsnCard({ rowId , fetchClients}) {
   const { id } = useParams();
 //   console.log("rowIdhsn", rowId);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -70,44 +70,51 @@ export default function HsnCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-
+  
     try {
       // Create a FormData object
       const formDataToSend = new FormData();
-
+  
       // Append text fields to FormData
       formDataToSend.append("hsn_code", formData.hsn_code);
       formDataToSend.append("gst_rate", formData.gst_rate);
-
-
+  
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-hsn/${rowId}`,
-        formDataToSend,
-      
+        formDataToSend
       );
-
-      console.log(response.data); // Handle success response
-      toast.success("HSN Update details update successfully!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-
-      // Optionally close the modal and reset form
-      handleCreateClose();
-      setFormData({
-        hsn_code: "",
-        gst_rate: "",
-    
-      });
+  
+      // Show success toast if the response is successful
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+        fetchClients()
+        // Optionally close the modal and reset form
+        handleCreateClose();
+        setFormData({
+          hsn_code: "",
+          gst_rate: "",
+        });
+      }
     } catch (error) {
       console.error("Error submitting data:", error);
-      toast.error("Failed to upadate HSN details. Please try again.", {
+  
+      // Extract and display error message from API response
+      const errorMessage =
+        error.response?.data?.error_message?.hsn_code?.[0] || // Specific error message
+        "Failed to update HSN details. Please try again."; // Default fallback message
+  
+      // Show error toast
+      toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,
       });
     }
   };
+  
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -128,11 +135,12 @@ export default function HsnCard({ rowId }) {
       );
       // console.log("res-----hsn---->", response);
       setOpenDeleteModal(false);
-      if (response.status === 200) {
-        toast.success("hsn deleted successfully!", {
+      if (response.status === 200 || response.status === 201) {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
+        fetchClients()
       } else {
         toast.error("Failed to delete hsn. Please try again.", {
           position: "top-right",
