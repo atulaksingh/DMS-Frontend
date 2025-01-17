@@ -588,7 +588,35 @@ export default function BranchCard({ rowId }) {
                     </div>
                   </div>
 
+               
                   <div className="col-span-2">
+                    <label htmlFor="pincode">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-1 mt-2"
+                      >
+                        Pin Code
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="pincode"
+                        placeholder="Pin Code"
+                        value={formData.pincode}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-span-4">
                     <label htmlFor="address">
                       <Typography
                         variant="small"
@@ -608,33 +636,6 @@ export default function BranchCard({ rowId }) {
                         value={formData.address}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-2">
-                    <label htmlFor="pincode">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-1 "
-                      >
-                        Pin Code
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="number"
-                        size="lg"
-                        name="pincode"
-                        placeholder="Pin Code"
-                        value={formData.pincode}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] !h-[28px] !py-[16px] !px-[10px]"
                         labelProps={{
                           className: "hidden",
                         }}

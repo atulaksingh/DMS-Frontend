@@ -25,7 +25,7 @@ const style = {
   width: 1000,
   bgcolor: "background.paper",
   boxShadow: 24,
-  paddingTop: "17px", 
+  paddingTop: "17px",
   paddingInline: "40px",
   borderRadius: "10px",
 };
@@ -39,7 +39,7 @@ const styleCreateMOdal = {
   //   border: "1px solid #000",
   boxShadow: 24,
   // p: 4,
-  paddingTop: "17px", 
+  paddingTop: "17px",
   paddingInline: "40px",
   borderRadius: "10px",
 };
@@ -73,40 +73,41 @@ export default function CVCard({ rowId }) {
     const { name, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: checked, 
+      [name]: checked,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const formDataToSend = new FormData();
-  
+
       formDataToSend.append("name", formData.name);
       formDataToSend.append("gst_no", formData.gst_no);
       formDataToSend.append("pan", formData.pan);
       formDataToSend.append("address", formData.address);
       formDataToSend.append("customer", formData.customer);
       formDataToSend.append("vendor", formData.vendor);
-  
+
       // Make a POST request to your API
       const response = await axios.post(
         `http://127.0.0.1:8000/api/edit-customer/${id}/${rowId}`,
         formDataToSend
       );
-  
-      if (response.status === 200 || response.status === 201) { // Check if response is successful
+
+      if (response.status === 200 || response.status === 201) {
+        // Check if response is successful
         // console.log(response.data); // Log success response
-  
+
         // Dispatch fetchClientDetails only on success
         dispatch(fetchClientDetails(id));
-  
+
         toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
-  
+
         // Optionally close the modal and reset form
         handleCreateClose();
         setFormData({
@@ -123,8 +124,8 @@ export default function CVCard({ rowId }) {
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error(
-        error.response?.data?.message || 
-        "Failed to update Client and Vendor details. Please try again.",
+        error.response?.data?.message ||
+          "Failed to update Client and Vendor details. Please try again.",
         {
           position: "top-right",
           autoClose: 2000,
@@ -132,7 +133,7 @@ export default function CVCard({ rowId }) {
       );
     }
   };
-  
+
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -301,20 +302,6 @@ export default function CVCard({ rowId }) {
                             </div>
                           </div>
                         </div>
-                          <div className="w-full flex gap-2 p-2">
-                            <Typography
-                              variant="h6"
-                              color="blue-gray"
-                              className=""
-                              size="sm"
-                            >
-                              Address:
-                            </Typography>
-                            <div className="text-gray-700 text-[15px] my-auto ml-2">
-                                   {CVData.address} Lorem ipsum dolor sit, amet consectetur adipisicing elit. Omnis nulla laudantium dignissimos inventore debitis, tempora amet natus a quidem. Dignissimos velit est natus debitis vitae temporibus iusto eaque neque quibusdam!
-                            </div>
-                          </div>
-
                         <div className="flex gap-6  p-2">
                           <div className="w-full flex gap-3">
                             <Typography
@@ -334,6 +321,19 @@ export default function CVCard({ rowId }) {
                                 ? "Vendor"
                                 : ""}
                             </div>
+                          </div>
+                        </div>
+                        <div className="w-full flex gap-2 p-2">
+                          <Typography
+                            variant="h6"
+                            color="blue-gray"
+                            className=""
+                            size="sm"
+                          >
+                            Address:
+                          </Typography>
+                          <div className="text-gray-700 text-[15px] my-auto ml-2">
+                            {CVData.address}
                           </div>
                         </div>
                       </div>
@@ -440,33 +440,6 @@ export default function CVCard({ rowId }) {
                       />
                     </div>
                   </div>
-                  <div className="col-span-2">
-                    <label htmlFor="address">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Address
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="address"
-                        placeholder="Addesss"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
 
                   <div className="col-span-2">
                     <label htmlFor="pan">
@@ -495,6 +468,35 @@ export default function CVCard({ rowId }) {
                       />
                     </div>
                   </div>
+
+                  <div className="col-span-4">
+                    <label htmlFor="address">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Address
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="address"
+                        placeholder="Addesss"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+
                   <div className="col-span-4">
                     <div className="col-span-4">
                       <div className="flex gap-10">

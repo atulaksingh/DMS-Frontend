@@ -171,7 +171,7 @@ function ExpensesCreation({
     gst_no: "",
     name: "",
     pan: "",
-    customer_address: "",
+    vendor_address: "",
     customer: false,
     vendor: false,
   });
@@ -390,7 +390,7 @@ function ExpensesCreation({
         gst_no: "",
         name: "",
         pan: "",
-        customer_address: "",
+        vendor_address: "",
         customer: false,
         vendor: false,
       }));
@@ -410,7 +410,7 @@ function ExpensesCreation({
           gst_no: matchedCustomer.gst_no,
           name: matchedCustomer.name,
           pan: matchedCustomer.pan,
-          customer_address: matchedCustomer.address,
+          vendor_address: matchedCustomer.address,
           customer: matchedCustomer.customer,
           vendor: matchedCustomer.vendor,
         }));
@@ -421,7 +421,7 @@ function ExpensesCreation({
           gst_no: newValue1,
           name: "",
           pan: "",
-          customer_address: "",
+          vendor_address: "",
           customer: false,
           vendor: false,
         }));
@@ -436,7 +436,7 @@ function ExpensesCreation({
         gst_no: newValue1.gst_no,
         name: newValue1.name || "",
         pan: newValue1.pan || "",
-        customer_address: newValue1.address || "",
+        vendor_address: newValue1.address || "",
         customer: newValue1.customer || false,
         vendor: newValue1.vendor || false,
       }));
@@ -1414,7 +1414,7 @@ function ExpensesCreation({
                       />
                     </div>
                   </div>
-                  <div>
+                  {/* <div>
                     <div>
                       <div>
                         <label htmlFor="utilise_month">
@@ -1473,7 +1473,7 @@ function ExpensesCreation({
                         onChange={handleInputChangeInvoiceData} // Updated function
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* <div>
                       <div>
@@ -1796,9 +1796,9 @@ function ExpensesCreation({
                                     <Input
                                       type="text"
                                       size="lg"
-                                      name="customer_address"
+                                      name="vendor_address"
                                       placeholder="Customer Address"
-                                      value={vendorData.customer_address}
+                                      value={vendorData.vendor_address}
                                       onChange={handleInputChangeCL}
                                       className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                                       labelProps={{

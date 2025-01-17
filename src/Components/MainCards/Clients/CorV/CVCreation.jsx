@@ -292,33 +292,7 @@ function CVCreation() {
                       />
                     </div>
                   </div>
-                  <div className="col-span-2">
-                    <label htmlFor="address">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Address
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="address"
-                        placeholder="Addesss"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
+            
 
                   <div className="col-span-2">
                     <label htmlFor="pan">
@@ -347,6 +321,41 @@ function CVCreation() {
                       />
                     </div>
                   </div>
+
+
+
+
+                  <div className="col-span-4">
+                    <label htmlFor="address">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Address
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="text"
+                        size="lg"
+                        name="address"
+                        placeholder="Addesss"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+
+
+
+
                   <div className="col-span-4">
                     <div className="col-span-4">
                       <div className="flex gap-10">
