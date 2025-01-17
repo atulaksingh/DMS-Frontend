@@ -11,6 +11,7 @@ import axios from "axios";
 import HomePage from "./HomePage";
 import Product from "../Components/MainCards/Product/Product";
 import ProductDescription from "../Components/MainCards/ProductDescription/ProductDescription";
+
 function Master() {
   const location = useLocation();
   const [value, setValue] = React.useState("1");
@@ -143,6 +144,7 @@ function Master() {
               </TabPanel>
               <TabPanel value="2">
                 <Hsn hsnData={hsnData} fetchClients={fetchClients} />
+          
               </TabPanel>
               <TabPanel value="3"><Product productData={productData} fetchClients={fetchClients}/></TabPanel>
               <TabPanel value="4"><ProductDescription productDescriptionData={productDescriptionData} fetchClients={fetchClients}/></TabPanel>
@@ -150,6 +152,7 @@ function Master() {
           </Box>
         </div>
       </div>
+ 
     </>
   );
 }
