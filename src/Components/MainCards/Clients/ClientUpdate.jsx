@@ -213,7 +213,7 @@ function ClientUpdate() {
 
       // Submit the form data
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-client/${id}`,
+        `admin.dms.zacoinfotech.com/api/edit-client/${id}`,
         data,
         {
           headers: {

@@ -8,7 +8,7 @@ function HomePage() {
 
   const fetchClients = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/list-client");
+      const response = await axios.get("admin.dms.zacoinfotech.com/api/list-client");
       setClients(response.data.clients); // Assuming the data is returned in the response body
       setLoading(false);
     } catch (error) {
