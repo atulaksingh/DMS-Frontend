@@ -51,7 +51,8 @@ function ClientUpdate() {
     const fetchClientData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/edit-client/${id}`
+          `'https://admin.dms.zacoinfotech.com/api/edit-client/${id}`
+          // 'https://admin.dms.zacoinfotech.com/api/edit-client/${id}'
         );
         const data = response.data;
         // console.log("ressss", response.data);

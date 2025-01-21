@@ -129,7 +129,7 @@ function ClientCreation() {
   
       // console.log("data to send:", data);
       const response = await axios.post(
-        "admin.dms.zacoinfotech.com/api/create-client",
+        "https://admin.dms.zacoinfotech.com/api/create-client",
         data,
         {
           headers: {
