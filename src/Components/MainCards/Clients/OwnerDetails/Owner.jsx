@@ -144,7 +144,7 @@ function Owner({ ownerData }) {
         });
   
       } else {
-        toast.error(`Failed to create owner. ${response.data.message}`, {
+        toast.error(`${error.response.data.error_message && error.response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });

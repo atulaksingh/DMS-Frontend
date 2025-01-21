@@ -101,13 +101,13 @@ function ProductCreation({fetchClients}) {
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-  
+
       // Extract and display detailed error message if available
       const errorMessage =
-        error.response?.data?.error_message.non_field_errors[0]  ||
+        error.response?.data?.error_message.hsn[0] ||
         error.response?.data?.message ||
         "Failed to create Product details. Please try again.";
-  
+
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,

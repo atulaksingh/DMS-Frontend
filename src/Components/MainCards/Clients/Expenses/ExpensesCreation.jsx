@@ -116,8 +116,8 @@ function ExpensesCreation({
         tcs: "",
         tds: "",
         amount_receivable: "",
-        utilise_month: "",
-        utilise_edit: false,
+        // utilise_month: "",
+        // utilise_edit: false,
       },
     ]);
   };
@@ -207,8 +207,8 @@ function ExpensesCreation({
       tcs: "",
       tds: "",
       amount_receivable: "",
-      utilise_month: "",
-      utilise_edit: false,
+      // utilise_month: "",
+      // utilise_edit: false,
     },
   ]);
   // console.log("formData", formData);

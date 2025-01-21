@@ -114,7 +114,7 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
         });
       }
     } catch (error) {
-      toast.error(`Failed to update Owner.${error.response.data.error_message}`, {
+      toast.error(`${error.response.data.error_message && error.response.data.message}`, {
         position: "top-right",
         autoClose: 2000,
       });

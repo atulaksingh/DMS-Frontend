@@ -214,14 +214,13 @@ export default function ProductCard({ rowId ,fetchClients}) {
       }
     } catch (error) {
       console.error("Error submitting data:", error);
-  
-      // Extract detailed error message from API response
+
+      // Extract and display detailed error message if available
       const errorMessage =
-        error.response?.data?.non_field_errors[0] ||
+        error.response?.data?.error_message[0] ||
         error.response?.data?.message ||
-        "Failed to update Product details. Please try again.";
-  
-      // Show error notification
+        "Failed to create Product details. Please try again.";
+
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 2000,
