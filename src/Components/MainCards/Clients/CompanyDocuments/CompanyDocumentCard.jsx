@@ -94,7 +94,7 @@ export default function CompanyDocumentCard({ rowId }) {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-bank/${id}/${rowId}`,
         formDataToSend,
         {
           headers: {
@@ -143,7 +143,7 @@ export default function CompanyDocumentCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-bank/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-bank/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -180,7 +180,7 @@ export default function CompanyDocumentCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-bank/${id}/${rowId}`
       );
       // console.log("dd", response.data);
       setFormData(response.data);
@@ -202,7 +202,7 @@ export default function CompanyDocumentCard({ rowId }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-fileinfo/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/single-fileinfo/${id}/${rowId}`
         );
         // console.log("jjj", response);
         setBankData(response.data);
@@ -346,7 +346,7 @@ export default function CompanyDocumentCard({ rowId }) {
                                                                       <div className="flex items-center justify-between">
                                                                         <div>
                                                                           <a
-                                                                            href={`http://127.0.0.1:8000${file.files}`}
+                                                                            href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                                                             target="_blank"
                                                                             rel="noopener noreferrer"
                                                                             className="font-medium"
@@ -586,7 +586,7 @@ export default function CompanyDocumentCard({ rowId }) {
                         <p className="text-sm text-gray-500 mt-2">
                           Selected file:
                           <a
-                            href={`http://127.0.0.1:8000/${formData.attachment}`}
+                            href={`https://admin.dms.zacoinfotech.com/${formData.attachment}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-500 underline"

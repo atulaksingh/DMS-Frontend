@@ -138,7 +138,7 @@ export default function BranchCard({ rowId }) {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-branch/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-branch/${id}/${rowId}`,
         formDataToSend
       );
   // console.log("response",response)
@@ -195,7 +195,7 @@ export default function BranchCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-branch/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-branch/${id}/${deleteId}`
       );
       // console.log("res-----Branch---->", response);
       
@@ -234,7 +234,7 @@ export default function BranchCard({ rowId }) {
   
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-branch/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-branch/${id}/${rowId}`
       );
   
       // Check if the response is successful

@@ -92,7 +92,7 @@ export default function CVCard({ rowId }) {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-customer/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-customer/${id}/${rowId}`,
         formDataToSend
       );
 
@@ -150,7 +150,7 @@ export default function CVCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-customer/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-customer/${id}/${deleteId}`
       );
       // console.log("res-----Client and Vendor---->", response);
       setOpenDeleteModal(false);
@@ -188,7 +188,7 @@ export default function CVCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-customer/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-customer/${id}/${rowId}`
       );
       // console.log("dd", response.data);
       setFormData(response.data);
@@ -210,7 +210,7 @@ export default function CVCard({ rowId }) {
     const fetchCVDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/edit-customer/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/edit-customer/${id}/${rowId}`
         );
         setCVData(response.data);
         setLoading(false);

@@ -95,7 +95,7 @@ export default function TaxAuditCard({ rowId }) {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-taxaudit/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-taxaudit/${id}/${rowId}`,
         formDataToSend,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -141,7 +141,7 @@ export default function TaxAuditCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-taxaudit/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-taxaudit/${id}/${deleteId}`
       );
       // console.log("res-----taxAudit---->", response);
       setOpenDeleteModal(false);
@@ -180,7 +180,7 @@ export default function TaxAuditCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-taxaudit/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-taxaudit/${id}/${rowId}`
       );
       const data = response.data;
 
@@ -216,7 +216,7 @@ export default function TaxAuditCard({ rowId }) {
     const fetchTaxAuditDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-taxaudit/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/single-taxaudit/${id}/${rowId}`
         );
         setTaxAuditData(response.data);
         setLoading(false);
@@ -306,7 +306,7 @@ export default function TaxAuditCard({ rowId }) {
                                           <div className="flex items-center justify-between">
                                             <div className=" ">
                                               <a
-                                                href={`http://127.0.0.1:8000${file.files}`}
+                                                href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="font-medium"

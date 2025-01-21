@@ -61,7 +61,7 @@ function DebitNoteFileCreation({fetchInvoiceDetails}) {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-debitnote/${id}/${salesID}`,
+        `https://admin.dms.zacoinfotech.com/api/create-debitnote/${id}/${salesID}`,
         formDataToSend,
         {
           headers: {

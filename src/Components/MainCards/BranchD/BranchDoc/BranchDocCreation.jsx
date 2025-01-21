@@ -76,7 +76,7 @@ function BranchDocCreation({fetchBranchDetails}) {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-branchdoc/${branchID}`,
+        `https://admin.dms.zacoinfotech.com/api/create-branchdoc/${branchID}`,
         formDataToSend,
         {
           headers: {

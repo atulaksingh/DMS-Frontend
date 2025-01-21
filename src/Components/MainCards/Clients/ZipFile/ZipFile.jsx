@@ -95,7 +95,7 @@ function ZipFile({zipFileData}) {
              <>
 
              <a
-                href={`http://127.0.0.1:8000${value}`}
+                href={`https://admin.dms.zacoinfotech.com${value}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ textDecoration: "none", color: "#366FA1" }}

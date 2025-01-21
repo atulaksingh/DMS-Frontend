@@ -223,7 +223,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-debitnote-invoice/${id}/${salesID}`
+        `https://admin.dms.zacoinfotech.com/api/get-debitnote-invoice/${id}/${salesID}`
       );
       //   console.log("dd123", response.data);
       setFormData(response.data.client_location);
@@ -300,7 +300,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-debitnote/${id}`
+          `https://admin.dms.zacoinfotech.com/api/get-debitnote/${id}`
         );
         // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
@@ -336,7 +336,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-debitnote/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -451,7 +451,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-debitnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-debitnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -717,7 +717,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-debitnote-post/${id}/${salesID}`,
+        `https://admin.dms.zacoinfotech.com/api/update-debitnote-post/${id}/${salesID}`,
         payload,
         {
           headers: {
@@ -1532,7 +1532,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
                           />
 
                           <a
-                            href={`http://127.0.0.1:8000${
+                            href={`https://admin.dms.zacoinfotech.com${
                               invoiceData[0]?.attach_invoice || ""
                             }`}
                             target="_blank"
@@ -1582,7 +1582,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
                           />
 
                           <a
-                            href={`http://127.0.0.1:8000${
+                            href={`https://admin.dms.zacoinfotech.com${
                               invoiceData[0]?.attach_e_way_bill || ""
                             }`}
                             target="_blank"

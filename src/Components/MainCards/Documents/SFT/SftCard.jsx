@@ -96,7 +96,7 @@ export default function SftCard({ rowId }) {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-sft/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-sft/${id}/${rowId}`,
         formDataToSend,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -142,7 +142,7 @@ export default function SftCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-sft/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-sft/${id}/${deleteId}`
       );
       // console.log("res-----sft---->", response);
       setOpenDeleteModal(false);
@@ -180,7 +180,7 @@ export default function SftCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-sft/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-sft/${id}/${rowId}`
       );
       const data = response.data;
 
@@ -216,7 +216,7 @@ export default function SftCard({ rowId }) {
     const fetchSftDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-sft/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/single-sft/${id}/${rowId}`
         );
         setSftData(response.data);
         setLoading(false);
@@ -302,7 +302,7 @@ export default function SftCard({ rowId }) {
                                     <div className="flex items-center justify-between">
                                       <div className=" ">
                                         <a
-                                          href={`http://127.0.0.1:8000${file.files}`}
+                                          href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="font-medium"

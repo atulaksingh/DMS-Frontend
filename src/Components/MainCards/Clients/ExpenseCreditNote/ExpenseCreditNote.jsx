@@ -54,7 +54,7 @@ const [error, setError] = useState(null);
 const fetchInvoiceDetails = async () => {
   try {
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/expensescreditnote-list/${id}/${expensesID}`
+      `https://admin.dms.zacoinfotech.com/api/expensescreditnote-list/${id}/${expensesID}`
     );
     console.log("gggggggg",response)
     const apiData = response.data;
@@ -136,7 +136,7 @@ useEffect(() => {
         }),
         customBodyRender: (value) => (
           value ? (
-            <a href={`http://127.0.0.1:8000${value}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://admin.dms.zacoinfotech.com${value}`} target="_blank" rel="noopener noreferrer">
               <ImFilePicture size={20} color="#366FA1" />
             </a>
           ) : null

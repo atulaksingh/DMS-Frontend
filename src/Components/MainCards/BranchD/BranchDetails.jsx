@@ -26,7 +26,7 @@ function BranchDetails() {
   const fetchBranchDetails = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/detail-branch/${clientID}/${branchID}`
+        `https://admin.dms.zacoinfotech.com/api/detail-branch/${clientID}/${branchID}`
       );
       // console.log("branch------------->", response.data);
       setBranchData(response.data.Branch);

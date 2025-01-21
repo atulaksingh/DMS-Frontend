@@ -58,7 +58,7 @@ function CreditNoteFileCreation() {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-creditnote/${id}/${purchID}`,
+        `https://admin.dms.zacoinfotech.com/api/create-creditnote/${id}/${purchID}`,
         formDataToSend,
         {
           headers: {

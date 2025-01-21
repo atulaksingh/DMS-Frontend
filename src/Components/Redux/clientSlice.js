@@ -5,7 +5,7 @@ import axios from "axios";
 export const fetchClientDetails = createAsyncThunk(
   "client/fetchDetails",
   async (id) => {
-    const response = await axios.get(`http://127.0.0.1:8000/api/detail-client/${id}`);
+    const response = await axios.get(`https://admin.dms.zacoinfotech.com/api/detail-client/${id}`);
     return response.data;
   }
 );

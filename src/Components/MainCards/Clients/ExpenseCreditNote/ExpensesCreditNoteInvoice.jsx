@@ -26,7 +26,7 @@ function ExpensesCreditNoteInvoice({rowId}) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/expensescreditnote-view/${id}/${expensesID}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/expensescreditnote-view/${id}/${expensesID}/${rowId}`
         );
         setInvoiceData(response.data);
         setLoading(false);

@@ -84,7 +84,7 @@ export default function PfCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-pf/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-pf/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -117,7 +117,7 @@ export default function PfCard({ rowId }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/edit-pf/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/edit-pf/${id}/${rowId}`
         );
         setBankData(response.data);
         setLoading(false);
@@ -137,7 +137,7 @@ export default function PfCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-pf/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-pf/${id}/${rowId}`
       );
       //   console.log("dd", response.data);
       const updatedData = {
@@ -165,7 +165,7 @@ export default function PfCard({ rowId }) {
   //   const fetchBankDetails = async () => {
   //     try {
   //       const response = await axios.get(
-  //         `http://127.0.0.1:8000/api/editpf/${id}/${rowId}`
+  //         `https://admin.dms.zacoinfotech.com/api/editpf/${id}/${rowId}`
   //       );
   //       setBankData(response.data);
   //       setLoading(false);
@@ -289,7 +289,7 @@ export default function PfCard({ rowId }) {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-pf/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-pf/${id}/${rowId}`,
         formDataToSend
       );
 

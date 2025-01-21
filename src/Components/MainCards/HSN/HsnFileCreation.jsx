@@ -58,7 +58,7 @@ function HsnFileCreation() {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-hsn-excel`,
+        `https://admin.dms.zacoinfotech.com/api/create-hsn-excel`,
         formDataToSend,
         {
           headers: {

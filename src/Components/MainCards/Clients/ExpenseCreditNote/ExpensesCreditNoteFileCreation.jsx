@@ -54,7 +54,7 @@ function ExpensesCreditNoteFileCreation({fetchInvoiceDetails}) {
       }
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-expensescreditnote/${id}/${expensesID}`,
+        `https://admin.dms.zacoinfotech.com/api/create-expensescreditnote/${id}/${expensesID}`,
         formDataToSend,
         {
           headers: {

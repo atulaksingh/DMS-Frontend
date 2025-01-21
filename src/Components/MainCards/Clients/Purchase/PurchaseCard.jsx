@@ -169,7 +169,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-purchase-invoice/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-purchase-invoice/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -211,7 +211,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/purchase-view/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/purchase-view/${id}/${rowId}`
         );
         // console.log("purch",response)
         setBankData(response.data);
@@ -327,7 +327,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-purchase-invoice/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/get-purchase-invoice/${id}/${rowId}`
       );
       // console.log("dd123", response.data);
       setFormData(response?.data?.client_location);
@@ -435,7 +435,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -577,7 +577,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-purchase/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-purchase/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -843,7 +843,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/update-purchase-post/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/update-purchase-post/${id}/${rowId}`,
         payload,
         {
           headers: {
@@ -1692,7 +1692,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
 <a
                           href={
                             typeof invoiceData[0]?.attach_invoice === "string"
-                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`
+                              ? `https://admin.dms.zacoinfotech.com${invoiceData[0]?.attach_invoice}`
                               : "#"
                           }
                           target="_blank"
@@ -1745,7 +1745,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                           href={
                             typeof invoiceData[0]?.attach_e_way_bill ===
                             "string"
-                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`
+                              ? `https://admin.dms.zacoinfotech.com${invoiceData[0]?.attach_e_way_bill}`
                               : "#"
                           }
                           target="_blank"

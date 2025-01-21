@@ -60,7 +60,7 @@ function IncomeFileCreation() {
       }
   
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-income/${id}`,
+        `https://admin.dms.zacoinfotech.com/api/create-income/${id}`,
         formDataToSend,
         {
           headers: {

@@ -45,7 +45,7 @@ function Income({incomeInvoiceData}) {
   const [allLocationBranchProductData, setAllLocationBranchProductData] = useState([])
   const fetchAllLocBranchDetails = async () => {
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/get-income/${id}`);
+      const response = await axios.get(`https://admin.dms.zacoinfotech.com/api/get-income/${id}`);
       // console.log("insome",response.data)
       setAllLocationBranchProductData({
         serializer: response?.data?.serializer || [],
@@ -121,7 +121,7 @@ function Income({incomeInvoiceData}) {
         }),
         customBodyRender: (value) => (
           value ? (
-            <a href={`http://127.0.0.1:8000${value}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://admin.dms.zacoinfotech.com${value}`} target="_blank" rel="noopener noreferrer">
               <ImFilePicture size={20} color="#366FA1" />
             </a>
           ) : null

@@ -14,7 +14,7 @@ function IncomeDebitNoteInvoice({rowId}) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/incomedebitnote-view/${id}/${incomeID}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/incomedebitnote-view/${id}/${incomeID}/${rowId}`
         );
         setInvoiceData(response.data);
         setLoading(false);

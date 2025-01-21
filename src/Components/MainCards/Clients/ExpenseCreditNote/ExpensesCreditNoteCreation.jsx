@@ -214,7 +214,7 @@ import {
       const fetchBankDetails = async () => {
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-creditnote/${id}`
+            `https://admin.dms.zacoinfotech.com/api/get-creditnote/${id}`
           );
           // console.log("ggggggg->", response.data);
           setOffData(response.data.serializer);
@@ -250,7 +250,7 @@ import {
         // Fetch additional data if needed
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+            `https://admin.dms.zacoinfotech.com/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
           );
           // console.log("Location Data:---->", response.data.branch_gst);
           setBranchNoGst(response.data.branch_gst);
@@ -379,7 +379,7 @@ import {
         setProductID(newValue.id); // Assuming setProductID is defined elsewhere
         try {
           const response = await axios.get(
-            `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+            `https://admin.dms.zacoinfotech.com/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
           );
   
           const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -682,7 +682,7 @@ import {
   
       try {
         const response = await axios.post(
-          `http://127.0.0.1:8000/api/create-expensescreditnote-post2/${id}/${expensesID}`,
+          `https://admin.dms.zacoinfotech.com/api/create-expensescreditnote-post2/${id}/${expensesID}`,
           payload,
           {
             headers: {

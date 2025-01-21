@@ -137,7 +137,7 @@ export default function SalesCard({ rowId, fileData }) {
   //       // console.log("form", formDataToSend);
   //       // Make a POST request to your API
   //       const response = await axios.post(
-  //         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
+  //         `https://admin.dms.zacoinfotech.com/api/edit-bank/${id}/${rowId}`,
   //         formDataToSend,
   //         {
   //           headers: {
@@ -185,7 +185,7 @@ export default function SalesCard({ rowId, fileData }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-bank/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-bank/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -222,7 +222,7 @@ export default function SalesCard({ rowId, fileData }) {
 
   //     try {
   //       const response = await axios.get(
-  //         `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
+  //         `https://admin.dms.zacoinfotech.com/api/edit-bank/${id}/${rowId}`
   //       );
   //       // console.log("dd", response.data);
   //       setFormData(response.data);
@@ -244,7 +244,7 @@ export default function SalesCard({ rowId, fileData }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/sales-view/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/sales-view/${id}/${rowId}`
         );
         setBankData(response.data);
         setLoading(false);
@@ -423,7 +423,7 @@ export default function SalesCard({ rowId, fileData }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-sales/${id}`
+          `https://admin.dms.zacoinfotech.com/api/get-sales/${id}`
         );
         // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
@@ -458,7 +458,7 @@ export default function SalesCard({ rowId, fileData }) {
       // Fetch additional data if needed
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-sales/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         // console.log("Location Data:---->", response.data.branch_gst);
         setBranchNoGst(response.data.branch_gst);
@@ -586,7 +586,7 @@ export default function SalesCard({ rowId, fileData }) {
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -812,7 +812,7 @@ export default function SalesCard({ rowId, fileData }) {
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/create-sales-post/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/create-sales-post/${id}/${rowId}`,
         payload
       );
       console.log("Data submitted successfully:", response.data);
@@ -1522,7 +1522,7 @@ export default function SalesCard({ rowId, fileData }) {
                         onChange={handleInputChangeInvoiceData}
                       /> */}
                       <a
-                        href={`http://127.0.0.1:8000${bankData?.attach_e_way_bill}`}
+                        href={`https://admin.dms.zacoinfotech.com${bankData?.attach_e_way_bill}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >

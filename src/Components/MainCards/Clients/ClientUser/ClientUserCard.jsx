@@ -87,7 +87,7 @@ export default function ClientUserCard({ rowId }) {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-clientuser/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-clientuser/${id}/${rowId}`,
         formDataToSend
       );
   // console.log("ss",response.data)
@@ -138,7 +138,7 @@ export default function ClientUserCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-clientuser/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-clientuser/${id}/${deleteId}`
       );
       // console.log("res-----ClientUser---->123", response);
       setOpenDeleteModal(false);
@@ -181,7 +181,7 @@ export default function ClientUserCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-clientuser/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-clientuser/${id}/${rowId}`
       );
     //   console.log("dd", response.data);
       setFormData(response.data);
@@ -203,7 +203,7 @@ export default function ClientUserCard({ rowId }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/edit-clientuser/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/edit-clientuser/${id}/${rowId}`
         );
         setClientUser(response.data);
         setLoading(false);

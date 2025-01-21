@@ -15,7 +15,7 @@ function DebitNoteInvoice({rowId}) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/debitnote-view/${id}/${salesID}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/debitnote-view/${id}/${salesID}/${rowId}`
         );
         setInvoiceData(response.data);
         setLoading(false);

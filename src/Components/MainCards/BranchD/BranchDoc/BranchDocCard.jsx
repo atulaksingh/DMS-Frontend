@@ -106,7 +106,7 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-branchdoc/${branchID}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-branchdoc/${branchID}/${rowId}`,
         formDataToSend,
         {
           headers: {
@@ -169,7 +169,7 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-branchdoc/${branchID}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-branchdoc/${branchID}/${deleteId}`
       );
       // console.log("res-----branchDoc---->", response);
       setOpenDeleteModal(false);
@@ -207,7 +207,7 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-branchdoc/${branchID}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-branchdoc/${branchID}/${rowId}`
       );
       // console.log("dd", response.data);
       setFormData(response.data);
@@ -229,7 +229,7 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
     const fetchBranchDocDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-branchdoc/${branchID}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/single-branchdoc/${branchID}/${rowId}`
         );
         // console.log("ggg", response.data);
         setBranchDocData(response.data);
@@ -362,7 +362,7 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
                                         <div className="flex items-center justify-between">
                                           <div>
                                             <a
-                                              href={`http://127.0.0.1:8000${file.files}`}
+                                              href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                               target="_blank"
                                               rel="noopener noreferrer"
                                               className="font-medium"
@@ -606,7 +606,7 @@ export default function BranchDocCard({ rowId, fetchBranchDetails }) {
                             <p key={index}>
                               {file.files ? (
                                 <a
-                                  href={`http://127.0.0.1:8000${file.files}`}
+                                  href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-500 underline"

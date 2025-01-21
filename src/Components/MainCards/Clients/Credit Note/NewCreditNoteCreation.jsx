@@ -108,7 +108,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-creditnote-invoice/${id}/${purchID}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-creditnote-invoice/${id}/${purchID}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -158,7 +158,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
   //   const fetchBankDetails = async () => {
   //     try {
   //       const response = await axios.get(
-  //         `http://127.0.0.1:8000/api/creditnote-view/${id}/${purchID}`
+  //         `https://admin.dms.zacoinfotech.com/api/creditnote-view/${id}/${purchID}`
   //       );
   //       // console.log("purch",response)
   //       setBankData(response.data);
@@ -273,7 +273,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-creditnote-invoice/${id}/${purchID}`
+        `https://admin.dms.zacoinfotech.com/api/get-creditnote-invoice/${id}/${purchID}`
       );
       // console.log("dd123", response.data);
       setFormData(response.data.client_location);
@@ -361,7 +361,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}`
+          `https://admin.dms.zacoinfotech.com/api/get-creditnote/${id}`
         );
         // console.log("ggggggg->", response.data);
         setOffData(response.data.serializer);
@@ -397,7 +397,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-creditnote/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -512,7 +512,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-creditnote/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -778,7 +778,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-creditnote-post/${id}/${purchID}`,
+        `https://admin.dms.zacoinfotech.com/api/update-creditnote-post/${id}/${purchID}`,
         payload,
         {
           headers: {
@@ -1592,7 +1592,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
                           />
 
                           <a
-                            href={`http://127.0.0.1:8000${
+                            href={`https://admin.dms.zacoinfotech.com${
                               invoiceData[0]?.attach_invoice || ""
                             }`}
                             target="_blank"
@@ -1642,7 +1642,7 @@ function NewCreditNoteCreation({ fetchInvoiceDetails }) {
                           />
 
                           <a
-                            href={`http://127.0.0.1:8000${
+                            href={`https://admin.dms.zacoinfotech.com${
                               invoiceData[0]?.attach_e_way_bill || ""
                             }`}
                             target="_blank"

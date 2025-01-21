@@ -68,7 +68,7 @@ function SftCreation() {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-sft/${id}`,
+        `https://admin.dms.zacoinfotech.com/api/create-sft/${id}`,
         formDataToSend,
         {
           headers: { "Content-Type": "multipart/form-data" },

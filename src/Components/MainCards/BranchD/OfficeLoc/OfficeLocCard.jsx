@@ -128,7 +128,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-officelocation/${branchID}/${rowId}`,
         formDataToSend
       );
   
@@ -188,7 +188,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-officelocation/${clientID}/${branchID}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-officelocation/${clientID}/${branchID}/${deleteId}`
       );
       // console.log("res-----Office Location---->", response);
       setOpenDeleteModal(false);
@@ -226,7 +226,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-officelocation/${branchID}/${rowId}`
       );
       // console.log("dd", response.data);
       // setFormData(response.data);
@@ -305,7 +305,7 @@ export default function OfficeLocCard({ rowId ,fetchBranchDetails}) {
     const fetchLocationDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/edit-officelocation/${branchID}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/edit-officelocation/${branchID}/${rowId}`
         );
         // console.log("ddd",response.data)
         setLocationData(response.data);

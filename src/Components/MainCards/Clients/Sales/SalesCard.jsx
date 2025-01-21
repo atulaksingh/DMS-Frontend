@@ -112,7 +112,7 @@ export default function SalesCard({ rowId ,allLocationBranchProductData,fetchAll
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-sales-invoice/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-sales-invoice/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -155,7 +155,7 @@ const helloworld = () => setOpenViewModal(false)
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/sales-view/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/sales-view/${id}/${rowId}`
         );
         setBankData(response.data);
         setLoading(false);
@@ -263,7 +263,7 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-sales-invoice/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/get-sales-invoice/${id}/${rowId}`
       );
       // console.log("dd123", response.data);
       setFormData(response.data.client_location);
@@ -361,7 +361,7 @@ const helloworld = () => setOpenViewModal(false)
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -484,7 +484,7 @@ const helloworld = () => setOpenViewModal(false)
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-sales/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -750,7 +750,7 @@ const helloworld = () => setOpenViewModal(false)
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/update-sales-post/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/update-sales-post/${id}/${rowId}`,
         payload,
         {
           headers: {
@@ -1530,7 +1530,7 @@ const helloworld = () => setOpenViewModal(false)
                         />
 
                         <a
-                          href={`http://127.0.0.1:8000${bankData?.attach_invoice}`}
+                          href={`https://admin.dms.zacoinfotech.com${bankData?.attach_invoice}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -1573,7 +1573,7 @@ const helloworld = () => setOpenViewModal(false)
                         />
 
                         <a
-                          href={`http://127.0.0.1:8000${bankData?.attach_e_way_bill}`}
+                          href={`https://admin.dms.zacoinfotech.com${bankData?.attach_e_way_bill}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

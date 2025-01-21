@@ -319,7 +319,7 @@ function ExpensesCreation({
       // Fetch additional data if needed
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-expenses/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-expenses/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         // console.log("Location Data:---->", response.data.branch_gst);
         setBranchNoGst(response.data.branch_gst);
@@ -448,7 +448,7 @@ function ExpensesCreation({
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-expenses/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-expenses/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -751,7 +751,7 @@ function ExpensesCreation({
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-expenses-post2/${id}`,
+        `https://admin.dms.zacoinfotech.com/api/create-expenses-post2/${id}`,
         payload,
         {
           headers: {

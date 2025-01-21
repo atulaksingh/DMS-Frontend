@@ -80,7 +80,7 @@ export default function ZipFileCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-zipupload/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-zipupload/${id}/${deleteId}`
       );
       // console.log("res-----sft---->", response);
       setOpenDeleteModal(false);

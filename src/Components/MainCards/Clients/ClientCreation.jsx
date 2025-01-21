@@ -137,7 +137,7 @@ function ClientCreation() {
           },
         }
       );
-  
+      // https://admin.dms.zacoinfotech.com/api/create-purchase-post2/
 // console.log("response",response)
 
 

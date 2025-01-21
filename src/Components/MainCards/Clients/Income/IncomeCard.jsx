@@ -121,7 +121,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-income/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-income/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       setOpenDeleteModal(false);
@@ -153,7 +153,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/income-view/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/income-view/${id}/${rowId}`
         );
         // console.log("eeeeeee",response.data)
         setBankData(response.data);
@@ -271,7 +271,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/get-income/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/get-income/${id}/${rowId}`
       );
       // console.log("dd123", response.data);
       setFormData(response.data.client_location);
@@ -369,7 +369,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
         setShowBranchInput(false);
 
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
+          `https://admin.dms.zacoinfotech.com/api/get-purchase/${id}/?newValue=${newValue.id}&productID=${productID}`
         );
         setBranchNoGst(response.data.branch_gst || "N/A");
       }
@@ -492,7 +492,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
       setProductID(newValue.id); // Assuming setProductID is defined elsewhere
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/get-income/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
+          `https://admin.dms.zacoinfotech.com/api/get-income/${id}/?newValue=${selectedLocation}&productID=${newValue.id}`
         );
 
         const { hsn_code: hsnCode, gst_rate: gstRate } =
@@ -758,7 +758,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/update-income-post/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/update-income-post/${id}/${rowId}`,
         payload,
         {
           headers: {
@@ -1539,7 +1539,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
                         <a
                           href={
                             typeof invoiceData[0]?.attach_invoice === "string"
-                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_invoice}`
+                              ? `https://admin.dms.zacoinfotech.com${invoiceData[0]?.attach_invoice}`
                               : "#"
                           }
                           target="_blank"
@@ -1589,7 +1589,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
                         />
 
                         {/* <a
-                          href={`http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`}
+                          href={`https://admin.dms.zacoinfotech.com${invoiceData[0]?.attach_e_way_bill}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -1606,7 +1606,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
                           href={
                             typeof invoiceData[0]?.attach_e_way_bill ===
                             "string"
-                              ? `http://127.0.0.1:8000${invoiceData[0]?.attach_e_way_bill}`
+                              ? `https://admin.dms.zacoinfotech.com${invoiceData[0]?.attach_e_way_bill}`
                               : "#"
                           }
                           target="_blank"

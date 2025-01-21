@@ -81,7 +81,7 @@ function TdsPaymentCreation() {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/create-tdspayment/${id}`,
+        `https://admin.dms.zacoinfotech.com/api/create-tdspayment/${id}`,
         formDataToSend
       );
   

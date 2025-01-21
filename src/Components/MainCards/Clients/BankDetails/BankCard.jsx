@@ -102,7 +102,7 @@ export default function BankCard({ rowId }) {
   
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-bank/${id}/${rowId}`,
         formDataToSend,
         {
           headers: {
@@ -171,7 +171,7 @@ export default function BankCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-bank/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-bank/${id}/${deleteId}`
       );
       // console.log("res-----bank---->", response);
       dispatch(fetchClientDetails(id));
@@ -202,7 +202,7 @@ export default function BankCard({ rowId }) {
     const fetchBankDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/single-bank/${id}/${rowId}`
         );
         setBankData(response.data);
         setLoading(false);
@@ -222,7 +222,7 @@ export default function BankCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-bank/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-bank/${id}/${rowId}`
       );
       // console.log("dd", response.data);
       setFormData(response.data);
@@ -244,7 +244,7 @@ export default function BankCard({ rowId }) {
   //   const fetchBankDetails = async () => {
   //     try {
   //       const response = await axios.get(
-  //         `http://127.0.0.1:8000/api/single-bank/${id}/${rowId}`
+  //         `https://admin.dms.zacoinfotech.com/api/single-bank/${id}/${rowId}`
   //       );
   //       setBankData(response.data);
   //       setLoading(false);
@@ -400,7 +400,7 @@ export default function BankCard({ rowId }) {
             <div className="flex items-center justify-between">
               <div>
                 <a
-                  href={`http://127.0.0.1:8000${file.files}`}
+                  href={`https://admin.dms.zacoinfotech.com${file.files}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-medium"
@@ -644,7 +644,7 @@ export default function BankCard({ rowId }) {
                             <p key={index}>
                               {file.files ? (
                                 <a
-                                  href={`http://127.0.0.1:8000${file.files}`}
+                                  href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="text-blue-500 underline"

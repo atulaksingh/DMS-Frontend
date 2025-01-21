@@ -111,7 +111,7 @@ export default function TdsReturnCard({ rowId }) {
 
       // Make a POST request to your API
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-tds/${id}/${rowId}`,
         formDataToSend,
         {
           headers: {
@@ -179,7 +179,7 @@ export default function TdsReturnCard({ rowId }) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-tds/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-tds/${id}/${deleteId}`
       );
       // console.log("res-----Tds Return---->", response);
       setOpenDeleteModal(false);
@@ -209,7 +209,7 @@ export default function TdsReturnCard({ rowId }) {
     setAnchorEl(null);
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/single-tds/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/single-tds/${id}/${rowId}`
       );
       setTdsReturnData(response.data);
       setLoading(false);
@@ -227,7 +227,7 @@ export default function TdsReturnCard({ rowId }) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-tds/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-tds/${id}/${rowId}`
       );
       // console.log("dd", response.data);
       setFormData(response.data);
@@ -401,7 +401,7 @@ export default function TdsReturnCard({ rowId }) {
                                       <div className="flex items-center justify-between">
                                         <div className=" ">
                                           <a
-                                            href={`http://127.0.0.1:8000${file.files}`}
+                                            href={`https://admin.dms.zacoinfotech.com${file.files}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="font-medium"

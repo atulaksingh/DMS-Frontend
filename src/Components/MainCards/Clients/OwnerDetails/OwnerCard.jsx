@@ -79,7 +79,7 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
     e.preventDefault(); // Prevent default form submission
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/edit-owner/${id}/${rowId}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-owner/${id}/${rowId}`,
         formData
       );
       // console.log("111",response.data)
@@ -138,7 +138,7 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
   const handleDeleteID = async () => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-owner/${id}/${deleteId}`
+        `https://admin.dms.zacoinfotech.com/api/delete-owner/${id}/${deleteId}`
       );
       // console.log("res-----owner---->", response);
       // setOwnerShare(response.remaining_shares)
@@ -171,7 +171,7 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
     const fetchClientDetails = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/single-owner/${id}/${rowId}`
+          `https://admin.dms.zacoinfotech.com/api/single-owner/${id}/${rowId}`
         );
         // console.log("ss", response.data);
         setOwnerData(response.data);
@@ -194,7 +194,7 @@ export default function OwnerCard({ rowId ,createOwnerShare,ownerShare}) {
 
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/edit-owner/${id}/${rowId}`
+        `https://admin.dms.zacoinfotech.com/api/edit-owner/${id}/${rowId}`
       );
       setFormData(response.data);
     } catch (error) {
