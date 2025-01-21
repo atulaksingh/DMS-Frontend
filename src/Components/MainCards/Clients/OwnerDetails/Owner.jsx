@@ -157,7 +157,7 @@ function Owner({ ownerData }) {
     } catch (error) {
       setErrorMessage("Error submitting data. Please try again.");
       console.error("Error submitting data:", error);
-      toast.error(`Failed to create Owner. ${error.response.data.error_message}`, {
+      toast.error(` ${error.response.data.error_message && error.response.data.message}`, {
         position: "top-right",
         autoClose: 2000,
       });
