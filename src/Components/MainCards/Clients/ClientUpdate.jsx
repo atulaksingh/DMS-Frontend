@@ -214,7 +214,7 @@ function ClientUpdate() {
 
       // Submit the form data
       const response = await axios.post(
-        `admin.dms.zacoinfotech.com/api/edit-client/${id}`,
+        `https://admin.dms.zacoinfotech.com/api/edit-client/${id}`,
         data,
         {
           headers: {
@@ -223,7 +223,7 @@ function ClientUpdate() {
         }
       );
 
-      // console.log("response", response);
+      console.log("response", response);
       // toast.success("Client updated successfully!", {
       //   position: "top-right",
       //   autoClose: 2000,
