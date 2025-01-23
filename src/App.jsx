@@ -39,7 +39,7 @@ function App() {
           <Route path="/client" element={<ClientCreation />} />
           <Route path="/clientUpdate/:id" element={<ClientUpdate />} />
           <Route path="/clientDetails/:id" element={<ClientDetails />} />
-          <Route path="/branchDetails/:clientID/:branchID" element={<BranchDetails />} />
+          <Route path="/clientDetails/branchDetails/:clientID/:branchID" element={<BranchDetails />} />
           <Route path="/purchaseInvoice/:id/:rowId" element={<PurchaseInvoice />} />
           <Route path="/salesInvoice/:id/:rowId" element={<SalesInvoice />} />
           <Route path="/creditNote/:id/:purchID" element={<CreditNote />} />

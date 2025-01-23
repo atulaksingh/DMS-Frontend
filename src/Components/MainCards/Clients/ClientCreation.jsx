@@ -219,7 +219,7 @@ function ClientCreation() {
             />
           </svg>
         </div>
-        <DialogBody className="mx-4">
+        <DialogBody className="mx-4 h-full overflow-y-scroll">
           <div className="grid gap-3">
             <div className="">
               <label htmlFor="file_name">

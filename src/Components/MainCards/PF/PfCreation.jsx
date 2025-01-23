@@ -435,7 +435,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="employee_code"
                               placeholder="Employee Code"
@@ -816,7 +816,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="gross_ctc"
                               placeholder=" Gross Ctc "
@@ -843,7 +843,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="basic_pay"
                               placeholder="Basic Pay"
@@ -1005,7 +1005,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="total_gross_salary"
                               placeholder="Total Gross Salary"
@@ -1032,7 +1032,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="number_of_days_in_month"
                               placeholder="Number of Days In Month"
@@ -1264,7 +1264,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="special_allowance_monthly"
                               placeholder="Special Allowance Monthly"
@@ -1372,7 +1372,7 @@ const PfCreation = () => {
 
                           <div className="">
                             <Input
-                              type="text"
+                              type="number"
                               size="lg"
                               name="advance"
                               placeholder="Advance"

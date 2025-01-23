@@ -81,10 +81,12 @@ function ClientDetails() {
   //     return <div>Error loading client details: {error.message}</div>;
   //   }
   const location = useLocation(); // Get the current location object
-  const pathnames = location.pathname.split("/").filter((x) => x); // Split the URL into an array of path segments
+  const pathnames = location.pathname
+    .split("/")
+    .filter((x) => x && isNaN(Number(x))); // Split the URL into path segments
 
   const breadcrumbItems = [
-    { name: "Home", path: "/master" },
+    { name: "Home", path: "/master" }, // Hardcoded Home breadcrumb
     ...pathnames.map((segment, index) => {
       const path = `/${pathnames.slice(0, index + 1).join("/")}`;
       return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
@@ -94,10 +96,11 @@ function ClientDetails() {
     <>
       <div className="pt-20 px-32 ">
         <div>
-          {/* <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
+          <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
             {breadcrumbItems.map((item, index) => (
               <div key={index} className="flex items-center space-x-2">
                 {index === 0 ? (
+                  // Home link
                   <Link
                     to={item.path}
                     className="flex items-center text-primary hover:text-primary"
@@ -106,108 +109,99 @@ function ClientDetails() {
                     <span className="ml-1">{item.name}</span>
                   </Link>
                 ) : (
-                  <Link
-                    to={item.path}
+                  // Conditional for other breadcrumb links
+                  <button
+                    onClick={() =>
+                      item.name === "Clientdetails"
+                        ? navigate(-1)
+                        : navigate(item.path)
+                    }
                     className="text-gray-700 hover:text-primary"
                   >
                     {item.name}
-                  </Link>
+                  </button>
                 )}
+                {/* Arrow icon between breadcrumbs */}
                 {index < breadcrumbItems.length - 1 && (
                   <span className="text-gray-400">{">"}</span>
                 )}
               </div>
             ))}
-          </nav> */}
+          </nav>
         </div>
 
         <div className="bg-secondary  px-6 py-5 rounded-md shadow-lg">
           <div className="text-xl font-bold ">ClientDetails</div>
           <div className="py-3 mx-2">
-            {clientData && (
+            {clientData?.id ? (
               <>
-                <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" text-gray-700 font-[550] ">
-                      <div>Client Name:</div>
-                    </div>
-                    <div className="text-gray-600  ">
-                      {clientData?.client_name} 
-                    </div>
+                <div className="grid grid-cols-12 py-3">
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Client Name:{" "}
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Entity Type:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData?.entity_type}
-                    </div>
+                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.client_name}
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Date of Incorporation:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.date_of_incorporation}
-                    </div>
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Entity Type:{" "}
+                  </div>
+                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.entity_type}
+                  </div>
+                  <div className="grid col-span-2 text-gray-700 font-[550]">
+                    Date of Incorporation:
+                  </div>
+                  <div className="grid col-span-1 text-gray-700 font-medium subpixel-antialiased text-left">
+                    {clientData.date_of_incorporation}
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" text-gray-700 font-[550] ">
-                      <div>Contact Person:</div>
-                    </div>
-                    <div className="text-gray-600 subpixel-antialiased ">
-                      {clientData.contact_person}
-                    </div>
+                <div className="grid grid-cols-12 py-3">
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Contact Person:{" "}
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Designation:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.designation}
-                    </div>
+                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.contact_person}
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Contact No:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.contact_no_1}
-                    </div>
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Designation:{" "}
+                  </div>
+                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.designation}
+                  </div>
+                  <div className="grid col-span-2 text-gray-700 font-[550]">
+                    Contact No:
+                  </div>
+                  <div className="grid col-span-1 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.contact_no_1}
                   </div>
                 </div>
-
-                <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" text-gray-700 font-[550] ">
-                      <div>Another No :</div>
-                    </div>
-                    <div className="text-gray-600 subpixel-antialiased ">
-                      {clientData.contact_no_2}
-                    </div>
+                <div className="grid grid-cols-12 py-3">
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Another No:{" "}
                   </div>
-                 
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Status :</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.status}
-                    </div>
+                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.contact_no_2}
+                  </div>
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Status :{" "}
+                  </div>
+                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.status}
                   </div>
                 </div>
-                <div>
-                <div className=" flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Business Details:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.business_detail}                     </div>
+                <div className="grid grid-cols-10 py-3">
+                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                    Business Details:{" "}
+                  </div>
+                  <div className="grid col-span-9 text-gray-700 font-medium subpixel-antialiased">
+                    {clientData.business_detail}
                   </div>
                 </div>
               </>
+            ) : (
+              <div className="text-gray-700 font-medium text-center py-6">
+                Loading...
+              </div>
             )}
           </div>
         </div>

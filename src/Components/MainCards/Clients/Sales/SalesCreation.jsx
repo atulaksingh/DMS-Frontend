@@ -108,8 +108,7 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
         tcs: "",
         tds: "",
         amount_receivable: "",
-        utilise_month: "",
-        utilise_edit: false,
+  
       },
     ]);
   };
@@ -219,10 +218,10 @@ function SalesCreation({allLocationBranchProductData,fetchAllLocBranchDetails}) 
       amount_receivable: "",
     },
   ]);
-  // console.log("formData", formData);
-  // console.log("vendor", vendorData);
-  // console.log("rowsData", rows);
-  // console.log("invoiceData", invoiceData);
+  console.log("formData", formData);
+  console.log("vendor", vendorData);
+  console.log("rowsData", rows);
+  console.log("invoiceData", invoiceData);
   // const handleInputChangeInvoiceData = (e) => {
   //   const { name, value, type } = e.target;
   //   const fieldValue = type === "file" ? e.target.files[0] : value;

@@ -7,7 +7,7 @@ import createCache from "@emotion/cache";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Card from "./Card";
 import { Button } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const muiCache = createCache({
   key: "mui-datatables",
   prepend: true,
@@ -26,6 +26,7 @@ function MuiTable({ tableData ,fetchClients}) {
   const [filterBtn, setFilterBtn] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentRow, setCurrentRow] = useState(null);
+  const navigate = useNavigate();
 
   const handleClick = (event, rowData) => {
     setAnchorEl(event.currentTarget);
@@ -143,13 +144,14 @@ function MuiTable({ tableData ,fetchClients}) {
   ];
 
   const options = {
+    
+    responsive,
     search: searchBtn,
     download: downloadBtn,
     print: printBtn,
     viewColumns: viewColumnBtn,
     filter: filterBtn,
     filterType: "dropdown",
-    responsive,
     tableBodyHeight,
     tableBodyMaxHeight,
     // tableBodyMaxHeight: tableData.length <= 13 ? 'auto' : tableBodyHeight,
@@ -157,10 +159,20 @@ function MuiTable({ tableData ,fetchClients}) {
       console.log(action);
       console.dir(state);
     },
+    // console.log("rowData",rowData)
     selectableRows: "none",
     rowsPerPage: 13, // Default rows per page
     rowsPerPageOptions: [13, 25, 50, 100], // Options for rows per page dropdown
     page: 0, // Start from the first page (index 0)
+    // onRowClick: (rowData, rowMeta) => {
+    //   const rowId = tableData[rowMeta.dataIndex]?.id; // Get the `id` of the clicked row
+    //   if (rowId) {
+    //     // Redirect to the desired route using the id
+    //     window.location.href = `/clientDetails/${rowId}`;
+    //   } else {
+    //     toast.error("Unable to fetch client ID for redirection!");
+    //   }
+    // },
   };
 
   const theme = createTheme({

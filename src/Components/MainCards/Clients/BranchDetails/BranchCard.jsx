@@ -768,7 +768,7 @@ export default function BranchCard({ rowId }) {
             },
           }}
         >
-          <Link to={`/branchDetails/${id}/${rowId}`}>
+          <Link to={`/clientDetails/branchDetails/${id}/${rowId}`}>
             <MenuItem>View</MenuItem>
           </Link>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>

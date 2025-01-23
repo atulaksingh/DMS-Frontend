@@ -5,10 +5,11 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import BranchDoc from "./BranchDoc/BranchDoc";
 import OfficeLoc from "./OfficeLoc/OfficeLoc";
+import { HomeIcon } from "@heroicons/react/16/solid";
 
 function BranchDetails() {
   const { clientID, branchID } = useParams();
@@ -40,8 +41,6 @@ function BranchDetails() {
     }
   };
   useEffect(() => {
-  
-
     fetchBranchDetails();
   }, [clientID, branchID]);
 
@@ -52,9 +51,60 @@ function BranchDetails() {
   if (error) {
     return <div>Error loading client details: {error.message}</div>;
   }
+
+  const location = useLocation(); // Get the current location object
+  const pathnames = location.pathname
+  .split("/")
+  .filter((x) => x && isNaN(Number(x))); // Exclude numeric segments like IDs
+
+// Construct breadcrumb items
+const breadcrumbItems = [
+  { name: "Home", path: "/master" }, // Hardcoded Home breadcrumb
+  ...pathnames.map((segment, index) => {
+    // Generate breadcrumb path
+    let path = `/${pathnames.slice(0, index + 1).join("/")}`;
+    if (segment.toLowerCase() === "clientdetails") {
+      // Append clientID to the path if the segment is 'ClientDetails'
+      path = `/clientDetails/${clientID}`;
+    }
+    return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
+  }),
+];
   return (
     <>
+      {console.log("clientid", clientID)}
       <div className="pt-20 px-32 ">
+        <div>
+        <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
+      {breadcrumbItems.map((item, index) => (
+        <div key={index} className="flex items-center space-x-2">
+          {index === 0 ? (
+            // "Home" breadcrumb link
+            <Link
+              to={item.path}
+              className="flex items-center text-primary hover:text-primary"
+            >
+              <HomeIcon className="h-5 w-5" />
+              <span className="ml-1">{item.name}</span>
+            </Link>
+          ) : (
+            // Other breadcrumb links
+            <Link
+              to={item.path}
+              className="text-gray-700 hover:text-primary"
+            >
+              {item.name}
+            </Link>
+          )}
+          {/* Arrow icon between breadcrumbs */}
+          {index < breadcrumbItems.length - 1 && (
+            <span className="text-gray-400">{">"}</span>
+          )}
+        </div>
+      ))}
+    </nav>
+        </div>
+
         <div className="bg-secondary  px-6 py-5 rounded-md shadow-lg">
           <div className="text-xl font-bold ">ClientDetails</div>
           <div className="py-3 mx-2">
@@ -104,14 +154,14 @@ function BranchDetails() {
                     </div>
                   </div>
                 </div>
-                  <div className=" flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Address:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {branchData.address}
-                    </div>
+                <div className=" flex gap-x-4 justify-start">
+                  <div className=" font-semibold text-gray-700">
+                    <div>Address:</div>
                   </div>
+                  <div className=" text-gray-700 font-medium subpixel-antialiased ">
+                    {branchData.address}
+                  </div>
+                </div>
 
                 {/* <div className="grid grid-cols-3 gap-5  py-3 ">
                   <div className="col-span-1 flex gap-x-4 justify-start">
@@ -282,14 +332,18 @@ function BranchDetails() {
                 </TabList>
               </Box>
               <TabPanel value="1">
-         
-                <BranchDoc branchDocumentsData={branchDocumentsData} fetchBranchDetails={fetchBranchDetails}/>
+                <BranchDoc
+                  branchDocumentsData={branchDocumentsData}
+                  fetchBranchDetails={fetchBranchDetails}
+                />
               </TabPanel>
               <TabPanel value="2">
                 {/* <Bank bankData={bankData} /> */}
-                <OfficeLoc officeLocationData={officeLocationData} fetchBranchDetails={fetchBranchDetails}/>
+                <OfficeLoc
+                  officeLocationData={officeLocationData}
+                  fetchBranchDetails={fetchBranchDetails}
+                />
               </TabPanel>
-           
             </TabContext>
           </Box>
         </div>

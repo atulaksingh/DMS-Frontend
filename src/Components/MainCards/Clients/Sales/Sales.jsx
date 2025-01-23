@@ -45,7 +45,7 @@ function Sales({ salesInvoiceData }) {
         setAllLocationBranchProductData({
           serializer: response?.data?.serializer || [],
           serializer_customer: response?.data?.serializer_customer || [],
-          product_serializer: response?.data?.product_serializer || [],
+          // product_serializer: response?.data?.product_serializer || [],
           branch_serializer: response?.data?.branch_serializer || []
         });
       } catch (error) {
