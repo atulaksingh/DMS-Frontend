@@ -207,7 +207,7 @@ function ClientDetails() {
       </div> */}
 
 <div class="text-sm md:text-lg lg:text-xl">Responsive Text</div>
-<div className="pt-20 px-6 lg:px-6 xl:px-32 bg-purple-500 md:bg-yellow-400 lg:bg-red-600 xl:bg-green-400">
+<div className="pt-20 px-6 lg:px-6 2xl:px-32 bg-purple-500 md:bg-yellow-400 lg:bg-red-600 xl:bg-green-400">
   <div>
     <nav className="flex flex-wrap items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-4">
       {breadcrumbItems.map((item, index) => (
