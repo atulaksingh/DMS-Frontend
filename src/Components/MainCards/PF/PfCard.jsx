@@ -496,7 +496,7 @@ export default function PfCard({ rowId }) {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={styleCreateMOdal}>
+          <Box sx={styleCreateMOdal} className="max-h-screen overflow-scroll">
             <Typography
               id="modal-modal-title"
               variant="h5"

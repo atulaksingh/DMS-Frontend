@@ -267,7 +267,7 @@ function ClientUpdate() {
     };
   return (
     <>
-      <Dialog open={open} size="sm" handler={handleOpen}>
+      <Dialog open={open} size="sm" handler={handleOpen} className="max-h-screen overflow-scroll">
         <div className="flex items-center justify-between">
           <DialogHeader className="flex flex-col items-start">
             <Typography className="mb-1 text-[#366FA1]" variant="h4">

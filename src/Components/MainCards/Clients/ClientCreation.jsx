@@ -198,7 +198,7 @@ function ClientCreation() {
   
   return (
     <>
-      <Dialog open={open} size="sm" handler={handleOpen}>
+      <Dialog open={open} size="sm" handler={handleOpen} className="max-h-screen overflow-scroll">
         <div className="flex items-center justify-between">
           <DialogHeader className="flex flex-col items-start">
             <Typography className="mb-1 text-[#366FA1]" variant="h4">
@@ -219,7 +219,7 @@ function ClientCreation() {
             />
           </svg>
         </div>
-        <DialogBody className="mx-4 h-full overflow-y-scroll">
+        <DialogBody className="mx-4 ">
           <div className="grid gap-3">
             <div className="">
               <label htmlFor="file_name">

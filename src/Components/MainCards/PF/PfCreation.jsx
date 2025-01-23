@@ -219,7 +219,7 @@ const PfCreation = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={styleCreateMOdal} className="items-center">
+          <Box sx={styleCreateMOdal} className="items-center max-h-screen overflow-scroll">
             <Typography
               id="modal-modal-title"
               variant="h5"

@@ -255,7 +255,7 @@ export default function TdsPaymentCard({ rowId }) {
               unmount: { scale: 0.9, y: -100 },
             }}
           >
-            <Box sx={style}>
+            <Box sx={style} className="max-h-screen overflow-scroll">
               <Typography
                 id="modal-modal-title"
                 variant="h5"
