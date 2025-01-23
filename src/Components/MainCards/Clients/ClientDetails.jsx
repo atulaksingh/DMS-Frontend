@@ -206,8 +206,8 @@ function ClientDetails() {
         </div>
       </div> */}
 
-
-<div className="pt-20 px-6 xl:px-32">
+<div class="text-sm md:text-lg lg:text-xl">Responsive Text</div>
+<div className="pt-20 px-6 lg:px-10 xl:px-32">
   <div>
     <nav className="flex flex-wrap items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-4">
       {breadcrumbItems.map((item, index) => (
@@ -274,8 +274,8 @@ function ClientDetails() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-10 py-3">
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Business Details:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.business_detail}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Business Details:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.business_detail}</div>
           </div>
         </>
       ) : (
