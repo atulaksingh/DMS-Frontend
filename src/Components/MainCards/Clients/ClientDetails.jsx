@@ -207,7 +207,7 @@ function ClientDetails() {
       </div> */}
 
 
-<div className="pt-20 px-6 lg:px-32">
+<div className="pt-20 px-6 xl:px-32">
   <div>
     <nav className="flex flex-wrap items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-4">
       {breadcrumbItems.map((item, index) => (
@@ -249,33 +249,33 @@ function ClientDetails() {
       {clientData?.id ? (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Client Name:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.client_name}</div>
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Entity Type:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.entity_type}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Client Name:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.client_name}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Entity Type:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.entity_type}</div>
             <div className="sm:col-span-2 text-gray-700 font-[550]">Date of Incorporation:</div>
             <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.date_of_incorporation}</div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Contact Person:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.contact_person}</div>
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Designation:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.designation}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Contact Person:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_person}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Designation:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.designation}</div>
             <div className="sm:col-span-2 text-gray-700 font-[550]">Contact No:</div>
             <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_no_1}</div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Another No:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.contact_no_2}</div>
-            <div className="sm:col-span-1 text-gray-700 font-[550]">Status:</div>
-            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.status}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Another No:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_no_2}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Status:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.status}</div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-10 py-3">
             <div className="sm:col-span-1 text-gray-700 font-[550]">Business Details:</div>
-            <div className="sm:col-span-9 text-gray-700 font-medium">{clientData.business_detail}</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.business_detail}</div>
           </div>
         </>
       ) : (
@@ -289,7 +289,7 @@ function ClientDetails() {
 
 
 
-      <div className="pt-20 px-6 lg:px-32">
+      <div className="pt-20 px-6 xl:px-32">
         <div className="bg-secondary px-6 py-3 rounded-md shadow-lg">
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
