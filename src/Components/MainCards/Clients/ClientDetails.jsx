@@ -94,7 +94,7 @@ function ClientDetails() {
   ];
   return (
     <>
-      <div className="pt-20 px-32 ">
+      {/* <div className="pt-20 px-32 ">
         <div>
           <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
             {breadcrumbItems.map((item, index) => (
@@ -121,7 +121,6 @@ function ClientDetails() {
                     {item.name}
                   </button>
                 )}
-                {/* Arrow icon between breadcrumbs */}
                 {index < breadcrumbItems.length - 1 && (
                   <span className="text-gray-400">{">"}</span>
                 )}
@@ -156,10 +155,10 @@ function ClientDetails() {
                   </div>
                 </div>
                 <div className="grid grid-cols-12 py-3">
-                  <div className="grid col-span-1 text-gray-700 font-[550]">
+                  <div className="grid col-span-2 text-gray-700 font-[550]">
                     Contact Person:{" "}
                   </div>
-                  <div className="grid col-span-3 text-gray-700 font-medium subpixel-antialiased">
+                  <div className="grid col-span-2 text-gray-700 font-medium subpixel-antialiased">
                     {clientData.contact_person}
                   </div>
                   <div className="grid col-span-1 text-gray-700 font-[550]">
@@ -205,8 +204,92 @@ function ClientDetails() {
             )}
           </div>
         </div>
-      </div>
-      <div className="py-10 px-32">
+      </div> */}
+
+
+<div className="pt-20 px-6 lg:px-32">
+  <div>
+    <nav className="flex flex-wrap items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-4">
+      {breadcrumbItems.map((item, index) => (
+        <div key={index} className="flex items-center space-x-2">
+          {index === 0 ? (
+            // Home link
+            <Link
+              to={item.path}
+              className="flex items-center text-primary hover:text-primary"
+            >
+              <HomeIcon className="h-5 w-5" />
+              <span className="ml-1 text-sm lg:text-base">{item.name}</span>
+            </Link>
+          ) : (
+            // Conditional for other breadcrumb links
+            <button
+              onClick={() =>
+                item.name === "Clientdetails"
+                  ? navigate(-1)
+                  : navigate(item.path)
+              }
+              className="text-gray-700 hover:text-primary text-sm lg:text-base"
+            >
+              {item.name}
+            </button>
+          )}
+          {/* Arrow icon between breadcrumbs */}
+          {index < breadcrumbItems.length - 1 && (
+            <span className="text-gray-400 text-sm lg:text-base">{">"}</span>
+          )}
+        </div>
+      ))}
+    </nav>
+  </div>
+
+  <div className="bg-secondary px-4 py-4 md:px-6 md:py-5 rounded-md shadow-lg">
+    <div className="text-lg md:text-xl font-bold">ClientDetails</div>
+    <div className="py-3 mx-2">
+      {clientData?.id ? (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Client Name:</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.client_name}</div>
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Entity Type:</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.entity_type}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Date of Incorporation:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.date_of_incorporation}</div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Contact Person:</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.contact_person}</div>
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Designation:</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.designation}</div>
+            <div className="sm:col-span-2 text-gray-700 font-[550]">Contact No:</div>
+            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_no_1}</div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Another No:</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.contact_no_2}</div>
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Status:</div>
+            <div className="sm:col-span-3 text-gray-700 font-medium">{clientData.status}</div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-10 py-3">
+            <div className="sm:col-span-1 text-gray-700 font-[550]">Business Details:</div>
+            <div className="sm:col-span-9 text-gray-700 font-medium">{clientData.business_detail}</div>
+          </div>
+        </>
+      ) : (
+        <div className="text-gray-700 font-medium text-center py-6">Loading...</div>
+      )}
+    </div>
+  </div>
+</div>
+
+
+
+
+
+      <div className="pt-20 px-6 lg:px-32">
         <div className="bg-secondary px-6 py-3 rounded-md shadow-lg">
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
