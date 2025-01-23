@@ -207,7 +207,7 @@ function ClientDetails() {
       </div> */}
 
 <div class="text-sm md:text-lg lg:text-xl">Responsive Text</div>
-<div className="pt-10 xl:pt-20 px-6 lg:px-6 2xl:px-32 bg-purple-500 md:bg-yellow-400 lg:bg-red-600 xl:bg-green-400">
+<div className="pt-5 xl:pt-14 px-6 lg:px-14 2xl:px-32 ">
   <div>
     <nav className="flex flex-wrap items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-4">
       {breadcrumbItems.map((item, index) => (
@@ -289,7 +289,7 @@ function ClientDetails() {
 
 
 
-      <div className="pt-10 xl:pt-20 px-6 lg:px-6 2xl:px-32">
+      <div className="pt-5 xl:pt-14 px-6 lg:px-6 2xl:px-32">
         <div className="bg-secondary px-6 py-3 rounded-md shadow-lg">
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
