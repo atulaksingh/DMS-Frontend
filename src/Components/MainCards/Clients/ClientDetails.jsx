@@ -206,7 +206,7 @@ function ClientDetails() {
         </div>
       </div> */}
 
-<div class="text-sm md:text-lg lg:text-xl">Responsive Text</div>
+{/* <div class="text-sm md:text-lg lg:text-xl">Responsive Text</div> */}
 <div className="pt-5 xl:pt-14 px-6 lg:px-14 2xl:px-32 ">
   <div>
     <nav className="flex flex-wrap items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-4">
@@ -289,7 +289,7 @@ function ClientDetails() {
 
 
 
-      <div className="pt-5 xl:pt-14 px-6 lg:px-6 2xl:px-32">
+      <div className="pt-5 xl:pt-14 px-6 lg:px-14 2xl:px-32">
         <div className="bg-secondary px-6 py-3 rounded-md shadow-lg">
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
