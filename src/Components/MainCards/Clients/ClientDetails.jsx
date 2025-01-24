@@ -246,42 +246,63 @@ function ClientDetails() {
   <div className="bg-secondary px-4 py-4 md:px-6 md:py-5 rounded-md shadow-lg">
     <div className="text-lg md:text-xl font-bold">ClientDetails</div>
     <div className="py-3 mx-2">
-      {clientData?.id ? (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Client Name:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.client_name}</div>
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Entity Type:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.entity_type}</div>
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Date of Incorporation:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.date_of_incorporation}</div>
-          </div>
+  {clientData?.id ? (
+    <>
+      {/* First Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 py-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Client Name:</div>
+          <div className="text-gray-700 font-medium">{clientData.client_name}</div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Entity Type:</div>
+          <div className="text-gray-700 font-medium">{clientData.entity_type}</div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Date of Incorporation:</div>
+          <div className="text-gray-700 font-medium">{clientData.date_of_incorporation}</div>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Contact Person:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_person}</div>
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Designation:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.designation}</div>
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Contact No:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_no_1}</div>
-          </div>
+      {/* Second Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 py-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Contact Person:</div>
+          <div className="text-gray-700 font-medium">{clientData.contact_person}</div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Designation:</div>
+          <div className="text-gray-700 font-medium">{clientData.designation}</div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Contact No:</div>
+          <div className="text-gray-700 font-medium">{clientData.contact_no_1}</div>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-12 py-3 gap-y-2 sm:gap-y-0">
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Another No:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.contact_no_2}</div>
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Status:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.status}</div>
-          </div>
+      {/* Third Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 py-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Another No:</div>
+          <div className="text-gray-700 font-medium">{clientData.contact_no_2}</div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2">
+          <div className="font-semibold text-gray-700">Status:</div>
+          <div className="text-gray-700 font-medium">{clientData.status}</div>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-10 py-3">
-            <div className="sm:col-span-2 text-gray-700 font-[550]">Business Details:</div>
-            <div className="sm:col-span-2 text-gray-700 font-medium">{clientData.business_detail}</div>
-          </div>
-        </>
-      ) : (
-        <div className="text-gray-700 font-medium text-center py-6">Loading...</div>
-      )}
-    </div>
+      {/* Fourth Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-12 py-3">
+        <div className="sm:col-span-2 font-semibold text-gray-700">Business Details:</div>
+        <div className="sm:col-span-10 text-gray-700 font-medium">{clientData.business_detail}</div>
+      </div>
+    </>
+  ) : (
+    <div className="text-gray-700 font-medium text-center py-6">Loading...</div>
+  )}
+</div>
+
   </div>
 </div>
 
@@ -290,7 +311,7 @@ function ClientDetails() {
 
 
       <div className="pt-5 xl:pt-14 px-6 lg:px-14 2xl:px-32">
-        <div className="bg-secondary px-6 py-3 rounded-md shadow-lg">
+        <div className="bg-secondary py-3 rounded-md shadow-lg">
           <Box sx={{ width: "100%", typography: "body1" }}>
             <TabContext value={value}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>

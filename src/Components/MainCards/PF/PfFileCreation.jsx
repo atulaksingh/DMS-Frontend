@@ -32,7 +32,27 @@ function PfFileCreation() {
     setOpenCreateModal(true);
     setAnchorEl(null);
   };
+  const handleDownloadTemplate = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/get-excel-file");
+      //  `https://admin.dms.zacoinfotech.com/api/create-tdspayment/${id}`
+      const fileData = response.data[0]; // Assuming the API returns the file info as an array
+      const fileUrl = `http://127.0.0.1:8000${fileData.file}`; // Construct the file URL
 
+      // Create a temporary anchor element to trigger the download
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "Template.xlsx"; // Optional: specify the file name
+      document.body.appendChild(link)
+;
+      link.click();
+      document.body.removeChild(link)
+;
+    } catch (error) {
+      console.error("Error downloading the template file:", error);
+      alert("Failed to download the template file.");
+    }
+  };
   const handleCreateClose = () => setOpenCreateModal(false);
 
   const [attachment, setAttachment] = useState(null); // State for file input
@@ -115,6 +135,15 @@ function PfFileCreation() {
             </Typography>
             <form className=" my-5 w-full " onSubmit={handleSubmit}>
               <div>
+              <div className="mt-4 text-center">
+                  <button
+                    onClick={handleDownloadTemplate}
+                    type="button"
+                    className="bg-primary text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    Download Excel Template
+                  </button>
+                </div>
                 <div className="grid grid-cols-4 gap-4">
                  
                   <div className="col-span-2">

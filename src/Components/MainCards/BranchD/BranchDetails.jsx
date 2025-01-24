@@ -54,236 +54,127 @@ function BranchDetails() {
 
   const location = useLocation(); // Get the current location object
   const pathnames = location.pathname
-  .split("/")
-  .filter((x) => x && isNaN(Number(x))); // Exclude numeric segments like IDs
+    .split("/")
+    .filter((x) => x && isNaN(Number(x))); // Exclude numeric segments like IDs
 
-// Construct breadcrumb items
-const breadcrumbItems = [
-  { name: "Home", path: "/master" }, // Hardcoded Home breadcrumb
-  ...pathnames.map((segment, index) => {
-    // Generate breadcrumb path
-    let path = `/${pathnames.slice(0, index + 1).join("/")}`;
-    if (segment.toLowerCase() === "clientdetails") {
-      // Append clientID to the path if the segment is 'ClientDetails'
-      path = `/clientDetails/${clientID}`;
-    }
-    return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
-  }),
-];
+  // Construct breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", path: "/master" },
+    ...pathnames.map((segment, index) => {
+      let path = `/${pathnames.slice(0, index + 1).join("/")}`;
+      if (segment.toLowerCase() === "clientdetails") {
+        path = `/clientDetails/${clientID}`;
+      }
+      return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
+    }),
+  ];
+
   return (
     <>
       {console.log("clientid", clientID)}
       <div className="pt-20 px-32 ">
         <div>
-        <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
-      {breadcrumbItems.map((item, index) => (
-        <div key={index} className="flex items-center space-x-2">
-          {index === 0 ? (
-            // "Home" breadcrumb link
-            <Link
-              to={item.path}
-              className="flex items-center text-primary hover:text-primary"
-            >
-              <HomeIcon className="h-5 w-5" />
-              <span className="ml-1">{item.name}</span>
-            </Link>
-          ) : (
-            // Other breadcrumb links
-            <Link
-              to={item.path}
-              className="text-gray-700 hover:text-primary"
-            >
-              {item.name}
-            </Link>
-          )}
-          {/* Arrow icon between breadcrumbs */}
-          {index < breadcrumbItems.length - 1 && (
-            <span className="text-gray-400">{">"}</span>
-          )}
-        </div>
-      ))}
-    </nav>
+          <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
+            {breadcrumbItems.map((item, index) => (
+              <div key={index} className="flex items-center space-x-2">
+                {index === 0 ? (
+                  // Home breadcrumb with link
+                  <Link
+                    to={item.path}
+                    className="flex items-center text-primary hover:text-primary"
+                  >
+                    <HomeIcon className="h-5 w-5" />
+                    <span className="ml-1">{item.name}</span>
+                  </Link>
+                ) : item.name === "BranchDetails" ? (
+                  // Non-clickable breadcrumb for BranchDetails
+                  <span className="text-gray-700">{item.name}</span>
+                ) : (
+                  // Other clickable breadcrumbs
+                  <Link
+                    to={item.path}
+                    className="text-gray-700 hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                )}
+                {/* Arrow icon between breadcrumbs */}
+                {index < breadcrumbItems.length - 1 && (
+                  <span className="text-gray-400">{">"}</span>
+                )}
+              </div>
+            ))}
+          </nav>
         </div>
 
         <div className="bg-secondary  px-6 py-5 rounded-md shadow-lg">
-          <div className="text-xl font-bold ">ClientDetails</div>
+          <div className="text-xl font-bold ">BranchDetails</div>
           <div className="py-3 mx-2">
             {branchData && (
               <>
-                <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" text-gray-700 font-[550] ">
-                      <div>Branch Name:</div>
+                {/* First Row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 py-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="font-semibold text-gray-700">
+                      Branch Name:
                     </div>
-                    <div className="text-gray-600  ">
+                    <div className="text-gray-600">
                       {branchData?.branch_name}
                     </div>
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Gst NO:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="font-semibold text-gray-700">GST NO:</div>
+                    <div className="text-gray-700 font-medium">
                       {branchData?.gst_no}
                     </div>
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Contact:</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="font-semibold text-gray-700">Contact:</div>
+                    <div className="text-gray-700 font-medium">
+                      {branchData?.contact}
                     </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {branchData.contact}
-                    </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" text-gray-700 font-[550] ">
-                      <div>State:</div>
-                    </div>
-                    <div className="text-gray-600 subpixel-antialiased ">
-                      {branchData.state}
-                    </div>
-                  </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>City:</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {branchData.city}
-                    </div>
-                  </div>
-                </div>
-                <div className=" flex gap-x-4 justify-start">
-                  <div className=" font-semibold text-gray-700">
-                    <div>Address:</div>
-                  </div>
-                  <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                    {branchData.address}
                   </div>
                 </div>
 
-                {/* <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" text-gray-700 font-[550] ">
-                      <div>Another No :</div>
-                    </div>
-                    <div className="text-gray-600 subpixel-antialiased ">
-                      {clientData.contact_no_2}
+                {/* Second Row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5 py-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="font-semibold text-gray-700">State:</div>
+                    <div className="text-gray-600">{branchData?.state}</div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2">
+                    <div className="font-semibold text-gray-700">City:</div>
+                    <div className="text-gray-700 font-medium">
+                      {branchData?.city}
                     </div>
                   </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Business Details :</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.business_detail}
-                    </div>
-                  </div>
-                  <div className="col-span-1 flex gap-x-4 justify-start">
-                    <div className=" font-semibold text-gray-700">
-                      <div>Status :</div>
-                    </div>
-                    <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                      {clientData.status}
-                    </div>
-                  </div>
-                </div> */}
+                </div>
 
-                {/* <div className="grid grid-cols-3 gap-5  py-3 ">
-                  <div className="col-span-1  ">
-                    <div className="grid grid-cols-2 ">
-                      <div className=" text-gray-700 font-[550] ">
-                        <div>Client Name :</div>
-                      </div>
-                      <div className="text-gray-600  ">
-                        {clientData?.client_name}
-                      </div>
-                    </div>
+                {/* Address */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 py-3">
+                  <div className="sm:col-span-2 font-semibold text-gray-700">
+                    Address:
                   </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" font-semibold text-gray-700">
-                        <div>Entity Type :</div>
-                      </div>
-                      <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                        {clientData?.entity_type}
-                      </div>
-                    </div>
+                  <div className="sm:col-span-10 text-gray-700 font-medium">
+                    {branchData?.address}
                   </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" font-semibold text-gray-700">
-                        <div>Date of Incorporation :</div>
-                      </div>
-                      <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                        {clientData.date_of_incorporation}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" text-gray-700 font-[550] ">
-                        <div>Contact Person :</div>
-                      </div>
-                      <div className="text-gray-600 subpixel-antialiased ">
-                        {clientData.contact_person}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" font-semibold text-gray-700">
-                        <div>Designation :</div>
-                      </div>
-                      <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                        {clientData.designation}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" font-semibold text-gray-700">
-                        <div>Contact No :</div>
-                      </div>
-                      <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                        {clientData.contact_no_1}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" text-gray-700 font-[550] ">
-                        <div>Another No :</div>
-                      </div>
-                      <div className="text-gray-600 subpixel-antialiased ">
-                        {clientData.contact_no_2}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" font-semibold text-gray-700">
-                        <div>Business Details :</div>
-                      </div>
-                      <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                        {clientData.business_detail}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-span-1 ">
-                    <div className="grid grid-cols-2">
-                      <div className=" font-semibold text-gray-700">
-                        <div>Status :</div>
-                      </div>
-                      <div className=" text-gray-700 font-medium subpixel-antialiased ">
-                        {clientData.status}
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
+                </div>
               </>
             )}
+          </div>
+        </div>
+        <div className="grid grid-cols-3">
+          <div className="grid grid-cols-2">
+            <div></div>
+            <div></div>
+          </div>
+          <div className="grid grid-cols-2">
+            <div></div>
+            <div></div>
+          </div>
+          <div className="grid grid-cols-2">
+            <div></div>
+            <div></div>
           </div>
         </div>
       </div>
