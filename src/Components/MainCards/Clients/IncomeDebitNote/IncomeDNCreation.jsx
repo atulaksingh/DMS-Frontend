@@ -63,17 +63,26 @@ const style = {
   marginBlock: "80px",
   borderRadius: "10px",
 };
-const styleCreateMOdal = {
+const styleCreateModal = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "80%",
+  width: {
+    xs: "90%", // Mobile devices (extra-small screens)
+    sm: "90%", // Small screens (e.g., tablets)
+    md: "90%", // Medium screens
+   lg: "90%", // Large screens%
+    xl: "80%", // Large screens
+  },
   bgcolor: "background.paper",
-  //   border: "1px solid #000",
   boxShadow: 24,
-  paddingTop: "17px", // For vertical (top and bottom) padding
-  paddingInline: "40px",
+  paddingTop: "17px",
+  paddingInline: {
+    xs: "20px", // Smaller padding for smaller screens
+    sm: "30px", // Medium padding for small screens
+    md: "40px", // Default padding for medium and larger screens
+  },
   borderRadius: "10px",
 };
 const ITEM_HEIGHT = 48;
@@ -931,7 +940,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-            <Box sx={styleCreateMOdal}>
+              <Box sx={styleCreateModal}>
               <Typography
                 id="modal-modal-title"
                 variant="h5"
@@ -942,7 +951,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
               </Typography>
 
               <form
-                className=" my-5 w-full h-[700px] overflow-auto "
+                className=" my-5 w-full  overflow-auto "
                 onSubmit={handleSubmit}
               >
                 <div className="font-bold text-[15px] text-primary my-1">
@@ -1315,7 +1324,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
                 </div>
 
                 <div className="border-t-2 my-3 border-[#366FA1]">
-                  <div className="grid grid-cols-4 my-1">
+                  <div className="grid gap-x-5 lg:gap-x-6 2xl:gap-x-0 grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 my-2">
                     <div>
                       <div>
                         <label htmlFor="month">
@@ -2612,8 +2621,10 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
                               <div className="col-span-1">
                                 <div className=" text-sm ">
                                   <div className="">
-                                    {selectedTDSTCSOption === "tcs" && (
-                                      <>
+                                    
+                                  {selectedTDSTCSOption === "tcs" && (
+                                    <>
+                                    {/* <div>Enter Your {selectedTDSTCSOption}</div> */}
                                         <div className="flex gap-5 ">
                                           <div>
                                             <input
@@ -2650,6 +2661,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
                                     )}
                                     {selectedTDSTCSOption === "tds" && (
                                       <>
+                                           {/* <div>Enter Your {selectedTDSTCSOption}</div> */}
                                         <div className="flex gap-5 ">
                                           <div>
                                             <input

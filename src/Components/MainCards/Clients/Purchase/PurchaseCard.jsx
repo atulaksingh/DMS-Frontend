@@ -61,27 +61,41 @@ const style = {
   marginBlock: "80px",
   borderRadius: "10px",
 };
-const styleCreateMOdal = {
+const styleCreateModal = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "80%",
+  width: {
+    xs: "90%", // Mobile devices (extra-small screens)
+    sm: "90%", // Small screens (e.g., tablets)
+    md: "90%", // Medium screens
+    lg: "90%", // Large screens%
+    xl: "80%", // Large screens
+  },
   bgcolor: "background.paper",
-  //   border: "1px solid #000",
   boxShadow: 24,
-  paddingTop: "17px", // For vertical (top and bottom) padding
-  paddingInline: "40px",
+  paddingTop: "17px",
+  paddingInline: {
+    xs: "20px", // Smaller padding for smaller screens
+    sm: "30px", // Medium padding for small screens
+    md: "40px", // Default padding for medium and larger screens
+  },
   borderRadius: "10px",
 };
 const ITEM_HEIGHT = 48;
 
-export default function PurchaseCard({ rowId, allLocationBranchProductData,fetchAllLocBranchDetails }) {
+export default function PurchaseCard({
+  rowId,
+  allLocationBranchProductData,
+  fetchAllLocBranchDetails,
+}) {
   const { id } = useParams();
   const purchID = rowId;
   const offData = allLocationBranchProductData?.serializer || [];
   const customerData = allLocationBranchProductData?.serializer_customer || [];
-  const product_ser_Data = allLocationBranchProductData?.product_serializer || [];
+  const product_ser_Data =
+    allLocationBranchProductData?.product_serializer || [];
   const branch_ser_name = allLocationBranchProductData?.branch_serializer || [];
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -504,7 +518,6 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
         state: "",
         country: "",
         branchID: "",
-        
       }));
     }
   };
@@ -859,23 +872,29 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
           autoClose: 2000,
         });
         dispatch(fetchClientDetails(id));
-    await fetchAllLocBranchDetails()
+        await fetchAllLocBranchDetails();
         handleCreateClose();
         resetFields();
       } else {
-        toast.error(`Failed to Update PurchaseInvoice. Please try again.${response.data.message}`, {
-          position: "top-right",
-          autoClose: 2000,
-        });
+        toast.error(
+          `Failed to Update PurchaseInvoice. Please try again.${response.data.message}`,
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);
       // Handle error response
 
-          toast.error(`Failed to Update Purchase Invoice.${error.response.data.error_message} `, {
-                     position: "top-right",
-                     autoClose: 2000,
-                   });
+      toast.error(
+        `Failed to Update Purchase Invoice.${error.response.data.error_message} `,
+        {
+          position: "top-right",
+          autoClose: 2000,
+        }
+      );
     }
   };
 
@@ -1058,7 +1077,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
               mount: { scale: 1, y: 0 },
               unmount: { scale: 0.9, y: -100 },
             }}
-            className="overflow-auto"
+            // className="overflow-auto"
           >
             <Box sx={style}>
               {/* <Typography
@@ -1111,7 +1130,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={styleCreateMOdal}>
+          <Box sx={styleCreateModal} className="max-h-full overflow-scroll">
             <Typography
               id="modal-modal-title"
               variant="h5"
@@ -1121,10 +1140,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
               Update PurchaseInvoice Details
             </Typography>
 
-            <form
-              className=" my-5 w-full h-[700px] overflow-auto "
-              onSubmit={handleSubmit}
-            >
+            <form className=" my-5 w-full  " onSubmit={handleSubmit}>
               <div className="font-bold text-[15px] text-primary my-1">
                 Office Location Details
               </div>
@@ -1463,7 +1479,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
               </div>
 
               <div className="border-t-2 my-3 border-[#366FA1]">
-                <div className="grid grid-cols-4 my-1">
+                <div className="grid gap-x-5 lg:gap-x-6 2xl:gap-x-0 grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 my-2">
                   <div>
                     <div>
                       <label htmlFor="month">
@@ -1689,7 +1705,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                           className="mb-1"
                         />
 
-<a
+                        <a
                           href={
                             typeof invoiceData[0]?.attach_invoice === "string"
                               ? `https://admin.dms.zacoinfotech.com${invoiceData[0]?.attach_invoice}`
@@ -1741,7 +1757,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                           className="mb-1"
                         />
 
-<a
+                        <a
                           href={
                             typeof invoiceData[0]?.attach_e_way_bill ===
                             "string"
@@ -1818,7 +1834,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
 
               <div>
                 <div className="py-5 px-0">
-                  <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                  <div className="bg-secondary px-0 py-3 rounded-md ">
                     <Box sx={{ width: "100%", typography: "body1" }}>
                       <TabContext value={value}>
                         <Box
@@ -2142,7 +2158,14 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                               style={{ maxHeight: "200px", overflowY: "auto" }}
                             >
                               <Table>
-                                <TableHead>
+                                <TableHead
+                                  sx={{
+                                    backgroundColor: "#f3f4f6",
+                                    position: "sticky", // Makes the header sticky
+                                    top: 0, // Ensures it sticks to the top of the container
+                                    zIndex: 1, // Keeps it above the table rows
+                                  }}
+                                >
                                   <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
                                     <TableCell
                                       className="font-semibold text-gray-600"
@@ -2636,7 +2659,7 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                             Add New Product
                                           </button>
                                         </div>
-                                        <div className="flex gap-4">
+                                        <div className="flex gap-4 py-3">
                                           <div className="w-36">
                                             <div className="col-span-6 font-bold mb-1 ">
                                               Taxable Amount :
@@ -2725,188 +2748,215 @@ export default function PurchaseCard({ rowId, allLocationBranchProductData,fetch
                                 </TableBody>
                               </Table>
                             </TableContainer>
-                          </div>
-                        </TabPanel>
-                        <div>
-                          <div className="grid grid-cols-4 gap-4">
-                            <div className="col-span-1"></div>
-                            <div className="col-span-1">
-                              <div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 my-2">
+                              <div className="hidden 2xl:block col-span-1"></div>
+                              <div className="col-span-1">
                                 <div>
-                                  <label htmlFor="invoice_type">
-                                    <Typography
-                                      variant="small"
-                                      color="blue-gray"
-                                      className="block font-semibold mb-1"
-                                    >
-                                      Invoice Type
-                                    </Typography>
-                                  </label>
-                                </div>
-                                <div className="">
+                                  <div>
+                                    <label htmlFor="invoice_type">
+                                      <Typography
+                                        variant="small"
+                                        color="blue-gray"
+                                        className="block font-semibold mb-1"
+                                      >
+                                        Invoice Type
+                                      </Typography>
+                                    </label>
+                                  </div>
                                   <div className="">
-                                    <select
-                                      name="invoice_type"
-                                      className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
-                                      style={{
-                                        height: "28px",
-                                        padding: "4px 6px",
-                                        fontSize: "0.875rem",
-                                        width: 300,
+                                    <div className="">
+                                      <select
+                                        name="invoice_type"
+                                        className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                                        style={{
+                                          height: "28px",
+                                          padding: "4px 6px",
+                                          fontSize: "0.875rem",
+                                          width: 300,
+                                        }}
+                                        value={
+                                          invoiceData[0].invoice_type || ""
+                                        }
+                                        onChange={handleInputChangeInvoiceData}
+                                      >
+                                        {filteredInvoiceTypes.map((option) => (
+                                          <option
+                                            key={option}
+                                            value={option.toLowerCase()}
+                                          >
+                                            {option}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="col-span-1">
+                                <label htmlFor="invoice_type">
+                                  <Typography
+                                    variant="small"
+                                    color="blue-gray"
+                                    className="block font-semibold mb-1"
+                                  >
+                                    Select TDS/TCS
+                                  </Typography>
+                                </label>
+                                <div className="text-sm my-2">
+                                  <select
+                                    id="option"
+                                    value={selectedTDSTCSOption}
+                                    onChange={(e) =>
+                                      setSelectedTDSTCSOption(e.target.value)
+                                    }
+                                    className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                  >
+                                    <option value="" disabled>
+                                      Choose TDS/TCS
+                                    </option>
+                                    <option value="tcs">TCS</option>
+                                    <option value="tds">TDS</option>
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="col-span-1 ">
+                                <div className=" text-sm ">
+                                  <div className="">
+                                    {selectedTDSTCSOption === "tcs" && (
+                                      <>
+                                        <div>
+                                          Enter Your {selectedTDSTCSOption}
+                                        </div>
+                                        <div className="flex gap-5 ">
+                                          <div>
+                                            <input
+                                              id="tcs"
+                                              type="text"
+                                              placeholder="Enter TCS Rate"
+                                              name="tds_tcs_rate"
+                                              value={
+                                                invoiceData[0].tds_tcs_rate
+                                              }
+                                              onChange={
+                                                handleInputChangeInvoiceData
+                                              }
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            />
+                                          </div>
+                                          <div>
+                                            <input
+                                              id="tcs"
+                                              type="text"
+                                              name="tcs"
+                                              placeholder="Enter TCS value"
+                                              value={invoiceData[0].tcs}
+                                              onChange={
+                                                handleInputChangeInvoiceData
+                                              }
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            />
+                                          </div>
+                                        </div>
+                                      </>
+                                    )}
+                                    {selectedTDSTCSOption === "tds" && (
+                                      <>
+                                        <div>
+                                          Enter Your {selectedTDSTCSOption}
+                                        </div>
+                                        <div className="flex gap-5 ">
+                                          <div>
+                                            <input
+                                              id="tcs"
+                                              type="text"
+                                              placeholder="Enter TDS Rate"
+                                              name="tds_tcs_rate"
+                                              onChange={
+                                                handleInputChangeInvoiceData
+                                              }
+                                              value={
+                                                invoiceData[0].tds_tcs_rate
+                                              }
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            />
+                                          </div>
+                                          <div>
+                                            <input
+                                              id="tds"
+                                              type="text"
+                                              name="tds"
+                                              placeholder="Enter TDS value"
+                                              onChange={
+                                                handleInputChangeInvoiceData
+                                              }
+                                              value={invoiceData[0].tds}
+                                              onInput={(e) => {
+                                                e.target.value =
+                                                  e.target.value.replace(
+                                                    /[^0-9.]/g,
+                                                    ""
+                                                  ); // Allows only digits and a decimal point
+                                              }}
+                                              className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                            />
+                                          </div>
+                                        </div>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-12 text-sm mt-3 my-auto">
+                                  <div className="col-span-6 font-bold">
+                                    Amount Receivable :
+                                  </div>
+                                  <div className="col-span-6">
+                                    <TextField
+                                      variant="outlined"
+                                      size="small"
+                                      name="amount_receivable"
+                                      // value={amount_receivable}
+                                      value={invoiceData[0].amount_receivable}
+                                      // onChange={handleInputChangeInvoiceData}
+                                      sx={{
+                                        "& .MuiOutlinedInput-root": {
+                                          padding: "1px",
+                                          fontSize: "0.875rem",
+                                          minHeight: "1px",
+                                        },
+                                        "& .MuiOutlinedInput-input": {
+                                          padding: "2px",
+                                        },
                                       }}
-                                      value={invoiceData[0].invoice_type || ""}
-                                      onChange={handleInputChangeInvoiceData}
-                                    >
-                                      {filteredInvoiceTypes.map((option) => (
-                                        <option
-                                          key={option}
-                                          value={option.toLowerCase()}
-                                        >
-                                          {option}
-                                        </option>
-                                      ))}
-                                    </select>
+                                    />
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            <div className="col-span-1">
-                              <label htmlFor="invoice_type">
-                                <Typography
-                                  variant="small"
-                                  color="blue-gray"
-                                  className="block font-semibold mb-1"
-                                >
-                                  Select TDS/TCS
-                                </Typography>
-                              </label>
-                              <div className="text-sm my-2">
-                                <select
-                                  id="option"
-                                  value={selectedTDSTCSOption}
-                                  onChange={(e) =>
-                                    setSelectedTDSTCSOption(e.target.value)
-                                  }
-                                  className="mt-2 block w-full px-0.5 py-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                >
-                                  <option value="" disabled>
-                                    Choose TDS/TCS
-                                  </option>
-                                  <option value="tcs">TCS</option>
-                                  <option value="tds">TDS</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div className="col-span-1 mt-5">
-                              <div className=" text-sm ">
-                                <div className="">
-                                  {selectedTDSTCSOption === "tcs" && (
-                                    <>
-                                      <div className="flex gap-5 ">
-                                        <div>
-                                          <input
-                                            id="tcs"
-                                            type="text"
-                                            placeholder="Enter TCS Rate"
-                                            name="tds_tcs_rate"
-                                            value={invoiceData[0].tds_tcs_rate}
-                                            onChange={
-                                              handleInputChangeInvoiceData
-                                            }
-                                            onInput={(e) => {
-                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
-                                            }}
-                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                        <div>
-                                          <input
-                                            id="tcs"
-                                            type="text"
-                                            name="tcs"
-                                            placeholder="Enter TCS value"
-                                            value={invoiceData[0].tcs}
-                                            onChange={
-                                              handleInputChangeInvoiceData
-                                            }
-                                            onInput={(e) => {
-                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
-                                            }}
-                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
-                                  {selectedTDSTCSOption === "tds" && (
-                                    <>
-                                      <div className="flex gap-5 ">
-                                        <div>
-                                          <input
-                                            id="tcs"
-                                            type="text"
-                                            placeholder="Enter TDS Rate"
-                                            name="tds_tcs_rate"
-                                            onChange={
-                                              handleInputChangeInvoiceData
-                                            }
-                                            value={invoiceData[0].tds_tcs_rate}
-                                            onInput={(e) => {
-                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
-                                            }}
-                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                        <div>
-                                          <input
-                                            id="tds"
-                                            type="text"
-                                            name="tds"
-                                            placeholder="Enter TDS value"
-                                            onChange={
-                                              handleInputChangeInvoiceData
-                                            }
-                                            value={invoiceData[0].tds}
-                                            onInput={(e) => {
-                                              e.target.value = e.target.value.replace(/[^0-9.]/g, ""); // Allows only digits and a decimal point
-                                            }}
-                                            className="mt-2 block w-full px-2 py-0.5 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                          />
-                                        </div>
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div className="grid grid-cols-12 text-sm mt-3 my-auto">
-                                <div className="col-span-6 font-bold">
-                                  Amount Receivable :
-                                </div>
-                                <div className="col-span-6">
-                                  <TextField
-                                    variant="outlined"
-                                    size="small"
-                                    name="amount_receivable"
-                                    // value={amount_receivable}
-                                    value={invoiceData[0].amount_receivable}
-                                    // onChange={handleInputChangeInvoiceData}
-                                    sx={{
-                                      "& .MuiOutlinedInput-root": {
-                                        padding: "1px",
-                                        fontSize: "0.875rem",
-                                        minHeight: "1px",
-                                      },
-                                      "& .MuiOutlinedInput-input": {
-                                        padding: "2px",
-                                      },
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </div>
                           </div>
-                        </div>
+                        </TabPanel>
+                        <div></div>
                       </TabContext>
                     </Box>
                   </div>

@@ -807,7 +807,7 @@ import {
             aria-describedby="modal-modal-description"
             className="overflow-auto"
           >
-            <Box sx={styleCreateMOdal}>
+              <Box sx={styleCreateModal}>
               <Typography
                 id="modal-modal-title"
                 variant="h5"
@@ -817,7 +817,7 @@ import {
                 Create Sales Details
               </Typography>
               <form
-                className=" my-5 w-full h-[700px] overflow-auto "
+                className=" my-5 w-full  overflow-auto "
                 onSubmit={handleSubmit}
               >
                 <div className="font-bold text-[15px] text-primary my-1">
@@ -1152,7 +1152,7 @@ import {
                 </div>
   
                 <div className="border-t-2 my-3 border-[#366FA1]">
-                  <div className="grid grid-cols-4 my-1">
+                  <div className="grid gap-x-5 lg:gap-x-6 2xl:gap-x-0 grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 my-2">
                     <div>
                       <div>
                         <label htmlFor="month">
@@ -2663,7 +2663,8 @@ import {
                                 </div> */}
                                 <div className=" text-sm ">
                                   <div className="">
-                                    {selectedTDSTCSOption === "tcs" && (
+                                        <div>Enter Your {selectedTDSTCSOption}</div>
+                                  {selectedTDSTCSOption === "tcs" && (
                                       <>
                                         <div className="flex gap-5 ">
                                           <div>

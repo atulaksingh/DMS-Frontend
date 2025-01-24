@@ -75,17 +75,26 @@ const style = {
   marginBlock: "80px",
   borderRadius: "10px",
 };
-const styleCreateMOdal = {
+const styleCreateModal = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "80%",
+  width: {
+    xs: "90%", // Mobile devices (extra-small screens)
+    sm: "90%", // Small screens (e.g., tablets)
+    md: "90%", // Medium screens
+   lg: "90%", // Large screens%
+    xl: "80%", // Large screens
+  },
   bgcolor: "background.paper",
-  //   border: "1px solid #000",
   boxShadow: 24,
-  paddingTop: "17px", // For vertical (top and bottom) padding
-  paddingInline: "40px",
+  paddingTop: "17px",
+  paddingInline: {
+    xs: "20px", // Smaller padding for smaller screens
+    sm: "30px", // Medium padding for small screens
+    md: "40px", // Default padding for medium and larger screens
+  },
   borderRadius: "10px",
 };
 const ITEM_HEIGHT = 48;
@@ -1044,7 +1053,7 @@ const helloworld = () => setOpenViewModal(false)
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={styleCreateMOdal}>
+            <Box sx={styleCreateModal}>
             <Typography
               id="modal-modal-title"
               variant="h5"
@@ -1055,7 +1064,7 @@ const helloworld = () => setOpenViewModal(false)
             </Typography>
 
             <form
-              className=" my-5 w-full h-[700px] overflow-auto "
+              className=" my-5 w-full  overflow-auto "
               onSubmit={handleSubmit}
             >
               <div className="font-bold text-[15px] text-primary my-1">
@@ -1388,7 +1397,7 @@ const helloworld = () => setOpenViewModal(false)
               </div>
 
               <div className="border-t-2 my-3 border-[#366FA1]">
-                <div className="grid grid-cols-4 my-1">
+                <div className="grid gap-x-5 lg:gap-x-6 2xl:gap-x-0 grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 my-2">
                   <div>
                     <div>
                       <label htmlFor="month">
@@ -2071,7 +2080,14 @@ const helloworld = () => setOpenViewModal(false)
                               style={{ maxHeight: "200px", overflowY: "auto" }}
                             >
                               <Table>
-                                <TableHead>
+                                <TableHead
+                                 sx={{
+                                  backgroundColor: "#f3f4f6",
+                                  position: "sticky", // Makes the header sticky
+                                  top: 0, // Ensures it sticks to the top of the container
+                                  zIndex: 1, // Keeps it above the table rows
+                                }}
+                                >
                                   <TableRow sx={{ backgroundColor: "#f3f4f6" }}>
                                     <TableCell
                                       className="font-semibold text-gray-600"
@@ -2198,7 +2214,7 @@ const helloworld = () => setOpenViewModal(false)
                                                   padding: "2px",
                                                   fontSize: "0.875rem",
                                                   minHeight: "30px",
-                                                  width: "100px",
+                                                  width: "200px",
                                                 },
                                                 "& .MuiOutlinedInput-input": {
                                                   padding: "4px",
@@ -2620,8 +2636,8 @@ const helloworld = () => setOpenViewModal(false)
                           </div>
                         </TabPanel>
                         <div>
-                          <div className="grid grid-cols-4 gap-4">
-                            <div className="col-span-1"></div>
+                         <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 my-2">
+                               <div className="hidden 2xl:block col-span-1"></div>
                             <div className="col-span-1"></div>
                             <div className="col-span-1">
                               <div className="text-sm my-2">
@@ -2644,6 +2660,7 @@ const helloworld = () => setOpenViewModal(false)
                             <div className="col-span-1">
                               <div className=" text-sm ">
                                 <div className="">
+                                      <div>Enter Your {selectedTDSTCSOption}</div>
                                   {selectedTDSTCSOption === "tcs" && (
                                     <>
                                       <div className="flex gap-5 ">

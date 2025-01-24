@@ -36,17 +36,26 @@ import TabPanel from "@mui/lab/TabPanel";
 import { useEffect } from "react";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
 import { useDispatch } from "react-redux";
-const styleCreateMOdal = {
+const styleCreateModal = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "80%",
+  width: {
+    xs: "90%", // Mobile devices (extra-small screens)
+    sm: "90%", // Small screens (e.g., tablets)
+    md: "90%", // Medium screens
+    lg: "90%", // Large screens%
+    xl: "80%", // Large screens
+  },
   bgcolor: "background.paper",
-  //   border: "1px solid #000",
   boxShadow: 24,
-  paddingTop: "17px", // For vertical (top and bottom) padding
-  paddingInline: "40px",
+  paddingTop: "17px",
+  paddingInline: {
+    xs: "20px", // Smaller padding for smaller screens
+    sm: "30px", // Medium padding for small screens
+    md: "40px", // Default padding for medium and larger screens
+  },
   borderRadius: "10px",
 };
 function ExpensesCreation({
@@ -960,19 +969,19 @@ function ExpensesCreation({
           onClose={handleCreateClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
-          className="overflow-auto"
+          // className="overflow-auto"
         >
-          <Box sx={styleCreateMOdal}>
+          <Box sx={styleCreateModal} className="max-h-full overflow-scroll">
             <Typography
               id="modal-modal-title"
               variant="h5"
               component="h2"
-              className="text-center border-b-2 border-[#366FA1] pb-3 overflow-auto"
+              className="text-center border-b-2 border-[#366FA1] pb-3 "
             >
               Create Expenses Details
             </Typography>
             <form
-              className=" my-5 w-full h-[700px] overflow-auto "
+              className=" my-5 w-full   "
               onSubmit={handleSubmit}
             >
               <div className="font-bold text-[15px] text-primary my-1">
@@ -1311,7 +1320,7 @@ function ExpensesCreation({
               </div>
 
               <div className="border-t-2 my-3 border-[#366FA1]">
-                <div className="grid grid-cols-4 my-1">
+                <div className="grid gap-x-5 lg:gap-x-6 2xl:gap-x-0 grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 my-2">
                   <div>
                     <div>
                       <label htmlFor="month">
@@ -1558,7 +1567,7 @@ function ExpensesCreation({
 
               <div>
                 <div className="py-5 px-0">
-                  <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                  <div className="bg-secondary px-0 py-3 rounded-md ">
                     <Box sx={{ width: "100%", typography: "body1" }}>
                       <TabContext value={value}>
                         <Box
@@ -1882,7 +1891,14 @@ function ExpensesCreation({
                               style={{ maxHeight: "200px", overflowY: "auto" }}
                             >
                               <Table>
-                                <TableHead>
+                                <TableHead
+                                 sx={{
+                                  backgroundColor: "#f3f4f6",
+                                  position: "sticky", // Makes the header sticky
+                                  top: 0, // Ensures it sticks to the top of the container
+                                  zIndex: 1, // Keeps it above the table rows
+                                }}
+                                >
                                   <TableRow
                                     className="font-semibold bg-primary text-white"
                                     sx={{
@@ -2051,7 +2067,7 @@ function ExpensesCreation({
                                                   padding: "2px",
                                                   fontSize: "0.875rem",
                                                   minHeight: "30px",
-                                                  width: "100px",
+                                                  width: "200px",
                                                 },
                                                 "& .MuiOutlinedInput-input": {
                                                   padding: "4px",
@@ -2483,11 +2499,8 @@ function ExpensesCreation({
                                 </TableBody>
                               </Table>
                             </TableContainer>
-                          </div>
-                        </TabPanel>
-                        <div>
-                          <div className="grid grid-cols-4 gap-4">
-                            <div className="col-span-1"></div>
+                            <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 my-2">
+                            <div className="hidden 2xl:block col-span-1"></div>
                             <div className="col-span-1">
                               <div>
                                 <div>
@@ -2581,11 +2594,14 @@ function ExpensesCreation({
                                 </select>
                               </div>
                             </div>
-                            <div className="col-span-1 mt-5">
+                            <div className="col-span-1 ">
                               <div className=" text-sm ">
                                 <div className="">
                                   {selectedTDSTCSOption === "tcs" && (
                                     <>
+                                      <div>
+                                        Enter Your {selectedTDSTCSOption}
+                                      </div>
                                       <div className="flex gap-5 ">
                                         <div>
                                           <input
@@ -2632,6 +2648,9 @@ function ExpensesCreation({
                                   )}
                                   {selectedTDSTCSOption === "tds" && (
                                     <>
+                                      <div>
+                                        Enter Your {selectedTDSTCSOption}
+                                      </div>
                                       <div className="flex gap-5 ">
                                         <div>
                                           <input
@@ -2679,8 +2698,8 @@ function ExpensesCreation({
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-12 text-sm my-2">
-                                <div className="col-span-6 font-bold my-auto">
+                              <div className="grid grid-cols-12 text-sm mt-7">
+                                <div className="col-span-6 font-bold my-auto ">
                                   Amount Receivable :
                                 </div>
                                 <div className="col-span-6">
@@ -2706,6 +2725,10 @@ function ExpensesCreation({
                               </div>
                             </div>
                           </div>
+                          </div>
+                        </TabPanel>
+                        <div>
+           
                         </div>
                       </TabContext>
                     </Box>
