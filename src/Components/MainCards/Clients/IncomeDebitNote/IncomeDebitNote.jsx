@@ -336,7 +336,7 @@ function IncomeDebitNote() {
 
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            DebitNote Details
+          Income  DebitNote Details
           </div>
       
           <div className="flex align-middle items-center gap-2">
@@ -344,7 +344,7 @@ function IncomeDebitNote() {
             {/* <SalesFileCreation /> */}
             {/* <DebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             {/* <DebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
-            <IncomeDebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            {/* <IncomeDebitNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/>0000000000000 */}
             {/* <IncomeDebitNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             <IncomeDNCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
           </div>

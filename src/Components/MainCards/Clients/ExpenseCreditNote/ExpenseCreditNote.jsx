@@ -350,7 +350,7 @@ function ExpenseCreditNote() {
 
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
-            Credit Note Details
+          Expense  Credit Note Details
           </div>
 
           <div className="flex align-middle items-center gap-2">

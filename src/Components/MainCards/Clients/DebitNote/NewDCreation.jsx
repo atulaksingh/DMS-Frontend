@@ -947,7 +947,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
                 component="h2"
                 className="text-center border-b-2 border-[#366FA1] pb-3"
               >
-                Update Debit Note Invoice Details
+                Create Debit Note Invoice Details
               </Typography>
 
               <form

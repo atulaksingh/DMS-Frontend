@@ -947,7 +947,7 @@ function IncomeDNCreation({ fetchInvoiceDetails }) {
                 component="h2"
                 className="text-center border-b-2 border-[#366FA1] pb-3"
               >
-                Update Sales Invoice Details
+                Create Income DebitNote Details
               </Typography>
 
               <form
