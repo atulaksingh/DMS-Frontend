@@ -75,7 +75,7 @@ const styleCreateModal = {
     sm: "90%", // Small screens (e.g., tablets)
     md: "90%", // Medium screens
    lg: "90%", // Large screens%
-    xl: "80%", // Large screens
+    xl: "85%", // Large screens
   },
   bgcolor: "background.paper",
   boxShadow: 24,
