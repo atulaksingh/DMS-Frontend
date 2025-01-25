@@ -1014,7 +1014,7 @@ export default function ExpensesCard({
             }}
             // className="overflow-auto"
           >
-            <Box sx={style}>
+            <Box sx={style}  className="max-h-full overflow-scroll">
               {/* <Typography
                 id="modal-modal-title"
                 variant="h5"
@@ -3050,7 +3050,7 @@ export default function ExpensesCard({
           <MenuItem onClick={handleViewOpen}>View</MenuItem>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/expenses/creditNote/${id}/${expenseID}`}>                           
+          <Link to={`/clientDetails/expensesCreditNote/${id}/${expenseID}`}>                           
             <MenuItem>Credit Note</MenuItem>
           </Link>
         </Menu>

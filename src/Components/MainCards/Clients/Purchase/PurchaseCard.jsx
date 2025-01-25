@@ -3147,7 +3147,7 @@ export default function PurchaseCard({
           </Link>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/creditNote/${id}/${purchID}`}>
+          <Link to={`/clientDetails/creditNote/${id}/${purchID}`}>
             <MenuItem>Credit Note</MenuItem>
           </Link>
         </Menu>

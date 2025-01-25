@@ -34,25 +34,34 @@ function PfFileCreation() {
   };
   const handleDownloadTemplate = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/get-excel-file");
-      //  `https://admin.dms.zacoinfotech.com/api/create-tdspayment/${id}`
-      const fileData = response.data[0]; // Assuming the API returns the file info as an array
-      const fileUrl = `http://127.0.0.1:8000${fileData.file}`; // Construct the file URL
-
-      // Create a temporary anchor element to trigger the download
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = "Template.xlsx"; // Optional: specify the file name
-      document.body.appendChild(link)
-;
-      link.click();
-      document.body.removeChild(link)
-;
+      // API call to get the file URL
+      const response = await axios.get(
+        "https://admin.dms.zacoinfotech.com/api/get-excel-file"
+      );
+  
+      if (response.data && response.data.length > 0) {
+        // Get the file path from the API response
+        const filePath = response.data[0].file;
+  
+        // Construct the complete file URL
+        const fileUrl = `https://admin.dms.zacoinfotech.com${filePath}`;
+  
+        // Create an anchor element to download the file
+        const anchor = document.createElement("a");
+        anchor.href = fileUrl;
+        anchor.download = filePath.split("/").pop(); // Extract file name from path
+        document.body.appendChild(anchor);
+        anchor.click();
+        document.body.removeChild(anchor);
+      } else {
+        alert("File not found!");
+      }
     } catch (error) {
-      console.error("Error downloading the template file:", error);
-      alert("Failed to download the template file.");
+      console.error("Error downloading the file:", error);
+      alert("Failed to download the file. Please try again.");
     }
   };
+  
   const handleCreateClose = () => setOpenCreateModal(false);
 
   const [attachment, setAttachment] = useState(null); // State for file input

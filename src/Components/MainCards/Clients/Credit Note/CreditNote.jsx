@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import { Input, Typography } from "@material-tailwind/react";
@@ -12,12 +9,13 @@ import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import CreditNoteCreation from "./CreditNoteCreation";
 import CreditNoteFileCreation from "./CreditNoteFileCreation";
 import CreditNoteCard from "./CreditNoteCard";
 import NewCreditNoteCreation from "./NewCreditNoteCreation";
+import { HomeIcon } from "@heroicons/react/16/solid";
 // import PurchaseCreation from "./PurchaseCreation";
 // import PurchaseFileCreation from "./PurchaseFileCreation";
 // import PurchaseCard from "./PurchaseCard";
@@ -43,40 +41,34 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function CreditNote() {
-
   const { id, purchID } = useParams();
   // console.log("res", useParams());
-const [creditNoteData, setCreditNoteData] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-// console.log("res", creditNoteData);
-const fetchInvoiceDetails = async () => {
-  try {
-    const response = await axios.get(
-      `https://admin.dms.zacoinfotech.com/api/creditnote-list/${id}/${purchID}`
-    );
-    // console.log("gggggggg",response)
-    const apiData = response.data;
+  const [creditNoteData, setCreditNoteData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // console.log("res", creditNoteData);
+  const fetchInvoiceDetails = async () => {
+    try {
+      const response = await axios.get(
+        `https://admin.dms.zacoinfotech.com/api/creditnote-list/${id}/${purchID}`
+      );
+      // console.log("gggggggg",response)
+      const apiData = response.data;
 
-    setCreditNoteData(apiData);
-    setLoading(false);
-  } catch (error) {
-    setError(error.message);
-    setLoading(false);
-  }
-};
-useEffect(() => {
-  fetchInvoiceDetails();
-}, [id, purchID]);
-
-
-
-
-
+      setCreditNoteData(apiData);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchInvoiceDetails();
+  }, [id, purchID]);
 
   const calculateTableBodyHeight = () => {
-    const rowHeight = 80; 
-    const maxHeight = 525; 
+    const rowHeight = 80;
+    const maxHeight = 525;
     const calculatedHeight = creditNoteData.length * rowHeight;
     return calculatedHeight > maxHeight
       ? `${maxHeight}px`
@@ -133,13 +125,16 @@ useEffect(() => {
             color: "#ffffff",
           },
         }),
-        customBodyRender: (value) => (
+        customBodyRender: (value) =>
           value ? (
-            <a href={`https://admin.dms.zacoinfotech.com${value}`} target="_blank" rel="noopener noreferrer">
+            <a
+              href={`https://admin.dms.zacoinfotech.com${value}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <ImFilePicture size={20} color="#366FA1" />
             </a>
-          ) : null
-        ),
+          ) : null,
       },
     },
     {
@@ -202,27 +197,34 @@ useEffect(() => {
     //     }),
     //   },
     // },
-    {
-      name: "attachment",
-      label: "Document",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
+    // {
+    //   name: "attachment",
+    //   label: "Document",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
     {
       name: "Actions",
       options: {
         customBodyRenderLite: (dataIndex) => {
           const rowData = creditNoteData[dataIndex];
-          return <div>{/* <BankCard rowId={rowData.id} /> */} 
-          {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
-          <CreditNoteCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill} fetchInvoiceDetails ={fetchInvoiceDetails }/>
-          </div>;
+          return (
+            <div>
+              {/* <BankCard rowId={rowData.id} /> */}
+              {/* <PurchaseCard rowId={rowData.id} fileData={creditNoteData.attach_e_way_bill}/>  */}
+              <CreditNoteCard
+                rowId={rowData.id}
+                fileData={creditNoteData.attach_e_way_bill}
+                fetchInvoiceDetails={fetchInvoiceDetails}
+              />
+            </div>
+          );
         },
         setCellHeaderProps: () => ({
           style: {
@@ -283,29 +285,77 @@ useEffect(() => {
       },
     },
   });
+  const location = useLocation(); // Get the current location object
+  const pathnames = location.pathname
+    .split("/")
+    .filter((x) => x && isNaN(Number(x))); // Exclude numeric segments like IDs
 
+  // Construct breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", path: "/master" },
+    ...pathnames.map((segment, index) => {
+      let path = `/${pathnames.slice(0, index + 1).join("/")}`;
+      if (segment.toLowerCase() === "clientdetails") {
+        path = `/clientDetails/${id}`;
+      }
+      return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
+    }),
+  ];
   return (
     <>
       <ToastContainer />
 
       <div className="p-20">
+        <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
+          {breadcrumbItems.map((item, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              {index === 0 ? (
+                // Home breadcrumb with link
+                <Link
+                  to={item.path}
+                  className="flex items-center text-primary hover:text-primary"
+                >
+                  <HomeIcon className="h-5 w-5" />
+                  <span className="ml-1">{item.name}</span>
+                </Link>
+              ) : item.name === "CreditNote" ? (
+                // Non-clickable breadcrumb for CreditNote
+                <span className="text-gray-700">{item.name}</span>
+              ) : (
+                // Clickable breadcrumbs for other items
+                <Link
+                  to={item.path}
+                  className="text-gray-700 hover:text-primary"
+                >
+                  {item.name}
+                </Link>
+              )}
+              {/* Arrow icon between breadcrumbs */}
+              {index < breadcrumbItems.length - 1 && (
+                <span className="text-gray-400">{">"}</span>
+              )}
+            </div>
+          ))}
+        </nav>
+
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
             Credit Note Details
           </div>
-      
+
           <div className="flex align-middle items-center gap-2">
-          
-           
-         
             {/* <CreditNoteFileCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             {/* <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
-            <NewCreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/>
+            <NewCreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails} />
           </div>
         </div>
         <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
-            <MUIDataTable data={creditNoteData} columns={columns} options={options} />
+            <MUIDataTable
+              data={creditNoteData}
+              columns={columns}
+              options={options}
+            />
           </ThemeProvider>
         </CacheProvider>
       </div>
@@ -314,13 +364,3 @@ useEffect(() => {
 }
 
 export default CreditNote;
-
-
-
-
-
-
-
-
-
-

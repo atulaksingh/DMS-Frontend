@@ -71,7 +71,7 @@ function BranchDetails() {
 
   return (
     <>
-      {console.log("clientid", clientID)}
+      {/* {console.log("clientid", clientID)} */}
       <div className="pt-20 px-32 ">
         <div>
           <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">

@@ -1073,7 +1073,7 @@ function ExpensesCreation({
                       {" "}
                       <div className="h-7">
                         <Input
-                          type="text"
+                          type="number"
                           size="md"
                           name="contact"
                           placeholder="Contact No"

@@ -195,18 +195,18 @@ function Sales({ salesInvoiceData }) {
     //     }),
     //   },
     // },
-    {
-      name: "attachment",
-      label: "Document",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
+    // {
+    //   name: "attachment",
+    //   label: "Document",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
     {
       name: "Actions",
       options: {

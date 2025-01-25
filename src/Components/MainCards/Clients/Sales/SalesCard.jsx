@@ -2896,7 +2896,7 @@ export default function SalesCard({
           </Link>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/debitNote/${id}/${salesID}`}>
+          <Link to={`/clientDetails/debitNote/${id}/${salesID}`}>
             <MenuItem>Debit Note</MenuItem>
           </Link>
         </Menu>

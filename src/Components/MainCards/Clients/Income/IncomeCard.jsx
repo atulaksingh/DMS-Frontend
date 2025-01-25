@@ -981,7 +981,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
             }}
             // className="overflow-auto"
           >
-            <Box sx={style}>
+            <Box sx={style} className="max-h-full overflow-scroll">
               {/* <Typography
                 id="modal-modal-title"
                 variant="h5"
@@ -2924,7 +2924,7 @@ export default function IncomeCard({ rowId, allLocationBranchProductData,fetchAl
           <MenuItem onClick={handleViewOpen}>View</MenuItem>
           <MenuItem onClick={handleCreateOpen}>Update</MenuItem>
           <MenuItem onClick={handleDeleteOpen}>Delete</MenuItem>
-          <Link to={`/income/debitNote/${id}/${incomeID}`}>
+          <Link to={`/clientDetails/incomeDebitNote/${id}/${incomeID}`}>
             <MenuItem>Debit Note</MenuItem>
           </Link>
         </Menu>

@@ -42,10 +42,10 @@ function App() {
           <Route path="/clientDetails/branchDetails/:clientID/:branchID" element={<BranchDetails />} />
           <Route path="/purchaseInvoice/:id/:rowId" element={<PurchaseInvoice />} />
           <Route path="/salesInvoice/:id/:rowId" element={<SalesInvoice />} />
-          <Route path="/creditNote/:id/:purchID" element={<CreditNote />} />
-          <Route path="/debitNote/:id/:salesID" element={<DebitNote />} />
-          <Route path="/expenses/creditNote/:id/:expensesID" element={<ExpenseCreditNote />} />
-          <Route path="/income/debitNote/:id/:incomeID" element={<IncomeDebitNote />} />
+          <Route path="/clientDetails/creditNote/:id/:purchID" element={<CreditNote />} />
+          <Route path="/clientDetails/debitNote/:id/:salesID" element={<DebitNote />} />
+          <Route path="/clientDetails/expensesCreditNote/:id/:expensesID" element={<ExpenseCreditNote />} />
+          <Route path="/clientDetails/incomeDebitNote/:id/:incomeID" element={<IncomeDebitNote />} />
         </Routes>
       </Router>
     </>

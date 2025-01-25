@@ -13,13 +13,14 @@ import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import axios from "axios";
 import IncomeDebitNoteFileCreation from "./IncomeDebitNoteFileCreation";
 import IncomeDebitNoteCreation from "./IncomeDebitNoteCreation";
 import IncomeDebitNoteCard from "./IncomeDebitNoteCard";
 import IncomeDNCreation from "./IncomeDNCreation";
+import { HomeIcon } from "@heroicons/react/16/solid";
 // import DebitNoteCreation from "./DebitNoteCreation";
 // import DebitNoteFileCreation from "./DebitNoteFileCreation";
 // import DebitNoteCard from "./DebitNoteCard";
@@ -269,7 +270,26 @@ function IncomeDebitNote() {
     },
   });
 
+  const location = useLocation(); // Get the current location object
 
+  // Extract the pathnames and exclude numeric segments
+  const pathnames = location.pathname
+    .split("/")
+    .filter((x) => x && isNaN(Number(x))); // Exclude numeric IDs like `1`
+
+  // Construct breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", path: "/master" },
+    ...pathnames.map((segment, index) => {
+      let path = `/${pathnames.slice(0, index + 1).join("/")}`;
+      if (segment.toLowerCase() === "clientdetails") {
+        path = `/clientDetails/${id}`;
+      } else if (segment.toLowerCase() === "incomedebitnote") {
+        path = ""; // Non-clickable path for expensesCreditNote
+      }
+      return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
+    }),
+  ];
 
 
 
@@ -279,6 +299,41 @@ function IncomeDebitNote() {
       <ToastContainer />
 
       <div className="p-20">
+
+      <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
+          {breadcrumbItems.map((item, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              {index === 0 ? (
+                // Home breadcrumb with link
+                <Link
+                  to={item.path}
+                  className="flex items-center text-primary hover:text-primary"
+                >
+                  <HomeIcon className="h-5 w-5" />
+                  <span className="ml-1">{item.name}</span>
+                </Link>
+              ) : item.name.toLowerCase() === "incomedebitnote" ? (
+                // Non-clickable breadcrumb for expensesCreditNote
+                <span className="text-gray-700">{item.name}</span>
+              ) : (
+                // Clickable breadcrumbs for other items
+                <Link
+                  to={item.path}
+                  className="text-gray-700 hover:text-primary"
+                >
+                  {item.name}
+                </Link>
+              )}
+              {/* Arrow icon between breadcrumbs */}
+              {index < breadcrumbItems.length - 1 && (
+                <span className="text-gray-400">{">"}</span>
+              )}
+            </div>
+          ))}
+        </nav>
+
+
+
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
             DebitNote Details

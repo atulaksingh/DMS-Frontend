@@ -12,13 +12,14 @@ import { ImFilePicture } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import axios from "axios";
 import DebitNoteCreation from "./DebitNoteCreation";
 import DebitNoteFileCreation from "./DebitNoteFileCreation";
 import DebitNoteCard from "./DebitNoteCard";
 import NewDCreation from "./NewDCreation";
+import { HomeIcon } from "@heroicons/react/16/solid";
 
 const muiCache = createCache({
   key: "mui-datatables",
@@ -194,18 +195,18 @@ function DebitNote() {
     //     }),
     //   },
     // },
-    {
-      name: "attachment",
-      label: "Document",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
+    // {
+    //   name: "attachment",
+    //   label: "Document",
+    //   options: {
+    //     setCellHeaderProps: () => ({
+    //       style: {
+    //         backgroundColor: "#366FA1",
+    //         color: "#ffffff",
+    //       },
+    //     }),
+    //   },
+    // },
     {
       name: "Actions",
       options: {
@@ -277,7 +278,22 @@ function DebitNote() {
 
 
 
+  const location = useLocation(); // Get the current location object
+  const pathnames = location.pathname
+    .split("/")
+    .filter((x) => x && isNaN(Number(x))); // Exclude numeric segments like IDs
 
+  // Construct breadcrumb items
+  const breadcrumbItems = [
+    { name: "Home", path: "/master" },
+    ...pathnames.map((segment, index) => {
+      let path = `/${pathnames.slice(0, index + 1).join("/")}`;
+      if (segment.toLowerCase() === "clientdetails") {
+        path = `/clientDetails/${id}`;
+      }
+      return { name: segment.charAt(0).toUpperCase() + segment.slice(1), path };
+    }),
+  ];
 
 
   return (
@@ -285,6 +301,37 @@ function DebitNote() {
       <ToastContainer />
 
       <div className="p-20">
+      <nav className="flex items-center space-x-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mb-1">
+          {breadcrumbItems.map((item, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              {index === 0 ? (
+                // Home breadcrumb with link
+                <Link
+                  to={item.path}
+                  className="flex items-center text-primary hover:text-primary"
+                >
+                  <HomeIcon className="h-5 w-5" />
+                  <span className="ml-1">{item.name}</span>
+                </Link>
+              ) : item.name === "DebitNote" ? (
+                // Non-clickable breadcrumb for CreditNote
+                <span className="text-gray-700">{item.name}</span>
+              ) : (
+                // Clickable breadcrumbs for other items
+                <Link
+                  to={item.path}
+                  className="text-gray-700 hover:text-primary"
+                >
+                  {item.name}
+                </Link>
+              )}
+              {/* Arrow icon between breadcrumbs */}
+              {index < breadcrumbItems.length - 1 && (
+                <span className="text-gray-400">{">"}</span>
+              )}
+            </div>
+          ))}
+        </nav>
         <div className="flex justify-between align-middle items-center mb-5">
           <div className="text-2xl text-gray-800 font-semibold">
             DebitNote Details
