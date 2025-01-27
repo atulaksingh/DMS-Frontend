@@ -354,9 +354,9 @@ function ExpenseCreditNote() {
           </div>
 
           <div className="flex align-middle items-center gap-2">
-            <ExpensesCreditNoteFileCreation
+            {/* <ExpensesCreditNoteFileCreation
               fetchInvoiceDetails={fetchInvoiceDetails}
-            />
+            /> */}
             {/* <CreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             {/* <ExpensesCreditNoteCreation fetchInvoiceDetails={fetchInvoiceDetails}/> */}
             <ExpensesCNCreation fetchInvoiceDetails={fetchInvoiceDetails} />

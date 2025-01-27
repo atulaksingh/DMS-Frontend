@@ -1619,7 +1619,7 @@ import {
   
                 <div>
                   <div className="py-5 px-0">
-                    <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                    <div className="bg-secondary px-0 py-3 rounded-md ">
                       <Box sx={{ width: "100%", typography: "body1" }}>
                         <TabContext value={value}>
                           <Box

@@ -1000,7 +1000,7 @@ function ExpensesCNCreation({ fetchInvoiceDetails }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-              <Box sx={styleCreateModal}>
+              <Box sx={styleCreateModal} className="max-h-full overflow-scroll">
               <Typography
                 id="modal-modal-title"
                 variant="h5"
@@ -1011,7 +1011,7 @@ function ExpensesCNCreation({ fetchInvoiceDetails }) {
               </Typography>
 
               <form
-                className=" my-5 w-full  overflow-auto "
+                className=" my-5 w-full  "
                 onSubmit={handleSubmit}
               >
                 <div className="font-bold text-[15px] text-primary my-1">
@@ -1750,7 +1750,7 @@ function ExpensesCNCreation({ fetchInvoiceDetails }) {
 
                 <div>
                   <div className="py-5 px-0">
-                    <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                    <div className="bg-secondary px-0 py-3 rounded-md ">
                       <Box sx={{ width: "100%", typography: "body1" }}>
                         <TabContext value={value}>
                           <Box

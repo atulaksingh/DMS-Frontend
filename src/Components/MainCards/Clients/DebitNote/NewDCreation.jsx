@@ -940,7 +940,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
-              <Box sx={styleCreateModal}>
+              <Box sx={styleCreateModal} className="max-h-full overflow-scroll">
               <Typography
                 id="modal-modal-title"
                 variant="h5"
@@ -1618,7 +1618,7 @@ function NewDCreation({ fetchInvoiceDetails }) {
 
                 <div>
                   <div className="py-5 px-0">
-                    <div className="bg-secondary px-0 py-3 rounded-md shadow-lg">
+                    <div className="bg-secondary px-0 py-3 rounded-md ">
                       <Box sx={{ width: "100%", typography: "body1" }}>
                         <TabContext value={value}>
                           <Box
