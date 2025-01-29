@@ -136,6 +136,8 @@ function PurchaseCreation({
       vendor_address: "",
       customer: false,
       vendor: false,
+      email:"",
+      contact:""
     });
 
     setRows([
@@ -196,6 +198,8 @@ function PurchaseCreation({
     vendor_address: "",
     customer: false,
     vendor: false,
+    email:"",
+    contact:""
   });
   const [rows, setRows] = useState([
     {
@@ -415,6 +419,8 @@ function PurchaseCreation({
         vendor_address: "",
         customer: false,
         vendor: false,
+             email:"",
+      contact:""
       }));
       return;
     }
@@ -435,6 +441,8 @@ function PurchaseCreation({
           vendor_address: matchedCustomer.address,
           customer: matchedCustomer.customer,
           vendor: matchedCustomer.vendor,
+          contact: matchedCustomer.contact,
+          email: matchedCustomer.email,
         }));
       } else {
         setVendorData((prevVendorData) => ({
@@ -446,6 +454,8 @@ function PurchaseCreation({
           vendor_address: "",
           customer: false,
           vendor: false,
+               email:"",
+      contact:""
         }));
       }
       return;
@@ -458,9 +468,12 @@ function PurchaseCreation({
         gst_no: newValue1.gst_no,
         name: newValue1.name || "",
         pan: newValue1.pan || "",
+        email: newValue1.pan || "",
+        contact: newValue1.contact || "",
         vendor_address: newValue1.address || "",
         customer: newValue1.customer || false,
         vendor: newValue1.vendor || false,
+        
       }));
     }
   };
@@ -1819,6 +1832,80 @@ function PurchaseCreation({
                               </div>
                             </div>
                             <div>
+                              <div className="grid grid-cols-12 gap-2 mb-3">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="email">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      Email
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8 h-7">
+                                  <div className="">
+                                    <Input
+                                      type="email"
+                                      size="lg"
+                                      name="email"
+                                      placeholder="Email"
+                                      value={vendorData.email}
+                                      onChange={handleInputChangeCL}
+                                      className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                                      labelProps={{
+                                        className: "hidden",
+                                      }}
+                                      style={{
+                                        height: "28px", // Match this to your Autocomplete's root height
+                                        padding: "4px 6px", // Match this padding
+                                        fontSize: "0.875rem", // Ensure font size is consistent
+                                        width: 300,
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="grid grid-cols-12 gap-2 mb-3">
+                                <div className="col-span-4 border-r-2 border-primary">
+                                  <label htmlFor="contact">
+                                    <Typography
+                                      variant="small"
+                                      color="blue-gray"
+                                      className="block font-semibold mb-2"
+                                    >
+                                      Contact No
+                                    </Typography>
+                                  </label>
+                                </div>
+                                <div className="col-span-8 h-7">
+                                  <div className="">
+                                    <Input
+                                      type="text"
+                                      size="lg"
+                                      name="contact"
+                                      placeholder="Contact No"
+                                      value={vendorData.contact}
+                                      onChange={handleInputChangeCL}
+                                      className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                                      labelProps={{
+                                        className: "hidden",
+                                      }}
+                                      style={{
+                                        height: "28px",
+                                        padding: "4px 6px",
+                                        fontSize: "0.875rem",
+                                        width: 300,
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
                               <div className="grid grid-cols-12 gap-2 mb-3 ">
                                 <div className="col-span-4 border-r-2 border-primary">
                                   <label htmlFor="address">
@@ -2429,6 +2516,72 @@ function PurchaseCreation({
                                           </button>
                                         </div>
                                         <div className="flex gap-4">
+                                          <div>
+                                            <div>
+                                              <label htmlFor="invoice_type">
+                                                <Typography
+                                                  variant="small"
+                                                  color="blue-gray"
+                                                  className="block font-semibold mb-1"
+                                                >
+                                                  Invoice Type
+                                                </Typography>
+                                              </label>
+                                            </div>
+                                            <div className="">
+                                              <div className="">
+                                                <select
+                                                  name="invoice_type"
+                                                  className="!border !border-[#cecece] bg-white pt-1 rounded-md text-gray-900 text-sm ring-4 ring-transparent placeholder-gray-500 focus:!border-[#366FA1] focus:outline-none focus:ring-0 min-w-[80px]"
+                                                  style={{
+                                                    height: "28px", // Match this to your Autocomplete's root height
+                                                    padding: "4px 6px", // Match this padding
+                                                    fontSize: "0.875rem", // Ensure font size is consistent
+                                                    width: 300,
+                                                  }}
+                                                  value={
+                                                    invoiceData[0].invoice_type
+                                                  } // Ensures the selected value matches the state
+                                                  onChange={
+                                                    handleInputChangeInvoiceData
+                                                  }
+                                                >
+                                                  {vendorData.gst_no === "" // Check if gst_no is empty
+                                                    ? // Show only these options when gst_no is empty
+                                                      [
+                                                        "Select Invoice Type",
+                                                        "Unregistered Local",
+                                                        "Unregistered Non-Local",
+                                                      ].map((option) => (
+                                                        <option
+                                                          key={option}
+                                                          value={option.toLowerCase()}
+                                                        >
+                                                          {option}
+                                                        </option>
+                                                      ))
+                                                    : // Show other options when gst_no is not empty
+                                                      [
+                                                        "Select Invoice Type",
+                                                        "B2B",
+                                                        "B2C-L",
+                                                        "BSC-O",
+                                                        "Nil Rated",
+                                                        "Advance Received",
+                                                        "SEZ",
+                                                        "Export",
+                                                      ].map((option) => (
+                                                        <option
+                                                          key={option}
+                                                          value={option.toLowerCase()}
+                                                        >
+                                                          {option}
+                                                        </option>
+                                                      ))}
+                                                </select>
+                                              </div>
+                                            </div>
+                                          </div>
                                           <div className="w-36">
                                             <div className="col-span-6 font-bold mb-1 ">
                                               Taxable Amount :
@@ -2521,7 +2674,7 @@ function PurchaseCreation({
                             <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-4 my-2">
                               <div className="hidden 2xl:block col-span-1"></div>
                               <div className="col-span-1">
-                                <div>
+                                {/* <div>
                                   <div>
                                     <label htmlFor="invoice_type">
                                       <Typography
@@ -2582,7 +2735,7 @@ function PurchaseCreation({
                                       </select>
                                     </div>
                                   </div>
-                                </div>
+                                </div> */}
                               </div>
                               <div className="col-span-1">
                                 <label htmlFor="invoice_type">

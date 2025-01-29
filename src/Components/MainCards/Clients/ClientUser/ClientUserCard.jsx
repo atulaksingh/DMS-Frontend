@@ -17,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import { Autocomplete, TextField } from "@mui/material";
 const options = ["None", "Atria", "Callisto"];
 const style = {
   position: "absolute",
@@ -56,12 +57,22 @@ export default function ClientUserCard({ rowId }) {
   const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
   const [openCreateModal, setOpenCreateModal] = React.useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [customers, setCustomers] = useState([]);
+
+  // Fetch Data from API
+  useEffect(() => {
+    fetch("https://admin.dms.zacoinfotech.com/api/user-clientform/1")
+      .then((response) => response.json())
+      .then((data) => setCustomers(data))
+      .catch((error) => console.error("Error fetching customers:", error));
+  }, []);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    name: "",
+    customer: "",
     email: "",
-    username: "",
+    password: "",
   });
+  // console.log("formData12", formData);
   const [attachment, setAttachment] = useState(null); // State for file input
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,34 +85,36 @@ export default function ClientUserCard({ rowId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-  
+
     try {
       // Create a FormData object
-      const formDataToSend = new FormData();
-  
-      // Append text fields to FormData
-      formDataToSend.append("first_name", formData.first_name);
-      formDataToSend.append("last_name", formData.last_name);
-      formDataToSend.append("email", formData.email);
-      formDataToSend.append("username", formData.username);
-  
-      // Make a POST request to your API
+      // Extract only the customer id from the selected customer object
+      const customerId = formData.customer?.id || formData.customer; // Ensure we're sending the customer id
+
+      // Prepare the data to submit, making sure only the customer ID is included
+      const dataToSubmit = {
+        ...formData,
+        customer: customerId, // Send only the customer id (not the full object)
+      };
+
+      console.log("Data to submit:", dataToSubmit); // Check the final data being sent
+
       const response = await axios.post(
         `https://admin.dms.zacoinfotech.com/api/edit-clientuser/${id}/${rowId}`,
-        formDataToSend
+        dataToSubmit
       );
-  // console.log("ss",response.data)
+      console.log("ss", response);
       // Check if the response is successful
       if (response.status === 200) {
         // console.log("ss",response.data)
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
-  
+
         // Dispatch fetchClientDetails action
         dispatch(fetchClientDetails(id));
-  
+
         // Optionally close the modal and reset form
         handleCreateClose();
         setFormData({
@@ -144,7 +157,7 @@ export default function ClientUserCard({ rowId }) {
       setOpenDeleteModal(false);
       if (response.status === 200) {
         // Success notification
-        toast.success(`${response.data.Message}`, {
+        toast.success(`${response.data.message}`, {
           position: "top-right",
           autoClose: 2000,
         });
@@ -166,7 +179,6 @@ export default function ClientUserCard({ rowId }) {
       });
     }
   };
-  
 
   const handleViewOpen = () => {
     setOpenViewModal(true);
@@ -183,8 +195,13 @@ export default function ClientUserCard({ rowId }) {
       const response = await axios.get(
         `https://admin.dms.zacoinfotech.com/api/edit-clientuser/${id}/${rowId}`
       );
-    //   console.log("dd", response.data);
-      setFormData(response.data);
+
+      const { data } = response;
+      //   console.log("dd", response.data);
+      setFormData({
+        ...data,
+        customer: data.customer.name, // Ensure the customer object is set properly here
+      });
     } catch (error) {
       console.error("Error fetching ClientUser data:", error);
       toast.error("Failed to load ClientUser data. Please try again.", {
@@ -215,12 +232,19 @@ export default function ClientUserCard({ rowId }) {
     fetchBankDetails();
   }, [id, rowId]);
 
+  const [showPassword, setShowPassword] = useState(false);
 
-     const [showPassword, setShowPassword] = useState(false);
-    
-      const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-      };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleCustomerChange = (event, newValue) => {
+    // When a user selects a customer, update the formData with the selected customer object
+    setFormData((prev) => ({
+      ...prev,
+      customer: newValue || "", // Store the full customer object
+    }));
+  };
   return (
     <>
       {/* <ToastContainer /> */}
@@ -259,10 +283,10 @@ export default function ClientUserCard({ rowId }) {
                               className=" "
                               size="sm"
                             >
-                              First Name :
+                              Name :
                             </Typography>
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {clientUser.first_name}
+                              {clientUser.fname}
                             </div>
                           </div>
                           <div className="w-full flex gap-3">
@@ -271,10 +295,17 @@ export default function ClientUserCard({ rowId }) {
                               color="blue-gray"
                               className=""
                             >
-                              Last Name :
+                              Type :
                             </Typography>
+                            {clientUser.last_name}
                             <div className="text-gray-700 text-[15px] my-auto">
-                              {clientUser.last_name}
+                              {clientUser.customer && clientUser.vendor
+                                ? "Customer and Vendor"
+                                : clientUser.customer
+                                ? "Customer"
+                                : clientUser.vendor
+                                ? "Vendor"
+                                : ""}
                             </div>
                           </div>
                         </div>
@@ -400,37 +431,9 @@ export default function ClientUserCard({ rowId }) {
                       <Input
                         type="text"
                         size="lg"
-                        name="first_name"
+                        name="name"
                         placeholder="First Name"
-                        value={formData.first_name}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <label htmlFor="last_name">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Last Name
-                      </Typography>
-                    </label>
-
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="last_name"
-                        placeholder="Last Name"
-                        value={formData.last_name}
+                        value={formData.name}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -452,53 +455,13 @@ export default function ClientUserCard({ rowId }) {
                       </Typography>
                     </label>
 
-                    <div className="relative">
-      <Input
-        type={showPassword ? "text" : "password"}
-        size="lg"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleInputChange}
-        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
-        labelProps={{
-          className: "hidden",
-        }}
-        containerProps={{ className: "min-w-full" }}
-      />
-      {/* Toggle visibility button */}
-      <button
-        type="button"
-        onClick={togglePasswordVisibility}
-        className="absolute top-3 right-3"
-      >
-        {showPassword ? (
-          <EyeIcon className="h-5 w-5 text-gray-500" />
-        ) : (
-          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
-        )}
-      </button>
-    </div>
-                  </div>
-
-                  <div className="col-span-2">
-                    <label htmlFor="username">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        username
-                      </Typography>
-                    </label>
-
                     <div className="">
                       <Input
                         type="email"
                         size="lg"
-                        name="username"
-                        placeholder="username"
-                        value={formData.username}
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -507,6 +470,102 @@ export default function ClientUserCard({ rowId }) {
                         containerProps={{ className: "min-w-full" }}
                       />
                     </div>
+                  </div>
+
+                  <div className="col-span-2">
+                    <label htmlFor="password">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Password
+                      </Typography>
+                    </label>
+
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        size="lg"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                      {/* Toggle visibility button */}
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute top-3 right-3"
+                      >
+                        {showPassword ? (
+                          <EyeIcon className="h-5 w-5 text-gray-500" />
+                        ) : (
+                          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="col-span-2">
+                    <label htmlFor="password">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Password
+                      </Typography>
+                    </label>
+
+                    <Autocomplete
+                      sx={{ width: 300 }}
+                      freeSolo
+                      id="gst-no-autocomplete"
+                      disableClearable
+                      options={customers}
+                      getOptionLabel={(option) =>
+                        typeof option === "string" ? option : option.name || ""
+                      }
+                      onChange={handleCustomerChange} // Use the custom handler
+                      value={formData.customer || null} // Bind value to formData.customer (the whole object)
+                      renderOption={(props, option) => (
+                        <li {...props} key={option.id}>
+                          {option.gst_no} ({option.name})
+                        </li>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          name="customer"
+                          value={
+                            formData.customer ? formData.customer.name : ""
+                          } // Display the name of the selected customer
+                          onChange={handleInputChange} // Update input value on type
+                          placeholder="Enter or select GST No."
+                          sx={{
+                            "& .MuiInputBase-root": {
+                              height: 34,
+                              padding: "4px 6px",
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "14px 16px",
+                            },
+                          }}
+                          slotProps={{
+                            input: {
+                              ...params.InputProps,
+                              type: "search",
+                            },
+                          }}
+                        />
+                      )}
+                    />
                   </div>
                 </div>
               </div>

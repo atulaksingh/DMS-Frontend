@@ -31,7 +31,7 @@ const styleCreateMOdal = {
   borderRadius: "10px",
 };
 function ClientUser({ clientUserData }) {
-
+console.log("clientUserData",clientUserData)
 
   const calculateTableBodyHeight = () => {
     const rowHeight = 80; // Approximate height for one row
@@ -60,20 +60,8 @@ function ClientUser({ clientUserData }) {
 
   const columns = [
     {
-      name: "first_name",
+      name: "name",
       label: "First Name",
-      options: {
-        setCellHeaderProps: () => ({
-          style: {
-            backgroundColor: "#366FA1",
-            color: "#ffffff",
-          },
-        }),
-      },
-    },
-    {
-      name: "last_name",
-      label: "Last Name",
       options: {
         setCellHeaderProps: () => ({
           style: {
@@ -107,8 +95,55 @@ function ClientUser({ clientUserData }) {
         }),
       },
     },
-
-
+    {
+      name: "customer_name",
+      label: "Name",
+      options: {
+        customBodyRenderLite: (dataIndex) => {
+          const rowData = clientUserData[dataIndex];
+          const customer = rowData?.customer; // Use optional chaining
+    
+          // Show the name of the customer if it exists
+          return customer?.name || "No Name";
+        },
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    
+    {
+      name: "Customer/Vendor",
+      label: "Customer/Vendor",
+      options: {
+        customBodyRenderLite: (dataIndex) => {
+          const rowData = clientUserData[dataIndex];
+          const customer = rowData?.customer?.customer;
+          const vendor = rowData?.customer?.vendor;
+    
+          let status = "No Data"; // Default if both are undefined
+          if (customer && vendor) {
+            status = "Customer and Vendor";
+          } else if (customer) {
+            status = "Customer";
+          } else if (vendor) {
+            status = "Vendor";
+          }
+    
+          return <div>{status}</div>;
+        },
+        setCellHeaderProps: () => ({
+          style: {
+            backgroundColor: "#366FA1",
+            color: "#ffffff",
+          },
+        }),
+      },
+    },
+    
     {
       name: "Actions",
       options: {
@@ -116,7 +151,7 @@ function ClientUser({ clientUserData }) {
           const rowData = clientUserData[dataIndex];
           return (
             <div>
-            <ClientUserCard rowId={rowData.id} />
+              <ClientUserCard rowId={rowData.id} />
             </div>
           );
         },

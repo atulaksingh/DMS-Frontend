@@ -1,5 +1,11 @@
-import { Button, DialogFooter } from "@material-tailwind/react";
-import React from "react";
+import {
+  Button,
+  DialogFooter,
+  IconButton,
+  Option,
+  Select,
+} from "@material-tailwind/react";
+import React, { useEffect } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import axios from "axios";
@@ -11,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchClientDetails } from "../../../Redux/clientSlice";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import { Autocomplete, TextField } from "@mui/material";
 const styleCreateMOdal = {
   position: "absolute",
   top: "50%",
@@ -33,15 +40,24 @@ function ClientUserCreation() {
     setOpenCreateModal(true);
     setAnchorEl(null);
   };
+  const [customers, setCustomers] = useState([]);
+
+  // Fetch Data from API
+  useEffect(() => {
+    fetch("https://admin.dms.zacoinfotech.com/api/user-clientform/1")
+      .then((response) => response.json())
+      .then((data) => setCustomers(data))
+      .catch((error) => console.error("Error fetching customers:", error));
+  }, []);
 
   const handleCreateClose = () => setOpenCreateModal(false);
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    name: "",
+    customer: "",
     email: "",
     password: "",
   });
-
+  // console.log(formData)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -58,8 +74,8 @@ function ClientUserCreation() {
       const formDataToSend = new FormData();
   
       // Append text fields to FormData
-      formDataToSend.append("first_name", formData.first_name);
-      formDataToSend.append("last_name", formData.last_name);
+      formDataToSend.append("name", formData.name);
+      formDataToSend.append("customer", formData.customer);
       formDataToSend.append("email", formData.email);
       formDataToSend.append("password", formData.password);
   
@@ -68,25 +84,26 @@ function ClientUserCreation() {
         `https://admin.dms.zacoinfotech.com/api/user-clientform/${id}`,
         formDataToSend
       );
+      console.log(response);
   
       // Check if the response is successful
       if (response.status === 200) {
-        // console.log(response.data); // Handle success response
+        // Handle success response
         handleCreateClose();
   
-        // Show toast notification with response message
-        toast.success(response?.data?.Message, {
+        // Show success toast
+        toast.success(response?.data?.message || "User-client form created successfully.", {
           position: "top-right",
           autoClose: 5000,
         });
-        dispatch(fetchClientDetails(id));
   
         // Dispatch fetchClientDetails action
+        dispatch(fetchClientDetails(id));
   
         // Optionally close the modal and reset form
         setFormData({
-          first_name: "",
-          last_name: "",
+          name: "",
+          customer: "",
           email: "",
           password: "",
         });
@@ -96,9 +113,9 @@ function ClientUserCreation() {
     } catch (error) {
       console.error("Error submitting data:", error);
   
-      // Show error notification
+      // Show error toast
       toast.error(
-        error.response?.data?.Message || "Failed to create user-client details. Please try again.",
+        error.response?.data?.error_message || "Failed to create user-client details. Please try again.",
         {
           position: "top-right",
           autoClose: 2000,
@@ -106,11 +123,25 @@ function ClientUserCreation() {
       );
     }
   };
-   const [showPassword, setShowPassword] = useState(false);
   
-    const togglePasswordVisibility = () => {
-      setShowPassword(!showPassword);
-    };
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+
+
+  const handleCustomerChange = (event, newValue) => {
+    // When a user selects a customer, update the formData with the selected customer
+    setFormData((prev) => ({
+      ...prev,
+      customer: newValue ? newValue.id : "", // Assuming `id` is what you want to store
+    }));
+  };
+
+
+
 
   return (
     <>
@@ -141,7 +172,7 @@ function ClientUserCreation() {
                         color="blue-gray"
                         className="block font-semibold mb-2"
                       >
-                       First Name
+                        First Name
                       </Typography>
                     </label>
 
@@ -149,9 +180,9 @@ function ClientUserCreation() {
                       <Input
                         type="text"
                         size="lg"
-                        name="first_name"
+                        name="name"
                         placeholder="First Name"
-                        value={formData.first_name}
+                        value={formData.name}
                         onChange={handleInputChange}
                         className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
                         labelProps={{
@@ -162,36 +193,10 @@ function ClientUserCreation() {
                     </div>
                   </div>
 
-                  <div className="col-span-2">
-                    <label htmlFor="last_name">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="block font-semibold mb-2"
-                      >
-                        Last Name
-                      </Typography>
-                    </label>
 
-                    <div className="">
-                      <Input
-                        type="text"
-                        size="lg"
-                        name="last_name"
-                        placeholder="Last Name"
-                        value={formData.last_name}
-                        onChange={handleInputChange}
-                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
-                        labelProps={{
-                          className: "hidden",
-                        }}
-                        containerProps={{ className: "min-w-full" }}
-                      />
-                    </div>
-                  </div>
-          
 
-            
+
+
                   <div className="col-span-2">
                     <label htmlFor="email">
                       <Typography
@@ -232,36 +237,93 @@ function ClientUserCreation() {
                       </Typography>
                     </label>
 
-                    
+
                     <div className="relative">
-      <Input
-        type={showPassword ? "text" : "password"}
-        size="lg"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleInputChange}
-        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
-        labelProps={{
-          className: "hidden",
-        }}
-        containerProps={{ className: "min-w-full" }}
-      />
-      {/* Toggle visibility button */}
-      <button
-        type="button"
-        onClick={togglePasswordVisibility}
-        className="absolute top-3 right-3"
-      >
-        {showPassword ? (
-          <EyeIcon className="h-5 w-5 text-gray-500" />
-        ) : (
-          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
-        )}
-      </button>
-    </div>
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        size="lg"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900 ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1]"
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                      {/* Toggle visibility button */}
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute top-3 right-3"
+                      >
+                        {showPassword ? (
+                          <EyeIcon className="h-5 w-5 text-gray-500" />
+                        ) : (
+                          <EyeSlashIcon className="h-5 w-5 text-gray-500" />
+                        )}
+                      </button>
+                    </div>
                   </div>
-          
+                  <div className="col-span-2">
+                    <label htmlFor="password">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Password
+                      </Typography>
+                    </label>
+
+
+
+
+                    <Autocomplete
+                      sx={{ width: 300 }}
+                      freeSolo
+                      id="gst-no-autocomplete"
+                      disableClearable
+                      options={customers}
+                      getOptionLabel={(option) =>
+                        typeof option === "string" ? option : option.name || ""
+                      }
+                      onChange={handleCustomerChange}  // Use the custom handler
+                      value={customers.find((customer) => customer.id === formData.customer) || null} // Bind value to formData.customer
+                      renderOption={(props, option) => (
+                        <li {...props} key={option.id}>
+                          {option.gst_no} ({option.name})
+                        </li>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          name="customer"
+                          value={formData.customer || ""} // Reset input value when formData.customer changes
+                          onChange={handleInputChange} // Update input value on type
+                          placeholder="Enter or select GST No."
+                          sx={{
+                            "& .MuiInputBase-root": {
+                              height: 34, // Set your desired height here
+                              padding: "4px 6px", // Adjust padding to make it smaller
+                            },
+                            "& .MuiOutlinedInput-input": {
+                              padding: "14px 16px", // Input padding
+                            },
+                          }}
+                          slotProps={{
+                            input: {
+                              ...params.InputProps,
+                              type: "search",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+
                 </div>
               </div>
               <DialogFooter>

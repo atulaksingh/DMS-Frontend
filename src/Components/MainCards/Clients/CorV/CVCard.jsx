@@ -57,6 +57,8 @@ export default function CVCard({ rowId }) {
     name: "",
     gst_no: "",
     pan: "",
+    email:"",
+    contact:"",
     address: "",
     customer: false,
     vendor: false,
@@ -86,6 +88,8 @@ export default function CVCard({ rowId }) {
       formDataToSend.append("name", formData.name);
       formDataToSend.append("gst_no", formData.gst_no);
       formDataToSend.append("pan", formData.pan);
+      formDataToSend.append("email", formData.email);
+      formDataToSend.append("contact", formData.contact);
       formDataToSend.append("address", formData.address);
       formDataToSend.append("customer", formData.customer);
       formDataToSend.append("vendor", formData.vendor);
@@ -114,17 +118,27 @@ export default function CVCard({ rowId }) {
           name: "",
           gst_no: "",
           pan: "",
+          email:"",
+          contact:"",
           address: "",
           customer: "",
           vendor: "",
         });
       } else {
         throw new Error("Failed to update Client and Vendor details.");
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to update Client and Vendor details. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 2000,
+          }
+        );
       }
     } catch (error) {
       console.error("Error submitting data:", error);
       toast.error(
-        error.response?.data?.message ||
+        error.response?.data?.error_message ||
           "Failed to update Client and Vendor details. Please try again.",
         {
           position: "top-right",
@@ -302,6 +316,13 @@ export default function CVCard({ rowId }) {
                             </div>
                           </div>
                         </div>
+
+
+
+
+
+
+                        
                         <div className="flex gap-6  p-2">
                           <div className="w-full flex gap-3">
                             <Typography
@@ -468,6 +489,70 @@ export default function CVCard({ rowId }) {
                       />
                     </div>
                   </div>
+
+
+
+
+       
+                  <div className="col-span-2">
+                    <label htmlFor="email">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                       Email
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="email"
+                        size="lg"
+                        name="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+            
+
+                  <div className="col-span-2">
+                    <label htmlFor="contact">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="block font-semibold mb-2"
+                      >
+                        Contact Number
+                      </Typography>
+                    </label>
+
+                    <div className="">
+                      <Input
+                        type="number"
+                        size="lg"
+                        name="contact"
+                        placeholder="Contact Number"
+                        value={formData.contact}
+                        onChange={handleInputChange}
+                        className="!border !border-[#cecece] bg-white py-1 text-gray-900   ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-[#366FA1] focus:!border-t-[#366FA1] "
+                        labelProps={{
+                          className: "hidden",
+                        }}
+                        containerProps={{ className: "min-w-full" }}
+                      />
+                    </div>
+                  </div>
+
+
+
 
                   <div className="col-span-4">
                     <label htmlFor="address">
